@@ -1,0 +1,9 @@
+{
+  "name": "surf",
+  "dependencies": [
+    {
+      "name": "sfml",
+      "version>=": "3.0.0"
+    }
+  ]
+}

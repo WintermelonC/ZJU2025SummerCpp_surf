@@ -1,0 +1,61 @@
+// 此文件为 CMakePresets.json 的模板文件
+// 复制此文件为 CMakePresets.json
+// 根据实际情况修改相关内容
+// 并删除所有注释
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "mingw-debug-ninja",
+      "displayName": "MinGW Ninja Debug",
+      "binaryDir": "${sourceDir}/build-debug-mingw-ninja",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_MAKE_PROGRAM": "ninja",
+        // 修改 vcpkg 路径 {vcpkg_path}
+        "CMAKE_TOOLCHAIN_FILE": "{vcpkg_path}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic"
+      },
+      "environment": {
+        // 确保系统环境变量 PATH 中包含 MinGW, Ninja 的路径
+        // 也可以直接指定 MinGW 和 Ninja 的路径
+        // 例如："PATH": "C:/Program Files/mingw64;D:/ninja-win"
+        "PATH": "$penv{PATH}"
+      }
+    },
+    {
+      "name": "mingw-release-ninja",
+      "displayName": "MinGW Ninja Release",
+      "binaryDir": "${sourceDir}/build-release-mingw-ninja",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_MAKE_PROGRAM": "ninja",
+        // 修改 vcpkg 路径 {vcpkg_path}
+        "CMAKE_TOOLCHAIN_FILE": "{vcpkg_path}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic"
+      },
+      "environment": {
+        // 确保系统环境变量 PATH 中包含 MinGW, Ninja 的路径
+        // 也可以直接指定 MinGW 和 Ninja 的路径
+        // 例如："PATH": "C:/Program Files/mingw64;D:/ninja-win"
+        "PATH": "$penv{PATH}"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug-mingw",
+      "configurePreset": "mingw-debug-ninja"
+    },
+    {
+      "name": "release-mingw",
+      "configurePreset": "mingw-release-ninja"
+    }
+  ]
+}

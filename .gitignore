@@ -1,0 +1,5 @@
+build-debug-mingw-ninja/
+build-release-mingw-ninja/
+.vscode/
+
+CMakePresets.json
