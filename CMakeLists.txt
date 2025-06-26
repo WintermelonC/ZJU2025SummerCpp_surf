@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package(SFML 3.0 COMPONENTS System Window Graphics Audio REQUIRED)
 
-add_subdirectory(src)
+add_subdirectory(code)

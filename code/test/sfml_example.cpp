@@ -8,15 +8,15 @@ int main()
     sf::RenderWindow window(sf::VideoMode({800, 600}), "SFML window");
  
     // Load a sprite to display
-    const sf::Texture texture("../assets/images/cute_image.jpg");
+    const sf::Texture texture("../../assets/images/cute_image.jpg");
     sf::Sprite sprite(texture);
  
     // Create a graphical text to display
-    const sf::Font font("../assets/fonts/arial.ttf");
+    const sf::Font font("../../assets/fonts/arial.ttf");
     sf::Text text(font, "Hello SFML", 50);
  
     // Load a music to play
-    sf::Music music("../assets/audios/nice_music.ogg");
+    sf::Music music("../../assets/audios/nice_music.ogg");
  
     // Play the music
     music.play();
@@ -30,6 +30,13 @@ int main()
             // Close window: exit
             if (event->is<sf::Event::Closed>())
                 window.close();
+            
+            if (const auto* resized = event->getIf<sf::Event::Resized>())
+            {
+                // update the view to the new size of the window
+                sf::FloatRect visibleArea({0.f, 0.f}, sf::Vector2f(resized->size));
+                window.setView(sf::View(visibleArea));
+            }
         }
  
         // Clear screen
