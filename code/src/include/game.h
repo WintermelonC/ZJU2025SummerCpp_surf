@@ -10,35 +10,31 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-
-constexpr int RENDER_WIDTH = 2560;  // 渲染宽度
-constexpr int RENDER_HEIGHT = 1440;  // 渲染高度
-constexpr int WINDOW_WIDTH = 540;  // 窗口宽度
-constexpr int WINDOW_HEIGHT = 960;  // 窗口高度
+#include "utils.h"
+#include "player.h"
 
 class Game {
 public:
     Game();
     ~Game() = default;
 
-    // 游戏主循环
-    void run();
+    void run();  // 游戏主循环
 
 private:
-    // 处理事件
-    void handleEvents();
+    void handleEvents();  // 处理事件
+    void update();  // 更新游戏状态
+    void render();  // 渲染游戏内容
 
-    // 更新游戏状态
-    void update();
-
-    // 渲染游戏内容
-    void render();  
+    void updateView();  // 更新视图
+    void updateBackground();  // 更新背景
 
 private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
-    std::string m_backgroundPath{"../../assets/images/water_texture.png"};
-    sf::Texture m_backgroundTexture;  // 背景纹理
-    sf::Sprite m_background;  // 背景精灵
+    std::string m_bgPath{"../../assets/images/water_texture.png"};
+    sf::Texture m_bgTexture;  // 背景纹理
+    sf::Sprite m_bgSprite;  // 背景精灵
     bool m_isRunning;
+
+    Player m_player;  // 玩家对象
 };
