@@ -13,6 +13,8 @@
 #include "utils.h"
 #include "player.h"
 
+constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
+
 class Game {
 public:
     Game();
@@ -31,9 +33,11 @@ private:
 private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
-    sf::Clock m_clock;
-    float m_offsetX;
-    float m_offsetY;
+    sf::Clock m_clock;  // 时钟
+    sf::Vector2i m_mousePosition;  // 鼠标位置
+    bool m_isRunning = true;
+    float m_offsetX = 0.0f;
+    float m_offsetY = 0.0f;
 
     std::string m_bgPath{"../../assets/images/water_texture.png"};
     sf::Texture m_bgTexture;  // 背景纹理
