@@ -3,3 +3,4 @@ build-release-mingw-ninja/
 .vscode/
 
 CMakePresets.json
+TODO.md
