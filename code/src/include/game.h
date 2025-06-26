@@ -31,10 +31,13 @@ private:
 private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
-    
+    sf::Clock m_clock;
+    float m_offsetX;
+    float m_offsetY;
+
     std::string m_bgPath{"../../assets/images/water_texture.png"};
     sf::Texture m_bgTexture;  // 背景纹理
-    sf::Sprite m_bgSprite;  // 背景精灵
+    sf::RectangleShape m_bgShape;  // 背景形状
 
     Player m_player;  // 玩家对象
 };
