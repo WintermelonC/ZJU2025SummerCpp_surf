@@ -3,7 +3,6 @@
 Game::Game()
     : m_window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Surf Game"),
       m_view(sf::FloatRect({RENDER_CENTER_X, RENDER_CENTER_Y}, {WINDOW_WIDTH, WINDOW_HEIGHT})),
-      m_isRunning(true),
       m_bgTexture(m_bgPath),
       m_bgSprite(m_bgTexture),
       m_player({RENDER_CENTER_X, RENDER_CENTER_Y}) {
@@ -19,7 +18,7 @@ Game::Game()
 }
 
 void Game::run() {
-    while (m_isRunning && m_window.isOpen()) {
+    while (m_window.isOpen()) {
         handleEvents();
         update();
         render();
@@ -34,13 +33,12 @@ void Game::handleEvents() {
         } else if (const auto* resized = event -> getIf<sf::Event::Resized>()) {
             // 窗口大小调整事件
             m_view.setSize(sf::Vector2f(resized -> size));
-            updateView();
         }
     }
 }
 
 void Game::update() {
-
+    updateView();
 }
 
 void Game::render() {
