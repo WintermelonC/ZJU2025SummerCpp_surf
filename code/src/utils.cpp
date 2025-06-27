@@ -40,26 +40,22 @@ void Utils::clear() {
 }
 
 sf::Text Utils::renderText(
-        const Fonts font,
+        const Fonts font, 
         const std::string& content,
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCovert,
         const bool ifCenter
     ) {
-    // 获取字体指针
     sf::Font* fontPtr = Utils::getFont(font);
     sf::Text text(*fontPtr);
-    if (ifCovert) {
-        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-        std::wstring wideStr = converter.from_bytes(content);
-        text.setString(wideStr);
-    } else {
-        text.setString(content);
-    }
+    
+    // 使用 sf::String 从 UTF-8 直接转换，完美支持所有语言
+    text.setString(sf::String::fromUtf8(content.begin(), content.end()));
+
     text.setCharacterSize(size);
     text.setFillColor(color);
+
     if (ifCenter) {
         text.setOrigin(text.getLocalBounds().size / 2.0f);
     }

@@ -146,12 +146,6 @@ void Game::renderStartMenu() {
         {0.9f, 0.9f}
     );
     // 开始游戏文字
-
-    sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true);
-    // 绘制人物动画
-    renderPlayerAnimation();
-
-
     sf::Text startText = Utils::renderText(
         Fonts::almmdfdk, 
         "开始游戏", 
@@ -160,7 +154,6 @@ void Game::renderStartMenu() {
         {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, 
         true
     );
-
     // 鼠标悬停变化
     Utils::mouseHoverButton(
         startButton, 
@@ -248,40 +241,6 @@ void Game::renderPlayerAnimation() {
         m_animClock.restart();  // 重置动画时钟
     }
 
-
-    sf::Texture texture;
-    if (texture.loadFromFile(paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3])) {
-        sf::Sprite sprite(texture);
-        sprite.setOrigin({texture.getSize().x / 2.f, texture.getSize().y / 2.f});
-        sprite.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y});
-        sprite.setScale({2.0f, 2.0f});
-        m_window.draw(sprite);
-    } else {
-        throw std::runtime_error("Failed to load player animation texture from " + 
-                                 paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3]);
-    }
-}
-
-sf::Text Game::renderText(
-        const sf::Font& font, 
-        const std::string& content,
-        const int size,
-        const sf::Color color,
-        const sf::Vector2f position,
-        const bool ifCenter
-    ) {
-    sf::Text text(font);
-    
-    // 使用 sf::String 从 UTF-8 直接转换，完美支持所有语言
-    text.setString(sf::String::fromUtf8(content.begin(), content.end()));
-    text.setCharacterSize(size);
-    text.setFillColor(color);
-    if (ifCenter) {
-        text.setOrigin(text.getLocalBounds().size / 2.0f);
-    }
-    text.setPosition(position);
-    return text;
-
     sf::Sprite sprite = Utils::renderSprite(
         paths[m_currentAnimFrame], 
         sf::Color::White,
@@ -290,7 +249,6 @@ sf::Text Game::renderText(
         false
     );
     m_window.draw(sprite);  // 绘制玩家动画
-
 }
 
 void Game::updateView() {
