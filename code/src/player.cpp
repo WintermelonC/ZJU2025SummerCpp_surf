@@ -44,7 +44,6 @@ void Player::updateYSpeed(float dt) {
             m_velocity.y = m_maxSpeed;  // 限制最大速度
         }
     }
-    std::cout << m_velocity.y << std::endl;
 }
 
 void Player::updateAnimation(float dt) {

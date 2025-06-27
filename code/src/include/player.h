@@ -8,8 +8,8 @@
 
 constexpr float ACCELERATION_1 = 5.0f;  // 默认加速度
 constexpr float ACCELERATION_2 = 10.0f;  // 增强加速度
-constexpr float MAX_SPEED_1 = 50.0f;  // 默认最大速度
-constexpr float MAX_SPEED_2 = 100.0f;  // 增强最大速度
+constexpr float MAX_SPEED_1 = 25.0f;  // 默认最大速度
+constexpr float MAX_SPEED_2 = 50.0f;  // 增强最大速度
 constexpr float X_SPEED_1 = 5.0f;  // X 速度 1
 constexpr float X_SPEED_2 = 10.0f;  // X 速度 2
 constexpr float ANGLE_1 = 15.0f;  // 角度 1
