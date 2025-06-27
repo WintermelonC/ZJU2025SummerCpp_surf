@@ -141,7 +141,7 @@ void Game::renderStartMenu() {
     startIcon.setPosition({RENDER_CENTER_X - 75, RENDER_CENTER_Y + 200});
     startIcon.setScale({0.9f, 0.9f});  // 缩小图标大小
     // 开始游戏文字
-    sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
+    sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true);
     // 绘制人物动画
     renderPlayerAnimation();
 
@@ -196,17 +196,12 @@ sf::Text Game::renderText(
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCenter,
-        const bool ifCovert
+        const bool ifCenter
     ) {
     sf::Text text(font);
-    if (ifCovert) {
-        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-        std::wstring wideStr = converter.from_bytes(content);
-        text.setString(wideStr);
-    } else {
-        text.setString(content);
-    }
+    
+    // 使用 sf::String 从 UTF-8 直接转换，完美支持所有语言
+    text.setString(sf::String::fromUtf8(content.begin(), content.end()));
     text.setCharacterSize(size);
     text.setFillColor(color);
     if (ifCenter) {
