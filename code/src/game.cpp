@@ -78,19 +78,27 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
     // 检查是否点击了开始按钮
     if (m_state == GameState::Start) {
         // 开始按钮的位置和大小
-        float buttonX = RENDER_CENTER_X;
-        float buttonY = RENDER_CENTER_Y + 200;
-        float buttonWidth = 180.0f * START_BUTTON_SCALE;  // 考虑缩放
-        float buttonHeight = 60.0f * START_BUTTON_SCALE;
+        float buttonX = START_BUTTON_X;
+        float buttonY = START_BUTTON_Y;
+        float buttonWidth = START_BUTTON_WIDTH * START_BUTTON_SCALE;  // 考虑缩放
+        float buttonHeight = START_BUTTON_HEIGHT * START_BUTTON_SCALE;
         
         // 检查点击是否在按钮范围内
-        if (worldPos.x >= buttonX - buttonWidth / 2 && 
-            worldPos.x <= buttonX + buttonWidth / 2 &&
-            worldPos.y >= buttonY - buttonHeight / 2 && 
-            worldPos.y <= buttonY + buttonHeight / 2) {
-            // 点击了开始按钮，切换到游戏状态
-            m_state = GameState::Playing;
-            m_clock.restart();  // 重置游戏时钟
+        if (ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+            m_state = GameState::Playing;  // 切换到游戏状态
+            m_clock.restart();  // 重置时钟
+        }
+    } else if (m_state == GameState::Paused) {
+        // 继续按钮的位置和大小
+        float buttonX = CONTINUE_BUTTON_X;
+        float buttonY = CONTINUE_BUTTON_Y;
+        float buttonWidth = CONTINUE_BUTTON_WIDTH * CONTINUE_BUTTON_SCALE;  // 考虑缩放
+        float buttonHeight = CONTINUE_BUTTON_HEIGHT * CONTINUE_BUTTON_SCALE;
+
+        // 检查点击是否在按钮范围内
+        if (ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+            m_state = GameState::Playing;  // 切换到游戏状态
+            m_clock.restart();  // 重置时钟
         }
     }
 }
@@ -275,4 +283,19 @@ void Game::updateBackground() {
         m_offsetY -= texHeight;
     }
     m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, {RENDER_WIDTH, RENDER_HEIGHT}));
+}
+
+bool Game::ifMouseOnButton(
+    const sf::Vector2f& mousePos, 
+    float buttonX, 
+    float buttonY, 
+    float buttonWidth, 
+    float buttonHeight
+    ) const {
+    return (
+        mousePos.x >= buttonX - buttonWidth / 2 && 
+        mousePos.x <= buttonX + buttonWidth / 2 &&
+        mousePos.y >= buttonY - buttonHeight / 2 && 
+        mousePos.y <= buttonY + buttonHeight / 2
+    );
 }

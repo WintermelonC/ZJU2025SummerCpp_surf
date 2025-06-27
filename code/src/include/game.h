@@ -20,7 +20,14 @@ constexpr int WINDOW_CENTER_Y = WINDOW_HEIGHT / 2;  // 窗口中心 Y 坐标
 constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
 constexpr int START_BUTTON_WIDTH = 180;  // 开始按钮宽度
 constexpr int START_BUTTON_HEIGHT = 60;  // 开始按钮高度
+constexpr int START_BUTTON_X = RENDER_CENTER_X;  // 开始按钮 X 坐标
+constexpr int START_BUTTON_Y = RENDER_CENTER_Y + 200;  // 开始按钮 Y 坐标
 constexpr float START_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
+constexpr int CONTINUE_BUTTON_WIDTH = 180;  // 继续按钮宽度
+constexpr int CONTINUE_BUTTON_HEIGHT = 60;  // 继续按钮高度
+constexpr int CONTINUE_BUTTON_X = RENDER_CENTER_X;  // 继续按钮 X 坐标
+constexpr int CONTINUE_BUTTON_Y = RENDER_CENTER_Y + 300;  // 继续按钮 Y 坐标
+constexpr float CONTINUE_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
 
 enum class GameState {
     Start,  // 主菜单
@@ -48,6 +55,14 @@ private:
     void renderStartMenu();  // 渲染开始菜单
     void renderPausedMenu();  // 渲染暂停菜单
     void renderPlayerAnimation();  // 渲染玩家动画
+
+    bool ifMouseOnButton(
+        const sf::Vector2f& mousePos, 
+        float buttonX, 
+        float buttonY, 
+        float buttonWidth, 
+        float buttonHeight
+    ) const;
 
 private:
     sf::RenderWindow m_window;  // 窗口
