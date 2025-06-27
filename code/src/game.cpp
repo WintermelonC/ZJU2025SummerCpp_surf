@@ -86,7 +86,7 @@ void Game::handleMouseClick(const sf::Vector2f& mousePos) {
 void Game::update() {
     float dt = m_clock.restart().asSeconds();  // 获取帧时间间隔
 
-    m_player.update(dt, sf::Mouse::getPosition(m_window), m_window.getSize());
+    m_player.update(dt, sf::Mouse::getPosition(m_window), m_window);
     updateView();
     updateBackground();
 }
@@ -108,7 +108,6 @@ void Game::render() {
 }
 
 void Game::renderStartMenu() {
-    // 绘制开始界面
     // 标题
     sf::Text title = Utils::renderText(Fonts::MSJHBD, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
     // 开始按钮
@@ -140,14 +139,17 @@ void Game::renderStartMenu() {
 
     // 鼠标悬停变化
     sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
-    float mouseDeltaX = mousePos.x - m_window.getSize().x / 2.f;
-    float mouseDeltaY = mousePos.y - m_window.getSize().y / 2.f;
-    float buttonDeltaY = startButton.getPosition().y - RENDER_CENTER_Y;
-    float btnWidth = startButton.getTexture().getSize().x * START_BUTTON_SCALE;
-    float btnHeight = startButton.getTexture().getSize().y * START_BUTTON_SCALE;
-    if (mouseDeltaX >= -btnWidth / 2.f && mouseDeltaX <= btnWidth / 2.f &&
-        mouseDeltaY >= buttonDeltaY - btnHeight / 2.f && mouseDeltaY <= buttonDeltaY + btnHeight / 2.f) {
-        startButton.setColor(sf::Color(255, 255, 255));  // 悬停时变色
+    sf::Vector2f worldPos = m_window.mapPixelToCoords(mousePos);
+    float buttonX = startButton.getPosition().x;
+    float buttonY = startButton.getPosition().y;
+    float buttonWidth = START_BUTTON_WIDTH * START_BUTTON_SCALE;
+    float buttonHeight = START_BUTTON_HEIGHT * START_BUTTON_SCALE;
+    if (worldPos.x >= buttonX - buttonWidth / 2 && 
+        worldPos.x <= buttonX + buttonWidth / 2 &&
+        worldPos.y >= buttonY - buttonHeight / 2 && 
+        worldPos.y <= buttonY + buttonHeight / 2) {
+        // 鼠标悬停在按钮上，改变按钮颜色
+        startButton.setColor(sf::Color(255, 255, 255));  // 改变颜色
         startButtonShadow.move({0.f, 3.f});
     }
 

@@ -18,16 +18,17 @@ const std::vector<Textures> Player::getPaths() const {
     };
 }
 
-void Player::update(float dt, const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize) {
-    updateXSpeed(mousePosition, windowSize);
+void Player::update(float dt, const sf::Vector2i& mousePosition, const sf::RenderWindow& window) {
+    updateXSpeed(mousePosition, window);
     updateYSpeed(dt);
     updateAnimation(dt);
 }
 
-void Player::updateXSpeed(const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize) {
+void Player::updateXSpeed(const sf::Vector2i& mousePosition, const sf::RenderWindow& window) {
+    sf::Vector2f worldPos = window.mapPixelToCoords(mousePosition);
     // x 速度根据鼠标位置调整
-    float deltaX = mousePosition.x - windowSize.x / 2.f;
-    float deltaY = mousePosition.y - windowSize.y / 2.f;
+    float deltaX = worldPos.x - m_sprite.getPosition().x;
+    float deltaY = worldPos.y - m_sprite.getPosition().y;
     sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
     if (deltaY >= 0.0f) {
         if (angle.asDegrees() >= ANGLE_2 || angle.asDegrees() <= -ANGLE_2) {
