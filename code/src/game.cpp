@@ -1,8 +1,8 @@
 #include "include/game.h"
 
 Game::Game()
-    : m_window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Surf Game"),
-      m_view(sf::FloatRect({RENDER_CENTER_X, RENDER_CENTER_Y}, {WINDOW_WIDTH, WINDOW_HEIGHT})),
+    : m_window(sf::VideoMode({static_cast<unsigned int>(WINDOW_WIDTH), static_cast<unsigned int>(WINDOW_HEIGHT)}), "Surf Game"),
+      m_view(sf::FloatRect({RENDER_CENTER_X, RENDER_CENTER_Y}, {static_cast<float>(WINDOW_WIDTH), static_cast<float>(WINDOW_HEIGHT)})),
       m_state(GameState::Start),
       m_bgShape({RENDER_WIDTH, RENDER_HEIGHT}),
       m_player({PLAYER_X, PLAYER_Y}) {
@@ -83,8 +83,8 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
         // 开始按钮的位置和大小
         float buttonX = START_BUTTON_X;
         float buttonY = START_BUTTON_Y;
-        float buttonWidth = START_BUTTON_WIDTH * START_BUTTON_SCALE;  // 考虑缩放
-        float buttonHeight = START_BUTTON_HEIGHT * START_BUTTON_SCALE;
+        float buttonWidth = BUTTON_WIDTH * START_BUTTON_SCALE;  // 考虑缩放
+        float buttonHeight = BUTTON_HEIGHT * START_BUTTON_SCALE;
         // 检查点击是否在按钮范围内
         if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
             m_state = GameState::Playing;  // 切换到游戏状态
@@ -94,8 +94,8 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
         // 继续按钮的位置和大小
         float buttonX = CONTINUE_BUTTON_X;
         float buttonY = CONTINUE_BUTTON_Y;
-        float buttonWidth = CONTINUE_BUTTON_WIDTH * CONTINUE_BUTTON_SCALE;  // 考虑缩放
-        float buttonHeight = CONTINUE_BUTTON_HEIGHT * CONTINUE_BUTTON_SCALE;
+        float buttonWidth = BUTTON_WIDTH * CONTINUE_BUTTON_SCALE;  // 考虑缩放
+        float buttonHeight = BUTTON_HEIGHT * CONTINUE_BUTTON_SCALE;
         // 检查点击是否在按钮范围内
         if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
             m_state = GameState::Playing;  // 切换到游戏状态
@@ -103,8 +103,8 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
         }
         buttonX = RETURN_BUTTON_X;
         buttonY = RETURN_BUTTON_Y;
-        buttonWidth = RETURN_BUTTON_WIDTH * RETURN_BUTTON_SCALE;  // 考虑缩放
-        buttonHeight = RETURN_BUTTON_HEIGHT * RETURN_BUTTON_SCALE;
+        buttonWidth = BUTTON_WIDTH * RETURN_BUTTON_SCALE;  // 考虑缩放
+        buttonHeight = BUTTON_HEIGHT * RETURN_BUTTON_SCALE;
         // 检查点击是否在返回按钮范围内
         if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
             m_state = GameState::Start;  // 切换到开始状态
@@ -349,6 +349,10 @@ void Game::renderPlayerState() {
             {2.0f, 2.0f},
             false
         );
+        m_window.draw(heart);  // 绘制生命值图标
+    }
+
+    for (int i = 1; i <= PLAYER_POWER; i++) {
         sf::Sprite powerIcon = Utils::renderSprite(
             (i <= power) ? Textures::power_1 : Textures::power_2,
             sf::Color::White,
@@ -357,7 +361,6 @@ void Game::renderPlayerState() {
             {2.0f, 2.0f},
             false
         );
-        m_window.draw(heart);  // 绘制生命值图标
         m_window.draw(powerIcon);  // 绘制能量值图标
     }
 }

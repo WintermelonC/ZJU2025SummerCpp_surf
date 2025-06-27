@@ -14,29 +14,6 @@
 #include "utils.h"
 #include "player.h"
 
-constexpr int WINDOW_WIDTH = 720;  // 窗口宽度
-constexpr int WINDOW_HEIGHT = 1280;  // 窗口高度
-constexpr int WINDOW_CENTER_X = WINDOW_WIDTH / 2;  // 窗口中心 X 坐标
-constexpr int WINDOW_CENTER_Y = WINDOW_HEIGHT / 2;  // 窗口中心 Y 坐标
-constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
-constexpr int START_BUTTON_WIDTH = 180;  // 开始按钮宽度
-constexpr int START_BUTTON_HEIGHT = 60;  // 开始按钮高度
-constexpr int START_BUTTON_X = RENDER_CENTER_X;  // 开始按钮 X 坐标
-constexpr int START_BUTTON_Y = RENDER_CENTER_Y + 200;  // 开始按钮 Y 坐标
-constexpr float START_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
-constexpr int CONTINUE_BUTTON_WIDTH = 180;  // 继续按钮宽度
-constexpr int CONTINUE_BUTTON_HEIGHT = 60;  // 继续按钮高度
-constexpr int CONTINUE_BUTTON_X = RENDER_CENTER_X;  // 继续按钮 X 坐标
-constexpr int CONTINUE_BUTTON_Y = RENDER_CENTER_Y + 200;  // 继续按钮 Y 坐标
-constexpr float CONTINUE_BUTTON_SCALE = 1.2f;  // 继续按钮缩放比例
-constexpr int RETURN_BUTTON_WIDTH = 180;  // 返回按钮宽度
-constexpr int RETURN_BUTTON_HEIGHT = 60;  // 返回按钮高度
-constexpr int RETURN_BUTTON_X = RENDER_CENTER_X;  // 返回按钮 X 坐标
-constexpr int RETURN_BUTTON_Y = RENDER_CENTER_Y + 300;  // 返回按钮 Y 坐标
-constexpr float RETURN_BUTTON_SCALE = 0.8f;  // 返回按钮缩放比例
-constexpr int HEART_X_OFFSET = 300;  // 生命值图标 X 坐标偏移量
-constexpr int POWER_X_OFFSET = 100;  // 能量值图标 X 坐标偏移量
-
 enum class GameState {
     Start,  // 主菜单
     Playing,
@@ -67,6 +44,23 @@ private:
     void renderPlayerState();  // 渲染玩家状态（生命值、能量等）
 
 private:
+    const int WINDOW_WIDTH = 720;  // 窗口宽度
+    const int WINDOW_HEIGHT = 1280;  // 窗口高度
+    const float PARALLAX_FACTOR = 0.1f;  // 视差因子
+    const int BUTTON_WIDTH = 180;  // 按钮宽度
+    const int BUTTON_HEIGHT = 60;  // 按钮高度
+    const float START_BUTTON_X = RENDER_CENTER_X;  // 开始按钮 X 坐标
+    const float START_BUTTON_Y = RENDER_CENTER_Y + 200;  // 开始按钮 Y 坐标
+    const float START_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
+    const float CONTINUE_BUTTON_X = RENDER_CENTER_X;  // 继续按钮 X 坐标
+    const float CONTINUE_BUTTON_Y = RENDER_CENTER_Y + 200;  // 继续按钮 Y 坐标
+    const float CONTINUE_BUTTON_SCALE = 1.2f;  // 继续按钮缩放比例
+    const float RETURN_BUTTON_X = RENDER_CENTER_X;  // 返回按钮 X 坐标
+    const float RETURN_BUTTON_Y = RENDER_CENTER_Y + 300;  // 返回按钮 Y 坐标
+    const float RETURN_BUTTON_SCALE = 0.8f;  // 返回按钮缩放比例
+    const int HEART_X_OFFSET = 300;  // 生命值图标 X 坐标偏移量
+    const int POWER_X_OFFSET = 100;  // 能量值图标 X 坐标偏移量
+
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
     sf::Clock m_clock;  // 时钟

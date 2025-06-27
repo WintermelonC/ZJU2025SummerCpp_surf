@@ -45,7 +45,7 @@ void Player::update(float dt, const sf::RenderWindow& window) {
     } else {
         m_powerTimer = 0.0f;  // 重置能量计时器
     }
-    updateXSpeed();
+    updateXSpeed(dt);
     updateYSpeed(dt);
     updateAnimation(dt);
 }
@@ -69,22 +69,22 @@ void Player::usePower() {
     }
 }
 
-void Player::updateXSpeed() {
+void Player::updateXSpeed(float dt) {
     switch (m_xState) {
         case PlayerState::Center:
             m_velocity.x = 0.f;
             break;
         case PlayerState::Left1:
-            m_velocity.x = -X_SPEED_1 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向左移动
+            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * -XY_SPEED_1;  // 左侧速度
             break;
         case PlayerState::Left2:
-            m_velocity.x = -X_SPEED_2 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向左移动
+            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * -XY_SPEED_2;  // 左侧速度
             break;
         case PlayerState::Right1:
-            m_velocity.x = X_SPEED_1 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向右移动
+            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * XY_SPEED_1;  // 右侧速度
             break;
         case PlayerState::Right2:
-            m_velocity.x = X_SPEED_2 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向右移动
+            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * XY_SPEED_2;  // 右侧速度
             break;
         case PlayerState::Stop:
             m_velocity.x = 0.f;  // 停止移动
@@ -99,7 +99,7 @@ void Player::updateYSpeed(float dt) {
         case PlayerState::Left2:
         case PlayerState::Right1:
         case PlayerState::Right2:
-            if (m_velocity.y <= MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f)) {
+            if (m_velocity.y < MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f)) {
                 m_velocity.y += dt * (m_isAccelerating ? ACCELERATION_2 : ACCELERATION_1);  // 增加速度
                 if (m_velocity.y > MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f)) {
                     m_velocity.y = MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 限制最大速度
@@ -107,8 +107,8 @@ void Player::updateYSpeed(float dt) {
             }
             break;
         case PlayerState::Stop:
-            if (m_velocity.y >= 0.f) {
-                m_velocity.y -= ACCELERATION_2 * dt;  // 减少速度
+            if (m_velocity.y > 0.f) {
+                m_velocity.y -= ACCELERATION_3 * dt;  // 减少速度
                 if (m_velocity.y < 0.f) {
                     m_velocity.y = 0.f;  // 限制最小速度
                 }
@@ -120,7 +120,7 @@ void Player::updateYSpeed(float dt) {
 void Player::updateAnimation(float dt) {
     // 动画更新逻辑
     const float m_animInterval = 0.1f;  // 动画间隔时间
-    std::array<Textures, PLAYER_ANIM_FRAMES> paths;
+    std::vector<Textures> paths;
     switch (m_xState) {
         case PlayerState::Center:
             paths = {Textures::player_center_1, Textures::player_center_2, Textures::player_center_3};
@@ -145,7 +145,7 @@ void Player::updateAnimation(float dt) {
     m_animTimer += dt;
     if (m_animTimer >= m_animInterval) {
         m_animTimer = 0.f;
-        m_currentFrame = (m_currentFrame + 1) % PLAYER_ANIM_FRAMES;
+        m_currentFrame = (m_currentFrame + 1) % paths.size();
         m_sprite.setTexture(*Utils::getTexture(paths[m_currentFrame]));
     }
 }
