@@ -24,6 +24,17 @@ void Player::update(float dt, const sf::Vector2i& mousePosition, const sf::Rende
     updateAnimation(dt);
 }
 
+void Player::initial() {
+    m_velocity = {0.f, 0.f};
+    m_acceleration = ACCELERATION_1;
+    m_maxSpeed = MAX_SPEED_1;
+    m_xState = XState::CENTER;
+    m_currentFrame = 0;
+    m_animTimer = 0.f;
+    m_sprite.setTexture(*Utils::getTexture(Textures::player_center_1));
+    m_sprite.setScale({PLAYER_SCALE, PLAYER_SCALE});
+}
+
 void Player::updateXSpeed(const sf::Vector2i& mousePosition, const sf::RenderWindow& window) {
     sf::Vector2f worldPos = window.mapPixelToCoords(mousePosition);
     // x 速度根据鼠标位置调整

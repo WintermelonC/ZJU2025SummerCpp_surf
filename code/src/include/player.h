@@ -46,6 +46,8 @@ public:
 
     // 更新玩家状态
     void update(float dt, const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
+    // 初始化玩家状态
+    void initial();
 
 private:
     // 更新 X 速度

@@ -26,8 +26,13 @@ constexpr float START_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
 constexpr int CONTINUE_BUTTON_WIDTH = 180;  // 继续按钮宽度
 constexpr int CONTINUE_BUTTON_HEIGHT = 60;  // 继续按钮高度
 constexpr int CONTINUE_BUTTON_X = RENDER_CENTER_X;  // 继续按钮 X 坐标
-constexpr int CONTINUE_BUTTON_Y = RENDER_CENTER_Y + 300;  // 继续按钮 Y 坐标
-constexpr float CONTINUE_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
+constexpr int CONTINUE_BUTTON_Y = RENDER_CENTER_Y + 200;  // 继续按钮 Y 坐标
+constexpr float CONTINUE_BUTTON_SCALE = 1.2f;  // 继续按钮缩放比例
+constexpr int RETURN_BUTTON_WIDTH = 180;  // 返回按钮宽度
+constexpr int RETURN_BUTTON_HEIGHT = 60;  // 返回按钮高度
+constexpr int RETURN_BUTTON_X = RENDER_CENTER_X;  // 返回按钮 X 坐标
+constexpr int RETURN_BUTTON_Y = RENDER_CENTER_Y + 300;  // 返回按钮 Y 坐标
+constexpr float RETURN_BUTTON_SCALE = 0.8f;  // 返回按钮缩放比例
 
 enum class GameState {
     Start,  // 主菜单
