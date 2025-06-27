@@ -4,7 +4,6 @@
 #include <array>
 #include <cmath>
 #include <vector>
-#include <deque>
 #include <SFML/Graphics.hpp>
 #include "utils.h"
 
@@ -38,6 +37,7 @@ public:
     const std::vector<Textures> getPaths() const;
     const int getHP() const { return m_hp; }  // 获取玩家生命值
     const int getPower() const { return m_power; }  // 获取玩家能量值
+    const bool isAccelerating() const { return m_isAccelerating; }  // 是否正在加速
 
     void usePower();  // 使用能量加速
 
