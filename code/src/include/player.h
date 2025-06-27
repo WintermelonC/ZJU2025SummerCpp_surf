@@ -4,11 +4,12 @@
 #include <array>
 #include <cmath>
 #include <vector>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "utils.h"
 
 constexpr float ACCELERATION_1 = 5.0f;  // 默认加速度
-constexpr float ACCELERATION_2 = 10.0f;  // 增强加速度
+constexpr float ACCELERATION_2 = 20.0f;  // 增强加速度
 constexpr float MAX_SPEED_1 = 25.0f;  // 默认最大速度
 constexpr float MAX_SPEED_2 = 50.0f;  // 增强最大速度
 constexpr float X_SPEED_1 = 5.0f;  // X 速度 1
@@ -21,13 +22,15 @@ constexpr int PLAYER_WIDTH = 64;  // 玩家宽度
 constexpr int PLAYER_HEIGHT = 96;  // 玩家高度
 constexpr int PLAYER_X = RENDER_CENTER_X;  // 玩家初始 X 坐标
 constexpr int PLAYER_Y = RENDER_HEIGHT / 5 * 2;  // 玩家初始 Y 坐标
+constexpr int PLAYER_HP = 3;  // 玩家初始生命值
 
 enum class XState {
-    CENTER,
-    LEFT1,
-    LEFT2,
-    RIGHT1,
-    RIGHT2
+    Center,
+    Left1,
+    Left2,
+    Right1,
+    Right2,
+    Stop
 };
 
 class Player {
@@ -45,13 +48,13 @@ public:
     const std::vector<Textures> getPaths() const;
 
     // 更新玩家状态
-    void update(float dt, const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
+    void update(float dt, const sf::RenderWindow& window);
     // 初始化玩家状态
     void initial();
 
 private:
     // 更新 X 速度
-    void updateXSpeed(const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
+    void updateXSpeed();
     // 更新 Y 速度
     void updateYSpeed(float dt);
     // 更新动画
@@ -60,6 +63,7 @@ private:
 private:
     sf::Sprite m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
+    int m_hp = PLAYER_HP;  // 玩家生命值
     float m_acceleration = ACCELERATION_1;  // 当前加速度
     float m_maxSpeed = MAX_SPEED_1;  // 当前最大速度
     

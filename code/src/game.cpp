@@ -116,7 +116,7 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
 void Game::update() {
     float dt = m_clock.restart().asSeconds();  // 获取帧时间间隔
 
-    m_player.update(dt, sf::Mouse::getPosition(m_window), m_window);
+    m_player.update(dt, m_window);
     updateView();
     updateBackground();
 }
