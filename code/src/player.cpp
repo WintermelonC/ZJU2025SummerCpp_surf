@@ -1,5 +1,4 @@
 #include "include/player.h"
-#include <iostream>
 
 Player::Player(sf::Vector2f position)
     : m_texture(m_centerPaths[0]),

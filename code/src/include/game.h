@@ -32,14 +32,17 @@ public:
 private:
     void handleEvents();  // 处理事件
     void update();  // 更新游戏状态
+
     void render();  // 渲染游戏内容
+    void renderStartMenu();  // 渲染开始菜单
     sf::Text renderText(
         const sf::Font& font, 
         const std::string& content,
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCenter = true
+        const bool ifCenter = true,
+        const bool ifCovert = false
     );
 
     void updateView();  // 更新视图
@@ -59,6 +62,8 @@ private:
     sf::RectangleShape m_bgShape;  // 背景形状
     std::string m_JHPath{"../../assets/fonts/MSJHBD.TTC"};
     sf::Font m_fontJH;  // 字体对象
+    std::string m_almmPath{"../../assets/fonts/almmdfdk.TTF"};
+    sf::Font m_fontAlmm;  // 字体对象
 
     Player m_player;  // 玩家对象
 };

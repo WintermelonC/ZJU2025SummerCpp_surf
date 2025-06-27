@@ -23,6 +23,9 @@ Game::Game()
     if (!m_fontJH.openFromFile(m_JHPath)) {
         throw std::runtime_error("Failed to load font from " + m_JHPath);
     }
+    if (!m_fontAlmm.openFromFile(m_almmPath)) {
+        throw std::runtime_error("Failed to load font from " + m_almmPath);
+    }
 }
 
 void Game::run() {
@@ -69,14 +72,7 @@ void Game::update() {
 void Game::render() {
     m_window.clear(sf::Color(0, 192, 222));  // 用纯色清除窗口
     if (m_state == GameState::Start) {
-        // 绘制开始界面
-        // 标题
-        sf::Text title = renderText(m_fontJH, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
-        // 开始按钮
-        
-
-        m_window.draw(m_bgShape);  // 绘制背景
-        m_window.draw(title);  // 绘制标题
+        renderStartMenu();
     } else if (m_state == GameState::Paused) {
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
@@ -88,23 +84,77 @@ void Game::render() {
     m_window.display();  // 显示渲染结果
 }
 
+void Game::renderStartMenu() {
+    // 绘制开始界面
+    // 标题
+    sf::Text title = renderText(m_fontJH, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
+    // 开始按钮
+    sf::Texture startButtonTexture("../../assets/images/start_button.png");
+    startButtonTexture.setSmooth(true);
+    sf::Sprite startButton(startButtonTexture);
+    startButton.setOrigin({startButtonTexture.getSize().x / 2.f, startButtonTexture.getSize().y / 2.f});
+    startButton.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y + 200});
+    startButton.setColor(sf::Color(195, 240, 247));
+    startButton.setScale({1.2f, 1.2f});
+    // 开始按钮阴影
+    sf::Sprite startButtonShadow = startButton;
+    startButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    startButtonShadow.move({0.f, 4.f});  // 向下偏移
+    // 开始 icon
+    sf::Texture startIconTexture("../../assets/images/start_icon.png");
+    startButtonTexture.setSmooth(true);
+    sf::Sprite startIcon(startIconTexture);
+    startIcon.setOrigin({startIconTexture.getSize().x / 2.f, startIconTexture.getSize().y / 2.f});
+    startIcon.setPosition({RENDER_CENTER_X - 75, RENDER_CENTER_Y + 200});
+    startIcon.setScale({0.9f, 0.9f});  // 缩小图标大小
+    // 开始游戏文字
+    sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
+
+    // 鼠标悬停变化
+    sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
+    float mouseDeltaX = mousePos.x - m_window.getSize().x / 2.f;
+    float mouseDeltaY = mousePos.y - m_window.getSize().y / 2.f;
+    float buttonDeltaY = startButton.getPosition().y - RENDER_CENTER_Y;
+    float btnWidth = startButtonTexture.getSize().x * 1.2f;
+    float btnHeight = startButtonTexture.getSize().y * 1.2f;
+    if (mouseDeltaX >= -btnWidth / 2.f && mouseDeltaX <= btnWidth / 2.f &&
+        mouseDeltaY >= buttonDeltaY - btnHeight / 2.f && mouseDeltaY <= buttonDeltaY + btnHeight / 2.f) {
+        startButton.setColor(sf::Color(255, 255, 255));  // 悬停时变色
+        startButtonShadow.move({0.f, 2.f});
+    }
+
+    m_window.draw(m_bgShape);  // 绘制背景
+    m_window.draw(title);  // 绘制标题
+    m_window.draw(startButtonShadow);  // 绘制开始按钮阴影
+    m_window.draw(startButton);  // 绘制开始按钮
+    m_window.draw(startIcon);  // 绘制开始图标
+    m_window.draw(startText);  // 绘制开始游戏文字
+}
+
 sf::Text Game::renderText(
         const sf::Font& font, 
         const std::string& content,
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCenter
+        const bool ifCenter,
+        const bool ifCovert
     ) {
-    sf::Text title(font);
-    title.setString(content);
-    title.setCharacterSize(size);
-    title.setFillColor(color);
-    if (ifCenter) {
-        title.setOrigin(title.getLocalBounds().size / 2.0f);
+    sf::Text text(font);
+    if (ifCovert) {
+        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+        std::wstring wideStr = converter.from_bytes(content);
+        text.setString(wideStr);
+    } else {
+        text.setString(content);
     }
-    title.setPosition(position);
-    return title;
+    text.setCharacterSize(size);
+    text.setFillColor(color);
+    if (ifCenter) {
+        text.setOrigin(text.getLocalBounds().size / 2.0f);
+    }
+    text.setPosition(position);
+    return text;
 }
 
 void Game::updateView() {
