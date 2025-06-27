@@ -8,6 +8,7 @@ Player::Player(sf::Vector2f position)
     // 设置精灵中心点和位置
     m_sprite.setOrigin({m_texture.getSize().x / 2.f, m_texture.getSize().y / 2.f});
     m_sprite.setPosition(position);
+    m_sprite.setScale({PLAYER_SCALE, PLAYER_SCALE});  // 设置缩放比例
 }
 
 void Player::update(float dt, const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize) {

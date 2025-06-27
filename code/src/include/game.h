@@ -40,6 +40,7 @@ private:
 
     void render();  // 渲染游戏内容
     void renderStartMenu();  // 渲染开始菜单
+    void renderPlayerAnimation();  // 渲染玩家动画
 
     /**
      * @brief 渲染文本
@@ -83,4 +84,7 @@ private:
     sf::Font m_fontAlmm;  // 阿里妈妈东方大楷
 
     Player m_player;  // 玩家对象
+
+    sf::Clock m_animClock;  // 动画时钟
+    int m_currentAnimFrame = 0; // 当前动画帧索引
 };

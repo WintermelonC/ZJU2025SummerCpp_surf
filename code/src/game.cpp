@@ -142,6 +142,8 @@ void Game::renderStartMenu() {
     startIcon.setScale({0.9f, 0.9f});  // 缩小图标大小
     // 开始游戏文字
     sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
+    // 绘制人物动画
+    renderPlayerAnimation();
 
     // 鼠标悬停变化
     sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
@@ -162,6 +164,30 @@ void Game::renderStartMenu() {
     m_window.draw(startButton);  // 绘制开始按钮
     m_window.draw(startIcon);  // 绘制开始图标
     m_window.draw(startText);  // 绘制开始游戏文字
+}
+
+void Game::renderPlayerAnimation() {
+    const std::vector<std::array<std::string, 3>> paths = m_player.getPaths();
+    const int count = paths.size() * 3;
+    const float animInterval = 0.08f;  // 动画间隔时间
+
+    // 每隔 animInterval 秒切换帧
+    if (m_animClock.getElapsedTime().asSeconds() >= animInterval) {
+        m_currentAnimFrame = (m_currentAnimFrame + 1) % count;  // 循环动画帧
+        m_animClock.restart();  // 重置动画时钟
+    }
+
+    sf::Texture texture;
+    if (texture.loadFromFile(paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3])) {
+        sf::Sprite sprite(texture);
+        sprite.setOrigin({texture.getSize().x / 2.f, texture.getSize().y / 2.f});
+        sprite.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y});
+        sprite.setScale({2.0f, 2.0f});
+        m_window.draw(sprite);
+    } else {
+        throw std::runtime_error("Failed to load player animation texture from " + 
+                                 paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3]);
+    }
 }
 
 sf::Text Game::renderText(
