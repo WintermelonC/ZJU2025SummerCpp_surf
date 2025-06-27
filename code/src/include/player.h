@@ -3,17 +3,19 @@
 #include <string>
 #include <array>
 #include <cmath>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include "utils.h"
 
 constexpr float ACCELERATION_1 = 5.0f;  // 默认加速度
 constexpr float ACCELERATION_2 = 10.0f;  // 增强加速度
-constexpr float MAX_SPEED_1 = 50.0f;  // 默认最大速度
-constexpr float MAX_SPEED_2 = 100.0f;  // 增强最大速度
+constexpr float MAX_SPEED_1 = 25.0f;  // 默认最大速度
+constexpr float MAX_SPEED_2 = 50.0f;  // 增强最大速度
 constexpr float X_SPEED_1 = 5.0f;  // X 速度 1
 constexpr float X_SPEED_2 = 10.0f;  // X 速度 2
-constexpr float ANGLE_1 = 15.0f;  // 角度 1
-constexpr float ANGLE_2 = 30.0f;  // 角度 2
+constexpr float ANGLE_1 = 20.0f;  // 角度 1
+constexpr float ANGLE_2 = 40.0f;  // 角度 2
+constexpr float PLAYER_SCALE = 2.0f;  // 玩家缩放比例
 
 enum class XState {
     CENTER,
@@ -25,19 +27,30 @@ enum class XState {
 
 class Player {
 public:
-    Player(sf::Vector2f position = {WINDOW_CENTER_X, WINDOW_CENTER_Y});
+    Player(sf::Vector2f position = {PLAYER_X, PLAYER_Y});
     ~Player() = default;
 
+    // 获取位置
     const sf::Vector2f getPosition() const { return m_sprite.getPosition(); }
+    // 获取精灵
     const sf::Sprite& getSprite() const { return m_sprite; }
+    // 获取玩家速度
     const sf::Vector2f& getVelocity() const { return m_velocity; }
+    // 获取玩家纹理路径
+    const std::vector<std::array<std::string, 3>> getPaths() const { 
+        return {m_left2Paths, m_left1Paths, m_centerPaths, m_right1Paths, m_right2Paths, 
+                m_right1Paths, m_centerPaths, m_left1Paths};
+    }
 
-    // 更新玩家速度
+    // 更新玩家状态
     void update(float dt, const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize);
 
 private:
+    // 更新 X 速度
     void updateXSpeed(const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize);
+    // 更新 Y 速度
     void updateYSpeed(float dt);
+    // 更新动画
     void updateAnimation(float dt);
 
 private:

@@ -4,9 +4,10 @@ Game::Game()
     : m_window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Surf Game"),
       m_view(sf::FloatRect({RENDER_CENTER_X, RENDER_CENTER_Y}, {WINDOW_WIDTH, WINDOW_HEIGHT})),
       m_mousePosition({0, 0}),
+      m_state(GameState::Start),
       m_bgTexture(m_bgPath),
       m_bgShape({RENDER_WIDTH, RENDER_HEIGHT}),
-      m_player({RENDER_CENTER_X, RENDER_CENTER_Y}) {
+      m_player({PLAYER_X, PLAYER_Y}) {
     // 初始化视图
     updateView();
     // 激活垂直同步
@@ -17,12 +18,20 @@ Game::Game()
     // 设置背景纹理和形状大小
     m_bgShape.setTexture(&m_bgTexture);
     m_bgShape.setTextureRect(sf::IntRect({0, 0}, {RENDER_WIDTH, RENDER_HEIGHT}));
+
+    // 加载字体
+    if (!m_fontJH.openFromFile(m_JHPath)) {
+        throw std::runtime_error("Failed to load font from " + m_JHPath);
+    }
+    if (!m_fontAlmm.openFromFile(m_almmPath)) {
+        throw std::runtime_error("Failed to load font from " + m_almmPath);
+    }
 }
 
 void Game::run() {
     while (m_window.isOpen()) {
         handleEvents();
-        if (m_isRunning) {
+        if (m_state == GameState::Playing) {
             update();
         }
         render();
@@ -37,12 +46,49 @@ void Game::handleEvents() {
         } else if (const auto* resized = event -> getIf<sf::Event::Resized>()) {
             // 窗口大小调整事件
             m_view.setSize(sf::Vector2f(resized -> size));
-        } else if (event->is<sf::Event::FocusLost>()) {
+            updateView();
+        } else if (event -> is<sf::Event::FocusLost>()) {
             // 窗口失去焦点事件
-            m_isRunning = false;  // 暂停游戏
-        } else if (event->is<sf::Event::FocusGained>()) {
+            if (m_state == GameState::Playing) {
+                m_state = GameState::Paused;  // 暂停游戏
+            }
+        } else if (event -> is<sf::Event::FocusGained>()) {
             // 窗口获得焦点事件
-            m_isRunning = true;  // 恢复游戏
+            if (m_state == GameState::Paused) {
+                m_state = GameState::Playing;  // 恢复游戏
+            }
+        } else if (const auto* mouseButton = event -> getIf<sf::Event::MouseButtonPressed>()) {
+            // 鼠标点击
+            if (mouseButton -> button == sf::Mouse::Button::Left) {
+                // 左键点击
+                if (m_state == GameState::Start) {
+                    handleMouseClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
+                }
+            }
+        }
+    }
+}
+
+void Game::handleMouseClick(const sf::Vector2f& mousePos) {
+    // 将鼠标坐标转换为视图坐标
+    sf::Vector2f worldPos = m_window.mapPixelToCoords(sf::Vector2i(mousePos));
+    
+    // 检查是否点击了开始按钮
+    if (m_state == GameState::Start) {
+        // 开始按钮的位置和大小
+        float buttonX = RENDER_CENTER_X;
+        float buttonY = RENDER_CENTER_Y + 200;
+        float buttonWidth = 180.0f * START_BUTTON_SCALE;  // 考虑缩放
+        float buttonHeight = 60.0f * START_BUTTON_SCALE;
+        
+        // 检查点击是否在按钮范围内
+        if (worldPos.x >= buttonX - buttonWidth / 2 && 
+            worldPos.x <= buttonX + buttonWidth / 2 &&
+            worldPos.y >= buttonY - buttonHeight / 2 && 
+            worldPos.y <= buttonY + buttonHeight / 2) {
+            // 点击了开始按钮，切换到游戏状态
+            m_state = GameState::Playing;
+            m_clock.restart();  // 重置游戏时钟
         }
     }
 }
@@ -57,14 +103,122 @@ void Game::update() {
 
 void Game::render() {
     m_window.clear(sf::Color(0, 192, 222));  // 用纯色清除窗口
-    m_window.draw(m_bgShape);  // 绘制背景
-    m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+    if (m_state == GameState::Start) {
+        renderStartMenu();
+    } else if (m_state == GameState::Paused) {
+        m_window.draw(m_bgShape);  // 绘制背景
+        m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+    } else if (m_state == GameState::Playing) {
+        m_window.draw(m_bgShape);  // 绘制背景
+        m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+    } else if (m_state == GameState::GameOver) {
+
+    }
     m_window.display();  // 显示渲染结果
 }
 
+void Game::renderStartMenu() {
+    // 绘制开始界面
+    // 标题
+    sf::Text title = renderText(m_fontJH, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
+    // 开始按钮
+    sf::Texture startButtonTexture("../../assets/images/start_button.png");
+    startButtonTexture.setSmooth(true);
+    sf::Sprite startButton(startButtonTexture);
+    startButton.setOrigin({startButtonTexture.getSize().x / 2.f, startButtonTexture.getSize().y / 2.f});
+    startButton.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y + 200});
+    startButton.setColor(sf::Color(195, 240, 247));
+    startButton.setScale({START_BUTTON_SCALE, START_BUTTON_SCALE});
+    // 开始按钮阴影
+    sf::Sprite startButtonShadow = startButton;
+    startButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    startButtonShadow.move({0.f, 4.f});  // 向下偏移
+    // 开始 icon
+    sf::Texture startIconTexture("../../assets/images/start_icon.png");
+    startButtonTexture.setSmooth(true);
+    sf::Sprite startIcon(startIconTexture);
+    startIcon.setOrigin({startIconTexture.getSize().x / 2.f, startIconTexture.getSize().y / 2.f});
+    startIcon.setPosition({RENDER_CENTER_X - 75, RENDER_CENTER_Y + 200});
+    startIcon.setScale({0.9f, 0.9f});  // 缩小图标大小
+    // 开始游戏文字
+    sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
+    // 绘制人物动画
+    renderPlayerAnimation();
+
+    // 鼠标悬停变化
+    sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
+    float mouseDeltaX = mousePos.x - m_window.getSize().x / 2.f;
+    float mouseDeltaY = mousePos.y - m_window.getSize().y / 2.f;
+    float buttonDeltaY = startButton.getPosition().y - RENDER_CENTER_Y;
+    float btnWidth = startButtonTexture.getSize().x * START_BUTTON_SCALE;
+    float btnHeight = startButtonTexture.getSize().y * START_BUTTON_SCALE;
+    if (mouseDeltaX >= -btnWidth / 2.f && mouseDeltaX <= btnWidth / 2.f &&
+        mouseDeltaY >= buttonDeltaY - btnHeight / 2.f && mouseDeltaY <= buttonDeltaY + btnHeight / 2.f) {
+        startButton.setColor(sf::Color(255, 255, 255));  // 悬停时变色
+        startButtonShadow.move({0.f, 2.f});
+    }
+
+    m_window.draw(m_bgShape);  // 绘制背景
+    m_window.draw(title);  // 绘制标题
+    m_window.draw(startButtonShadow);  // 绘制开始按钮阴影
+    m_window.draw(startButton);  // 绘制开始按钮
+    m_window.draw(startIcon);  // 绘制开始图标
+    m_window.draw(startText);  // 绘制开始游戏文字
+}
+
+void Game::renderPlayerAnimation() {
+    const std::vector<std::array<std::string, 3>> paths = m_player.getPaths();
+    const int count = paths.size() * 3;
+    const float animInterval = 0.08f;  // 动画间隔时间
+
+    // 每隔 animInterval 秒切换帧
+    if (m_animClock.getElapsedTime().asSeconds() >= animInterval) {
+        m_currentAnimFrame = (m_currentAnimFrame + 1) % count;  // 循环动画帧
+        m_animClock.restart();  // 重置动画时钟
+    }
+
+    sf::Texture texture;
+    if (texture.loadFromFile(paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3])) {
+        sf::Sprite sprite(texture);
+        sprite.setOrigin({texture.getSize().x / 2.f, texture.getSize().y / 2.f});
+        sprite.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y});
+        sprite.setScale({2.0f, 2.0f});
+        m_window.draw(sprite);
+    } else {
+        throw std::runtime_error("Failed to load player animation texture from " + 
+                                 paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3]);
+    }
+}
+
+sf::Text Game::renderText(
+        const sf::Font& font, 
+        const std::string& content,
+        const int size,
+        const sf::Color color,
+        const sf::Vector2f position,
+        const bool ifCenter,
+        const bool ifCovert
+    ) {
+    sf::Text text(font);
+    if (ifCovert) {
+        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+        std::wstring wideStr = converter.from_bytes(content);
+        text.setString(wideStr);
+    } else {
+        text.setString(content);
+    }
+    text.setCharacterSize(size);
+    text.setFillColor(color);
+    if (ifCenter) {
+        text.setOrigin(text.getLocalBounds().size / 2.0f);
+    }
+    text.setPosition(position);
+    return text;
+}
+
 void Game::updateView() {
-    // 更新视图中心为玩家位置
-    m_view.setCenter(m_player.getPosition());
+    // 更新视图中心为渲染中心
+    m_view.setCenter({RENDER_CENTER_X, RENDER_CENTER_Y});
     m_window.setView(m_view);
 }
 
