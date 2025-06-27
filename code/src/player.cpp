@@ -1,7 +1,7 @@
 #include "include/player.h"
 
 Player::Player(sf::Vector2f position)
-    : m_sprite(Utils::renderSprite(Textures::player_center_1, sf::Color::White, position, {PLAYER_SCALE, PLAYER_SCALE}, true, false)),
+    : m_sprite(Utils::renderSprite(Textures::player_center_1, sf::Color::White, position, {PLAYER_SCALE, PLAYER_SCALE}, false)),
       m_velocity({0.f, 0.f}),
       m_xState(XState::CENTER) {}
 

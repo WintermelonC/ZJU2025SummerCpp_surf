@@ -38,7 +38,7 @@ public:
 
 private:
     void handleEvents();  // 处理事件
-    void handleMouseClick(const sf::Vector2f& mousePos);  // 处理鼠标点击事件
+    void handleMouseLeftClick(const sf::Vector2f& mousePos);  // 处理鼠标左键点击事件
 
     void update();  // 更新游戏状态
     void updateView();  // 更新视图
@@ -46,6 +46,7 @@ private:
 
     void render();  // 渲染游戏内容
     void renderStartMenu();  // 渲染开始菜单
+    void renderPausedMenu();  // 渲染暂停菜单
     void renderPlayerAnimation();  // 渲染玩家动画
 
 private:

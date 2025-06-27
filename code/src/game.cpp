@@ -51,15 +51,27 @@ void Game::handleEvents() {
             // 鼠标点击
             if (mouseButton -> button == sf::Mouse::Button::Left) {
                 // 左键点击
-                if (m_state == GameState::Start) {
-                    handleMouseClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
+                handleMouseLeftClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
+            }
+        }
+
+        if (const auto* keyPressed = event -> getIf<sf::Event::KeyPressed>()) {
+            // 键盘按下事件
+            if (keyPressed -> code == sf::Keyboard::Key::Space) {
+                // 空格
+                if (m_state == GameState::Playing) {
+                    m_state = GameState::Paused;  // 暂停游戏
+                } else if (m_state == GameState::Paused) {
+                    m_state = GameState::Playing;  // 恢复游戏
+                } else if (m_state == GameState::Start) {
+                    m_state = GameState::Playing;  // 从开始状态进入游戏
                 }
             }
         }
     }
 }
 
-void Game::handleMouseClick(const sf::Vector2f& mousePos) {
+void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
     // 将鼠标坐标转换为视图坐标
     sf::Vector2f worldPos = m_window.mapPixelToCoords(sf::Vector2i(mousePos));
     
@@ -96,8 +108,7 @@ void Game::render() {
     if (m_state == GameState::Start) {
         renderStartMenu();
     } else if (m_state == GameState::Paused) {
-        m_window.draw(m_bgShape);  // 绘制背景
-        m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+        renderPausedMenu();
     } else if (m_state == GameState::Playing) {
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
@@ -109,15 +120,19 @@ void Game::render() {
 
 void Game::renderStartMenu() {
     // 标题
-    sf::Text title = Utils::renderText(Fonts::MSJHBD, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
+    sf::Text title = Utils::renderText(
+        Fonts::MSJHBD, 
+        "LET'S SURF", 
+        50, 
+        sf::Color::Black, 
+        {RENDER_CENTER_X, RENDER_CENTER_Y - 200}
+    );
     // 开始按钮
     sf::Sprite startButton = Utils::renderSprite(
         Textures::start_button,
         sf::Color(195, 240, 247),
         {RENDER_CENTER_X, RENDER_CENTER_Y + 200},
-        {START_BUTTON_SCALE, START_BUTTON_SCALE},
-        true,
-        true
+        {START_BUTTON_SCALE, START_BUTTON_SCALE}
     );
     // 开始按钮阴影
     sf::Sprite startButtonShadow = startButton;
@@ -128,37 +143,91 @@ void Game::renderStartMenu() {
         Textures::start_icon,
         sf::Color::White,
         {RENDER_CENTER_X - 75, RENDER_CENTER_Y + 200},
-        {0.9f, 0.9f},
-        true,
-        true
+        {0.9f, 0.9f}
     );
     // 开始游戏文字
-    sf::Text startText = Utils::renderText(Fonts::almmdfdk, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
+    sf::Text startText = Utils::renderText(
+        Fonts::almmdfdk, 
+        "开始游戏", 
+        35, 
+        sf::Color::Black, 
+        {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, 
+        true
+    );
+    // 鼠标悬停变化
+    Utils::mouseHoverButton(
+        startButton, 
+        startButtonShadow, 
+        m_window,
+        {0.f, 0.3f}
+    );
+
     // 绘制人物动画
     renderPlayerAnimation();
-
-    // 鼠标悬停变化
-    sf::Vector2i mousePos = sf::Mouse::getPosition(m_window);
-    sf::Vector2f worldPos = m_window.mapPixelToCoords(mousePos);
-    float buttonX = startButton.getPosition().x;
-    float buttonY = startButton.getPosition().y;
-    float buttonWidth = START_BUTTON_WIDTH * START_BUTTON_SCALE;
-    float buttonHeight = START_BUTTON_HEIGHT * START_BUTTON_SCALE;
-    if (worldPos.x >= buttonX - buttonWidth / 2 && 
-        worldPos.x <= buttonX + buttonWidth / 2 &&
-        worldPos.y >= buttonY - buttonHeight / 2 && 
-        worldPos.y <= buttonY + buttonHeight / 2) {
-        // 鼠标悬停在按钮上，改变按钮颜色
-        startButton.setColor(sf::Color(255, 255, 255));  // 改变颜色
-        startButtonShadow.move({0.f, 3.f});
-    }
-
     m_window.draw(m_bgShape);  // 绘制背景
     m_window.draw(title);  // 绘制标题
     m_window.draw(startButtonShadow);  // 绘制开始按钮阴影
     m_window.draw(startButton);  // 绘制开始按钮
     m_window.draw(startIcon);  // 绘制开始图标
     m_window.draw(startText);  // 绘制开始游戏文字
+}
+
+void Game::renderPausedMenu() {
+    // 半透明遮罩
+    sf::RectangleShape filter({RENDER_WIDTH, RENDER_HEIGHT});
+    filter.setFillColor(sf::Color(255, 255, 255, 30));
+    // 暂停文字
+    sf::Text pausedText = Utils::renderText(
+        Fonts::almmdfdk, 
+        "已暂停", 
+        75, 
+        sf::Color::Black, 
+        {RENDER_CENTER_X, RENDER_CENTER_Y - 400}, 
+        true
+    );
+    // 继续游戏按钮
+    sf::Sprite continueButton = Utils::renderSprite(
+        Textures::start_button,
+        sf::Color(195, 240, 247),
+        {RENDER_CENTER_X, RENDER_CENTER_Y + 300},
+        {START_BUTTON_SCALE, START_BUTTON_SCALE}
+    );
+    // 按钮阴影
+    sf::Sprite continueButtonShadow = continueButton;
+    continueButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    continueButtonShadow.move({0.f, 4.f});  // 向下偏移
+    // icon
+    sf::Sprite continueIcon = Utils::renderSprite(
+        Textures::start_icon,
+        sf::Color::White,
+        {RENDER_CENTER_X - 75, RENDER_CENTER_Y + 300},
+        {0.9f, 0.9f}
+    );
+    // 继续游戏文字
+    sf::Text continueText = Utils::renderText(
+        Fonts::almmdfdk, 
+        "继续游戏", 
+        35, 
+        sf::Color::Black, 
+        {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 295}, 
+        true
+    );
+    // 鼠标悬停变化
+    Utils::mouseHoverButton(
+        continueButton, 
+        continueButtonShadow, 
+        m_window,
+        {0.f, 0.3f}
+    );
+
+    m_window.draw(m_bgShape);  // 绘制背景
+    m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+    m_window.draw(filter);  // 绘制半透明遮罩
+    m_window.draw(pausedText);  // 绘制暂停文字
+    m_window.draw(continueButtonShadow);  // 绘制继续按钮阴影
+    m_window.draw(continueButton);  // 绘制继续按钮
+    m_window.draw(continueIcon);  // 绘制继续图标
+    m_window.draw(continueText);  // 绘制继续游戏文字
 }
 
 void Game::renderPlayerAnimation() {
@@ -177,7 +246,6 @@ void Game::renderPlayerAnimation() {
         sf::Color::White,
         {RENDER_CENTER_X, RENDER_CENTER_Y},
         {2.0f, 2.0f},
-        true,
         false
     );
     m_window.draw(sprite);  // 绘制玩家动画

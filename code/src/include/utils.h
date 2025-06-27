@@ -58,8 +58,8 @@ public:
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCenter = true,
-        const bool ifCovert = false
+        const bool ifCovert = false,
+        const bool ifCenter = true
     );
 
     /**
@@ -79,8 +79,16 @@ public:
         const sf::Color color,
         const sf::Vector2f position,
         const sf::Vector2f scale = {1.0f, 1.0f},
-        const bool ifCenter = true,
-        const bool ifSmooth = true
+        const bool ifSmooth = true,
+        const bool ifCenter = true
+    );
+
+    static void mouseHoverButton(
+        sf::Sprite& button, 
+        sf::Sprite& buttonShadow, 
+        const sf::RenderWindow& window,
+        const sf::Vector2f offset = {0.f, 0.f},
+        const sf::Color color = {255, 255, 255}
     );
 
     static void loadFont(const Fonts font);  // 加载字体
