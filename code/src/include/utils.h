@@ -1,14 +1,106 @@
+/**
+ * @file utils.h
+ * @brief 工具类头文件
+ * 
+ * 管理字体、纹理等资源
+ * 提供一些通用的工具函数，如渲染文本、渲染精灵等
+ */
+
 #pragma once
+
+#include <string>
+#include <map>
+#include <SFML/Graphics.hpp>
 
 constexpr int RENDER_WIDTH = 2560;  // 渲染宽度
 constexpr int RENDER_HEIGHT = 1440;  // 渲染高度
-constexpr int WINDOW_WIDTH = 540;  // 窗口宽度
-constexpr int WINDOW_HEIGHT = 960;  // 窗口高度
 constexpr int RENDER_CENTER_X = RENDER_WIDTH / 2;  // 渲染中心 X 坐标
 constexpr int RENDER_CENTER_Y = RENDER_HEIGHT / 2;  // 渲染中心 Y 坐标
-constexpr int WINDOW_CENTER_X = WINDOW_WIDTH / 2;  // 窗口中心 X 坐标
-constexpr int WINDOW_CENTER_Y = WINDOW_HEIGHT / 2;  // 窗口中心 Y 坐标
-constexpr int PLAYER_WIDTH = 64;  // 玩家宽度
-constexpr int PLAYER_HEIGHT = 96;  // 玩家高度
-constexpr int PLAYER_X = RENDER_CENTER_X;  // 玩家初始 X 坐标
-constexpr int PLAYER_Y = RENDER_HEIGHT / 5 * 2;  // 玩家初始 Y 坐标
+
+enum class Fonts {
+    MSJHBD,
+    almmdfdk
+};
+
+enum class Textures {
+    water,
+    start_button,
+    start_icon,
+    player_center_1, player_center_2, player_center_3,
+    player_left_11, player_left_12, player_left_13,
+    player_left_21, player_left_22, player_left_23,
+    player_right_11, player_right_12, player_right_13,
+    player_right_21, player_right_22, player_right_23,
+};
+
+class Utils {
+public:
+    // 释放资源
+    static void clear();
+
+    /**
+     * @brief 渲染文本
+     * 
+     * @param font 字体对象
+     * @param content 文本内容
+     * @param size 字体大小
+     * @param color 文本颜色
+     * @param position 文本位置
+     * @param ifCenter 是否将 Origin 设置为中心
+     * @param ifCovert 是否转换为宽文本
+     * @return 渲染后的文本对象
+     * 
+     * @warning 如果为中文字符，必须将 ifCovert 设置为 true
+     */
+    static sf::Text renderText(
+        const Fonts font,
+        const std::string& content,
+        const int size,
+        const sf::Color color,
+        const sf::Vector2f position,
+        const bool ifCovert = false,
+        const bool ifCenter = true
+    );
+
+    /**
+     * @brief 渲染精灵
+     * 
+     * @param path 纹理路径
+     * @param color 颜色
+     * @param position 位置
+     * @param scale 缩放比例
+     * @param ifCenter 是否将 Origin 设置为中心
+     * @param ifSmooth 是否平滑纹理
+     * 
+     * @warning 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
+     */
+    static sf::Sprite renderSprite(
+        const Textures texture,
+        const sf::Color color,
+        const sf::Vector2f position,
+        const sf::Vector2f scale = {1.0f, 1.0f},
+        const bool ifSmooth = true,
+        const bool ifCenter = true
+    );
+
+    static void mouseHoverButton(
+        sf::Sprite& button, 
+        sf::Sprite& buttonShadow, 
+        const sf::RenderWindow& window,
+        const sf::Vector2f offset = {0.f, 0.f},
+        const sf::Color color = {255, 255, 255}
+    );
+
+    static void loadFont(const Fonts font);  // 加载字体
+    static void loadTexture(const Textures texture);  // 加载纹理
+
+    static sf::Font* getFont(const Fonts font);  // 获取字体
+    static sf::Texture* getTexture(const Textures texture);  // 获取纹理
+
+private:
+    static std::map<Fonts, std::string> m_fontPaths;  // 字体路径列表
+    static std::map<Textures, std::string> m_texturePaths;  // 纹理路径列表
+
+    static std::map<Fonts, sf::Font*> m_fonts;  // 字体缓存
+    static std::map<Textures, sf::Texture*> m_textures;  // 纹理缓存
+};
