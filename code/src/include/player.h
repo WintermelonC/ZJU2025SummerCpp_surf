@@ -22,7 +22,8 @@ constexpr int PLAYER_WIDTH = 64;  // 玩家宽度
 constexpr int PLAYER_HEIGHT = 96;  // 玩家高度
 constexpr int PLAYER_X = RENDER_CENTER_X;  // 玩家初始 X 坐标
 constexpr int PLAYER_Y = RENDER_HEIGHT / 5 * 2;  // 玩家初始 Y 坐标
-constexpr int PLAYER_HP = 3;  // 玩家初始生命值
+constexpr int PLAYER_HP = 3;  // 玩家最大生命值
+constexpr int PLAYER_POWER = 2;  // 玩家最大能量值
 
 enum class XState {
     Center,
@@ -46,6 +47,15 @@ public:
     const sf::Vector2f& getVelocity() const { return m_velocity; }
     // 获取玩家纹理路径
     const std::vector<Textures> getPaths() const;
+    // 获取玩家生命值
+    const int getHP() const { return m_hp; }
+    // 获取玩家能量值
+    const int getPower() const { return m_power; }
+
+    // 设置玩家生命值
+    void setHP(int hp) { m_hp = hp; }
+    // 设置玩家能量值
+    void setPower(int power) { m_power = power; }
 
     // 更新玩家状态
     void update(float dt, const sf::RenderWindow& window);
@@ -64,6 +74,7 @@ private:
     sf::Sprite m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
     int m_hp = PLAYER_HP;  // 玩家生命值
+    int m_power = 0;  // 玩家能量值
     float m_acceleration = ACCELERATION_1;  // 当前加速度
     float m_maxSpeed = MAX_SPEED_1;  // 当前最大速度
     

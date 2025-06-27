@@ -85,7 +85,7 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
         float buttonWidth = START_BUTTON_WIDTH * START_BUTTON_SCALE;  // 考虑缩放
         float buttonHeight = START_BUTTON_HEIGHT * START_BUTTON_SCALE;
         // 检查点击是否在按钮范围内
-        if (ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+        if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
             m_state = GameState::Playing;  // 切换到游戏状态
             m_clock.restart();  // 重置时钟
         }
@@ -96,7 +96,7 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
         float buttonWidth = CONTINUE_BUTTON_WIDTH * CONTINUE_BUTTON_SCALE;  // 考虑缩放
         float buttonHeight = CONTINUE_BUTTON_HEIGHT * CONTINUE_BUTTON_SCALE;
         // 检查点击是否在按钮范围内
-        if (ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+        if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
             m_state = GameState::Playing;  // 切换到游戏状态
             m_clock.restart();  // 重置时钟
         }
@@ -105,7 +105,7 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
         buttonWidth = RETURN_BUTTON_WIDTH * RETURN_BUTTON_SCALE;  // 考虑缩放
         buttonHeight = RETURN_BUTTON_HEIGHT * RETURN_BUTTON_SCALE;
         // 检查点击是否在返回按钮范围内
-        if (ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+        if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
             m_state = GameState::Start;  // 切换到开始状态
             m_player.initial();
             m_clock.restart();  // 重置时钟
@@ -125,9 +125,12 @@ void Game::render() {
     m_window.clear(sf::Color(0, 192, 222));  // 用纯色清除窗口
     if (m_state == GameState::Start) {
         renderStartMenu();
+        renderPlayerState();
     } else if (m_state == GameState::Paused) {
         renderPausedMenu();
+        renderPlayerState();
     } else if (m_state == GameState::Playing) {
+        renderPlayerState();
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
     } else if (m_state == GameState::GameOver) {
@@ -324,17 +327,37 @@ void Game::updateBackground() {
     m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, {RENDER_WIDTH, RENDER_HEIGHT}));
 }
 
-bool Game::ifMouseOnButton(
-    const sf::Vector2f& mousePos, 
-    float buttonX, 
-    float buttonY, 
-    float buttonWidth, 
-    float buttonHeight
-    ) const {
-    return (
-        mousePos.x >= buttonX - buttonWidth / 2 && 
-        mousePos.x <= buttonX + buttonWidth / 2 &&
-        mousePos.y >= buttonY - buttonHeight / 2 && 
-        mousePos.y <= buttonY + buttonHeight / 2
-    );
+void Game::renderPlayerState() {
+    const int hp = m_player.getHP();
+    const int power = m_player.getPower();
+    std::vector<sf::Sprite> hearts;
+    std::vector<sf::Sprite> powers;
+
+    for (int i = 1; i <= PLAYER_HP; i++) {
+        sf::Sprite heart = Utils::renderSprite(
+            (i <= hp) ? Textures::heart_1 : Textures::heart_2,
+            sf::Color::White,
+            {static_cast<float>(RENDER_CENTER_X - HEART_X_OFFSET + i * 50), 
+             static_cast<float>(RENDER_CENTER_Y - m_window.getSize().y / 2 + 50)},
+            {2.0f, 2.0f},
+            false
+        );
+        sf::Sprite powerIcon = Utils::renderSprite(
+            (i <= power) ? Textures::power_1 : Textures::power_2,
+            sf::Color::White,
+            {static_cast<float>(RENDER_CENTER_X + POWER_X_OFFSET + i * 50), 
+             static_cast<float>(RENDER_CENTER_Y - m_window.getSize().y / 2 + 50)},
+            {2.0f, 2.0f},
+            false
+        );
+        hearts.push_back(heart);
+        powers.push_back(powerIcon);
+    }
+
+    for (const auto& heart : hearts) {
+        m_window.draw(heart);  // 绘制生命值图标
+    }
+    for (const auto& power : powers) {
+        m_window.draw(power);  // 绘制能量值图标
+    }
 }

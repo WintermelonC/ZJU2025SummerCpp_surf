@@ -31,7 +31,8 @@ enum class Textures {
     player_left_21, player_left_22, player_left_23,
     player_right_11, player_right_12, player_right_13,
     player_right_21, player_right_22, player_right_23,
-    player_stop_1, player_stop_2, player_stop_3
+    player_stop_1, player_stop_2, player_stop_3,
+    heart_1, heart_2, power_1, power_2
 };
 
 class Utils {
@@ -92,11 +93,20 @@ public:
         const sf::Color color = {255, 255, 255}
     );
 
-    static void loadFont(const Fonts font);  // 加载字体
-    static void loadTexture(const Textures texture);  // 加载纹理
+    static bool ifMouseOnButton(
+        const sf::Vector2f& mousePos, 
+        float buttonX, 
+        float buttonY, 
+        float buttonWidth, 
+        float buttonHeight
+    );
 
     static sf::Font* getFont(const Fonts font);  // 获取字体
     static sf::Texture* getTexture(const Textures texture);  // 获取纹理
+
+private:
+    static void loadFont(const Fonts font);  // 加载字体
+    static void loadTexture(const Textures texture);  // 加载纹理
 
 private:
     static std::map<Fonts, std::string> m_fontPaths;  // 字体路径列表

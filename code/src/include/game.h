@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "utils.h"
@@ -33,6 +34,8 @@ constexpr int RETURN_BUTTON_HEIGHT = 60;  // 返回按钮高度
 constexpr int RETURN_BUTTON_X = RENDER_CENTER_X;  // 返回按钮 X 坐标
 constexpr int RETURN_BUTTON_Y = RENDER_CENTER_Y + 300;  // 返回按钮 Y 坐标
 constexpr float RETURN_BUTTON_SCALE = 0.8f;  // 返回按钮缩放比例
+constexpr int HEART_X_OFFSET = 300;  // 生命值图标 X 坐标偏移量
+constexpr int POWER_X_OFFSET = 100;  // 能量值图标 X 坐标偏移量
 
 enum class GameState {
     Start,  // 主菜单
@@ -60,14 +63,7 @@ private:
     void renderStartMenu();  // 渲染开始菜单
     void renderPausedMenu();  // 渲染暂停菜单
     void renderPlayerAnimation();  // 渲染玩家动画
-
-    bool ifMouseOnButton(
-        const sf::Vector2f& mousePos, 
-        float buttonX, 
-        float buttonY, 
-        float buttonWidth, 
-        float buttonHeight
-    ) const;
+    void renderPlayerState();  // 渲染玩家状态（生命值、能量等）
 
 private:
     sf::RenderWindow m_window;  // 窗口

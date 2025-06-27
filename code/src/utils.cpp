@@ -25,7 +25,11 @@ std::map<Textures, std::string> Utils::m_texturePaths = {
     {Textures::player_right_23, "../../assets/images/player/player_right_23.png"},
     {Textures::player_stop_1, "../../assets/images/player/player_stop_1.png"},
     {Textures::player_stop_2, "../../assets/images/player/player_stop_2.png"},
-    {Textures::player_stop_3, "../../assets/images/player/player_stop_3.png"}
+    {Textures::player_stop_3, "../../assets/images/player/player_stop_3.png"},
+    {Textures::heart_1, "../../assets/images/player/heart_1.png"},
+    {Textures::heart_2, "../../assets/images/player/heart_2.png"},
+    {Textures::power_1, "../../assets/images/player/power_1.png"},
+    {Textures::power_2, "../../assets/images/player/power_2.png"}
 };
 
 std::map<Textures, sf::Texture*> Utils::m_textures;
@@ -133,6 +137,21 @@ void Utils::loadTexture(const Textures texture) {
         throw std::runtime_error("Failed to load texture from " + path);
     }
     m_textures[texture] = texturePtr;
+}
+
+bool Utils::ifMouseOnButton(
+    const sf::Vector2f& mousePos, 
+    float buttonX, 
+    float buttonY, 
+    float buttonWidth, 
+    float buttonHeight
+    ) {
+    return (
+        mousePos.x >= buttonX - buttonWidth / 2 && 
+        mousePos.x <= buttonX + buttonWidth / 2 &&
+        mousePos.y >= buttonY - buttonHeight / 2 && 
+        mousePos.y <= buttonY + buttonHeight / 2
+    );
 }
 
 sf::Font* Utils::getFont(const Fonts font) {

@@ -21,9 +21,9 @@ const std::vector<Textures> Player::getPaths() const {
 void Player::update(float dt, const sf::RenderWindow& window) {
     const sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
     const sf::Vector2f worldPos = window.mapPixelToCoords(mousePosition);
-    float deltaX = worldPos.x - m_sprite.getPosition().x;
-    float deltaY = worldPos.y - m_sprite.getPosition().y;
-    sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
+    const float deltaX = worldPos.x - m_sprite.getPosition().x;
+    const float deltaY = worldPos.y - m_sprite.getPosition().y;
+    const sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
     if (deltaY >= 0.0f) {
         if (angle.asDegrees() >= ANGLE_2 || angle.asDegrees() <= -ANGLE_2) {
             m_xState = (angle.asDegrees() >= 0.f) ? XState::Right2 : XState::Left2;
@@ -45,6 +45,7 @@ void Player::initial() {
     m_velocity = {0.f, 0.f};
     m_acceleration = ACCELERATION_1;
     m_hp = PLAYER_HP;
+    m_power = 0;
     m_maxSpeed = MAX_SPEED_1;
     m_xState = XState::Center;
     m_currentFrame = 0;
