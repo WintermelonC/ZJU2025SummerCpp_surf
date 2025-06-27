@@ -3,9 +3,7 @@
 Game::Game()
     : m_window(sf::VideoMode({WINDOW_WIDTH, WINDOW_HEIGHT}), "Surf Game"),
       m_view(sf::FloatRect({RENDER_CENTER_X, RENDER_CENTER_Y}, {WINDOW_WIDTH, WINDOW_HEIGHT})),
-      m_mousePosition({0, 0}),
       m_state(GameState::Start),
-      m_bgTexture(m_bgPath),
       m_bgShape({RENDER_WIDTH, RENDER_HEIGHT}),
       m_player({PLAYER_X, PLAYER_Y}) {
     // 初始化视图
@@ -13,19 +11,11 @@ Game::Game()
     // 激活垂直同步
     m_window.setVerticalSyncEnabled(true);
 
-    // 纹理重复平铺
-    m_bgTexture.setRepeated(true);
     // 设置背景纹理和形状大小
-    m_bgShape.setTexture(&m_bgTexture);
+    sf::Texture* bgTexture = Utils::getTexture(Textures::water);
+    bgTexture -> setRepeated(true);  // 设置纹理重复
+    m_bgShape.setTexture(bgTexture);
     m_bgShape.setTextureRect(sf::IntRect({0, 0}, {RENDER_WIDTH, RENDER_HEIGHT}));
-
-    // 加载字体
-    if (!m_fontJH.openFromFile(m_JHPath)) {
-        throw std::runtime_error("Failed to load font from " + m_JHPath);
-    }
-    if (!m_fontAlmm.openFromFile(m_almmPath)) {
-        throw std::runtime_error("Failed to load font from " + m_almmPath);
-    }
 }
 
 void Game::run() {
@@ -120,28 +110,31 @@ void Game::render() {
 void Game::renderStartMenu() {
     // 绘制开始界面
     // 标题
-    sf::Text title = renderText(m_fontJH, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
+    sf::Text title = Utils::renderText(Fonts::MSJHBD, "LET'S SURF", 50, sf::Color::Black, {RENDER_CENTER_X, RENDER_CENTER_Y - 200});
     // 开始按钮
-    sf::Texture startButtonTexture("../../assets/images/start_button.png");
-    startButtonTexture.setSmooth(true);
-    sf::Sprite startButton(startButtonTexture);
-    startButton.setOrigin({startButtonTexture.getSize().x / 2.f, startButtonTexture.getSize().y / 2.f});
-    startButton.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y + 200});
-    startButton.setColor(sf::Color(195, 240, 247));
-    startButton.setScale({START_BUTTON_SCALE, START_BUTTON_SCALE});
+    sf::Sprite startButton = Utils::renderSprite(
+        Textures::start_button,
+        sf::Color(195, 240, 247),
+        {RENDER_CENTER_X, RENDER_CENTER_Y + 200},
+        {START_BUTTON_SCALE, START_BUTTON_SCALE},
+        true,
+        true
+    );
     // 开始按钮阴影
     sf::Sprite startButtonShadow = startButton;
     startButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
     startButtonShadow.move({0.f, 4.f});  // 向下偏移
     // 开始 icon
-    sf::Texture startIconTexture("../../assets/images/start_icon.png");
-    startButtonTexture.setSmooth(true);
-    sf::Sprite startIcon(startIconTexture);
-    startIcon.setOrigin({startIconTexture.getSize().x / 2.f, startIconTexture.getSize().y / 2.f});
-    startIcon.setPosition({RENDER_CENTER_X - 75, RENDER_CENTER_Y + 200});
-    startIcon.setScale({0.9f, 0.9f});  // 缩小图标大小
+    sf::Sprite startIcon = Utils::renderSprite(
+        Textures::start_icon,
+        sf::Color::White,
+        {RENDER_CENTER_X - 75, RENDER_CENTER_Y + 200},
+        {0.9f, 0.9f},
+        true,
+        true
+    );
     // 开始游戏文字
-    sf::Text startText = renderText(m_fontAlmm, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
+    sf::Text startText = Utils::renderText(Fonts::almmdfdk, "开始游戏", 35, sf::Color::Black, {RENDER_CENTER_X + 20, RENDER_CENTER_Y + 195}, true, true);
     // 绘制人物动画
     renderPlayerAnimation();
 
@@ -150,12 +143,12 @@ void Game::renderStartMenu() {
     float mouseDeltaX = mousePos.x - m_window.getSize().x / 2.f;
     float mouseDeltaY = mousePos.y - m_window.getSize().y / 2.f;
     float buttonDeltaY = startButton.getPosition().y - RENDER_CENTER_Y;
-    float btnWidth = startButtonTexture.getSize().x * START_BUTTON_SCALE;
-    float btnHeight = startButtonTexture.getSize().y * START_BUTTON_SCALE;
+    float btnWidth = startButton.getTexture().getSize().x * START_BUTTON_SCALE;
+    float btnHeight = startButton.getTexture().getSize().y * START_BUTTON_SCALE;
     if (mouseDeltaX >= -btnWidth / 2.f && mouseDeltaX <= btnWidth / 2.f &&
         mouseDeltaY >= buttonDeltaY - btnHeight / 2.f && mouseDeltaY <= buttonDeltaY + btnHeight / 2.f) {
         startButton.setColor(sf::Color(255, 255, 255));  // 悬停时变色
-        startButtonShadow.move({0.f, 2.f});
+        startButtonShadow.move({0.f, 3.f});
     }
 
     m_window.draw(m_bgShape);  // 绘制背景
@@ -167,8 +160,8 @@ void Game::renderStartMenu() {
 }
 
 void Game::renderPlayerAnimation() {
-    const std::vector<std::array<std::string, 3>> paths = m_player.getPaths();
-    const int count = paths.size() * 3;
+    const std::vector<Textures> paths = m_player.getPaths();
+    const int count = paths.size();
     const float animInterval = 0.08f;  // 动画间隔时间
 
     // 每隔 animInterval 秒切换帧
@@ -177,43 +170,15 @@ void Game::renderPlayerAnimation() {
         m_animClock.restart();  // 重置动画时钟
     }
 
-    sf::Texture texture;
-    if (texture.loadFromFile(paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3])) {
-        sf::Sprite sprite(texture);
-        sprite.setOrigin({texture.getSize().x / 2.f, texture.getSize().y / 2.f});
-        sprite.setPosition({RENDER_CENTER_X, RENDER_CENTER_Y});
-        sprite.setScale({2.0f, 2.0f});
-        m_window.draw(sprite);
-    } else {
-        throw std::runtime_error("Failed to load player animation texture from " + 
-                                 paths[m_currentAnimFrame / 3][m_currentAnimFrame % 3]);
-    }
-}
-
-sf::Text Game::renderText(
-        const sf::Font& font, 
-        const std::string& content,
-        const int size,
-        const sf::Color color,
-        const sf::Vector2f position,
-        const bool ifCenter,
-        const bool ifCovert
-    ) {
-    sf::Text text(font);
-    if (ifCovert) {
-        std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-        std::wstring wideStr = converter.from_bytes(content);
-        text.setString(wideStr);
-    } else {
-        text.setString(content);
-    }
-    text.setCharacterSize(size);
-    text.setFillColor(color);
-    if (ifCenter) {
-        text.setOrigin(text.getLocalBounds().size / 2.0f);
-    }
-    text.setPosition(position);
-    return text;
+    sf::Sprite sprite = Utils::renderSprite(
+        paths[m_currentAnimFrame], 
+        sf::Color::White,
+        {RENDER_CENTER_X, RENDER_CENTER_Y},
+        {2.0f, 2.0f},
+        true,
+        false
+    );
+    m_window.draw(sprite);  // 绘制玩家动画
 }
 
 void Game::updateView() {
@@ -227,8 +192,8 @@ void Game::updateBackground() {
     m_offsetX += m_player.getVelocity().x * PARALLAX_FACTOR;
     m_offsetY += m_player.getVelocity().y * PARALLAX_FACTOR;
     // 保证 m_offsetX m_offsetY 在纹理高度范围内循环
-    int texWidth = m_bgTexture.getSize().x;
-    int texHeight = m_bgTexture.getSize().y;
+    int texWidth = m_bgShape.getTexture() -> getSize().x;
+    int texHeight = m_bgShape.getTexture() -> getSize().y;
     if (m_offsetX < 0) {
         m_offsetX += texWidth;
     } else if (m_offsetX >= texWidth) {
