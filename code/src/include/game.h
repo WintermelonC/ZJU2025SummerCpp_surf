@@ -13,6 +13,10 @@
 #include "utils.h"
 #include "player.h"
 
+constexpr int WINDOW_WIDTH = 720;  // 窗口宽度
+constexpr int WINDOW_HEIGHT = 1280;  // 窗口高度
+constexpr int WINDOW_CENTER_X = WINDOW_WIDTH / 2;  // 窗口中心 X 坐标
+constexpr int WINDOW_CENTER_Y = WINDOW_HEIGHT / 2;  // 窗口中心 Y 坐标
 constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
 constexpr float START_BUTTON_SCALE = 1.2f;  // 开始按钮缩放比例
 
@@ -42,46 +46,16 @@ private:
     void renderStartMenu();  // 渲染开始菜单
     void renderPlayerAnimation();  // 渲染玩家动画
 
-    /**
-     * @brief 渲染文本
-     * 
-     * @param font 字体对象
-     * @param content 文本内容
-     * @param size 字体大小
-     * @param color 文本颜色
-     * @param position 文本位置
-     * @param ifCenter 是否将 Origin 设置为中心
-     * @param ifCovert 是否转换为宽文本
-     * @return 渲染后的文本对象
-     * 
-     * @warning 如果为中文字符，必须将 ifCovert 设置为 true
-     */
-    sf::Text renderText(
-        const sf::Font& font, 
-        const std::string& content,
-        const int size,
-        const sf::Color color,
-        const sf::Vector2f position,
-        const bool ifCenter = true,
-        const bool ifCovert = false
-    );
-
 private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
     sf::Clock m_clock;  // 时钟
-    sf::Vector2i m_mousePosition;  // 鼠标位置
+
     GameState m_state;  // 游戏状态
     float m_offsetX = 0.0f;
     float m_offsetY = 0.0f;
 
-    std::string m_bgPath{"../../assets/images/water_texture.png"};
-    sf::Texture m_bgTexture;  // 背景纹理
     sf::RectangleShape m_bgShape;  // 背景形状
-    std::string m_JHPath{"../../assets/fonts/MSJHBD.TTC"};
-    sf::Font m_fontJH;  // Microsoft JhengHei
-    std::string m_almmPath{"../../assets/fonts/almmdfdk.TTF"};
-    sf::Font m_fontAlmm;  // 阿里妈妈东方大楷
 
     Player m_player;  // 玩家对象
 
