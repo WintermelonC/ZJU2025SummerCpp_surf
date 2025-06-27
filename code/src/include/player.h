@@ -45,12 +45,9 @@ public:
     void initial();  // 初始化玩家状态
 
 private:
-    // 更新 X 速度
-    void updateXSpeed(float dt);
-    // 更新 Y 速度
-    void updateYSpeed(float dt);
-    // 更新动画
-    void updateAnimation(float dt);
+    void updateXSpeed(float dt);  // 更新 X 速度
+    void updateYSpeed(float dt);  // 更新 Y 速度 
+    void updateAnimation(float dt);  // 更新动画
 
 private:
     const int POWER_TIME = 5;  // 能量持续时间（秒）
@@ -66,6 +63,7 @@ private:
 
     sf::Sprite m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
+    PlayerState m_state;  // 当前状态
     int m_hp = PLAYER_HP;  // 玩家生命值
     int m_power = 3;  // 玩家能量值
     
@@ -73,6 +71,4 @@ private:
     float m_animTimer = 0.0f;  // 动画计时器
     bool m_isAccelerating = false;  // 是否正在加速
     float m_powerTimer = 0.0f;  // 能量计时器
-    
-    PlayerState m_xState;  // 当前 X 状态
 };

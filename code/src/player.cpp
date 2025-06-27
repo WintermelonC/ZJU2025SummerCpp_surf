@@ -3,7 +3,7 @@
 Player::Player(sf::Vector2f position)
     : m_sprite(Utils::renderSprite(Textures::player_center_1, sf::Color::White, position, {PLAYER_SCALE, PLAYER_SCALE}, false)),
       m_velocity({0.f, 0.f}),
-      m_xState(PlayerState::Center) {}
+      m_state(PlayerState::Center) {}
 
 const std::vector<Textures> Player::getPaths() const { 
     return {
@@ -26,15 +26,15 @@ void Player::update(float dt, const sf::RenderWindow& window) {
     const sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
     if (deltaY >= 0.0f) {
         if (angle.asDegrees() >= ANGLE_2 || angle.asDegrees() <= -ANGLE_2) {
-            m_xState = (angle.asDegrees() >= 0.f) ? PlayerState::Right2 : PlayerState::Left2;
+            m_state = (angle.asDegrees() >= 0.f) ? PlayerState::Right2 : PlayerState::Left2;
         } else if (angle.asDegrees() >= ANGLE_1 || angle.asDegrees() <= -ANGLE_1) {
-            m_xState = (angle.asDegrees() >= 0.f) ? PlayerState::Right1 : PlayerState::Left1;
+            m_state = (angle.asDegrees() >= 0.f) ? PlayerState::Right1 : PlayerState::Left1;
         } else {
-            m_xState = PlayerState::Center;
+            m_state = PlayerState::Center;
         }
     } else {
         // 减速
-        m_xState = PlayerState::Stop;
+        m_state = PlayerState::Stop;
     }
     if (m_isAccelerating) {
         m_powerTimer += dt;  // 增加能量计时器
@@ -54,7 +54,7 @@ void Player::initial() {
     m_velocity = {0.f, 0.f};
     m_hp = PLAYER_HP;
     m_power = 3;
-    m_xState = PlayerState::Center;
+    m_state = PlayerState::Center;
     m_currentFrame = 0;
     m_animTimer = 0.f;
     m_sprite.setTexture(*Utils::getTexture(Textures::player_center_1));
@@ -70,7 +70,7 @@ void Player::usePower() {
 }
 
 void Player::updateXSpeed(float dt) {
-    switch (m_xState) {
+    switch (m_state) {
         case PlayerState::Center:
             m_velocity.x = 0.f;
             break;
@@ -93,7 +93,7 @@ void Player::updateXSpeed(float dt) {
 }
 
 void Player::updateYSpeed(float dt) {
-    switch (m_xState) {
+    switch (m_state) {
         case PlayerState::Center:
         case PlayerState::Left1:
         case PlayerState::Left2:
@@ -121,7 +121,7 @@ void Player::updateAnimation(float dt) {
     // 动画更新逻辑
     const float m_animInterval = 0.1f;  // 动画间隔时间
     std::vector<Textures> paths;
-    switch (m_xState) {
+    switch (m_state) {
         case PlayerState::Center:
             paths = {Textures::player_center_1, Textures::player_center_2, Textures::player_center_3};
             break;
