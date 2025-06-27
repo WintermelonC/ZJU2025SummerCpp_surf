@@ -49,30 +49,6 @@ private:
     void renderPausedMenu();  // 渲染暂停菜单
     void renderPlayerAnimation();  // 渲染玩家动画
 
-
-    /**
-     * @brief 渲染文本
-     * 
-     * @param font 字体对象
-     * @param content 文本内容
-     * @param size 字体大小
-     * @param color 文本颜色
-     * @param position 文本位置
-     * @param ifCenter 是否将 Origin 设置为中心
-     * @param ifCovert 是否转换为宽文本
-     * @return 渲染后的文本对象
-     * 
-     * @note 此函数通过 sf::String 自动处理 UTF-8 编码，可正确显示所有语言。
-     */
-    sf::Text renderText(
-        const sf::Font& font, 
-        const std::string& content,
-        const int size,
-        const sf::Color color,
-        const sf::Vector2f position,
-        const bool ifCenter = true
-    );
-
 private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
