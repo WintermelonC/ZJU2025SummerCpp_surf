@@ -133,15 +133,19 @@ void Game::update() {
 void Game::render() {
     m_window.clear(sf::Color(0, 192, 222));  // 用纯色清除窗口
     if (m_state == GameState::Start) {
+        m_window.draw(m_bgShape);  // 绘制背景
         renderStartMenu();
+        renderPlayerAnimation();  // 绘制人物动画
         renderPlayerState();
     } else if (m_state == GameState::Paused) {
+        m_window.draw(m_bgShape);  // 绘制背景
+        m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPausedMenu();
         renderPlayerState();
     } else if (m_state == GameState::Playing) {
-        renderPlayerState();
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+        renderPlayerState();
     } else if (m_state == GameState::GameOver) {
 
     }
@@ -192,9 +196,6 @@ void Game::renderStartMenu() {
         {0.f, 0.3f}
     );
 
-    // 绘制人物动画
-    renderPlayerAnimation();
-    m_window.draw(m_bgShape);  // 绘制背景
     m_window.draw(title);  // 绘制标题
     m_window.draw(startButtonShadow);  // 绘制开始按钮阴影
     m_window.draw(startButton);  // 绘制开始按钮
@@ -276,8 +277,6 @@ void Game::renderPausedMenu() {
         {0.f, 0.3f}
     );
 
-    m_window.draw(m_bgShape);  // 绘制背景
-    m_window.draw(m_player.getSprite());  // 绘制玩家精灵
     m_window.draw(filter);  // 绘制半透明遮罩
     m_window.draw(pausedText);  // 绘制暂停文字
     m_window.draw(continueButtonShadow);  // 绘制继续按钮阴影

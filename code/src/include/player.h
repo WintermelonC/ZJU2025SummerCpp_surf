@@ -43,7 +43,7 @@ public:
 
     void update(float dt, const sf::RenderWindow& window);  // 更新玩家状态
     void initial();  // 初始化玩家状态
-    
+
 private:
     // 更新 X 速度
     void updateXSpeed(float dt);
@@ -58,8 +58,8 @@ private:
     const float ACCELERATION_2 = 20.0f;  // 增强加速度
     const float ACCELERATION_3 = 50.0f;  // 减速加速度
     const float MAX_SPEED = 25.0f;  // Y 最大速度
-    const float XY_SPEED_1 = 0.3f;  // Y / X 比例 1
-    const float XY_SPEED_2 = 0.6f;  // Y / X 比例 2
+    const float XY_SPEED_1 = 0.4f;  // Y / X 比例 1
+    const float XY_SPEED_2 = 0.8f;  // Y / X 比例 2
     const float SPEED_SCALE = 2.0f;  // 速度加速比例
     const float ANGLE_1 = 20.0f;  // 角度 1
     const float ANGLE_2 = 40.0f;  // 角度 2
@@ -73,7 +73,6 @@ private:
     float m_animTimer = 0.0f;  // 动画计时器
     bool m_isAccelerating = false;  // 是否正在加速
     float m_powerTimer = 0.0f;  // 能量计时器
-    std::deque<sf::Vector2f> m_trailPositions;  // 拖尾点队列
     
     PlayerState m_xState;  // 当前 X 状态
 };
