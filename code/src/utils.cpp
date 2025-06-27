@@ -45,8 +45,8 @@ sf::Text Utils::renderText(
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCenter,
-        const bool ifCovert
+        const bool ifCovert,
+        const bool ifCenter
     ) {
     // 获取字体指针
     sf::Font* fontPtr = Utils::getFont(font);
@@ -73,8 +73,8 @@ sf::Sprite Utils::renderSprite(
         const sf::Color color,
         const sf::Vector2f position,
         const sf::Vector2f scale,
-        const bool ifCenter,
-        const bool ifSmooth
+        const bool ifSmooth,
+        const bool ifCenter
     ) {
     // 获取纹理指针
     sf::Texture* texturePtr = Utils::getTexture(texture);
@@ -88,6 +88,30 @@ sf::Sprite Utils::renderSprite(
     sprite.setColor(color);
 
     return sprite;
+}
+
+void Utils::mouseHoverButton(
+        sf::Sprite& button, 
+        sf::Sprite& buttonShadow, 
+        const sf::RenderWindow& window,
+        const sf::Vector2f offset,
+        const sf::Color color
+    ) {
+    // 鼠标悬停变化
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
+    float buttonX = button.getPosition().x;
+    float buttonY = button.getPosition().y;
+    float buttonWidth = button.getLocalBounds().size.x * button.getScale().x;
+    float buttonHeight = button.getLocalBounds().size.y * button.getScale().y;
+    if (worldPos.x >= buttonX - buttonWidth / 2 && 
+        worldPos.x <= buttonX + buttonWidth / 2 &&
+        worldPos.y >= buttonY - buttonHeight / 2 && 
+        worldPos.y <= buttonY + buttonHeight / 2) {
+        // 鼠标悬停在按钮上，改变按钮颜色
+        button.setColor(sf::Color(255, 255, 255));  // 改变颜色
+        buttonShadow.move({0.f, 3.f});
+    }
 }
 
 void Utils::loadFont(const Fonts font) {

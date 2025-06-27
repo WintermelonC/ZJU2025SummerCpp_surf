@@ -45,11 +45,11 @@ public:
     const std::vector<Textures> getPaths() const;
 
     // 更新玩家状态
-    void update(float dt, const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize);
+    void update(float dt, const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
 
 private:
     // 更新 X 速度
-    void updateXSpeed(const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize);
+    void updateXSpeed(const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
     // 更新 Y 速度
     void updateYSpeed(float dt);
     // 更新动画
@@ -58,11 +58,11 @@ private:
 private:
     sf::Sprite m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
-
-    int m_currentFrame = 0;  // 当前帧索引
-    float m_animTimer = 0.0f;  // 动画计时器
-
     float m_acceleration = ACCELERATION_1;  // 当前加速度
     float m_maxSpeed = MAX_SPEED_1;  // 当前最大速度
+    
+    int m_currentFrame = 0;  // 当前帧索引
+    float m_animTimer = 0.0f;  // 动画计时器
+    
     XState m_xState;  // 当前 X 状态
 };
