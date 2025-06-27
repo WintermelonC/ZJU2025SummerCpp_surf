@@ -25,19 +25,25 @@ enum class XState {
 
 class Player {
 public:
-    Player(sf::Vector2f position = {WINDOW_CENTER_X, WINDOW_CENTER_Y});
+    Player(sf::Vector2f position = {PLAYER_X, PLAYER_Y});
     ~Player() = default;
 
+    // 获取位置
     const sf::Vector2f getPosition() const { return m_sprite.getPosition(); }
+    // 获取精灵
     const sf::Sprite& getSprite() const { return m_sprite; }
+    // 获取玩家速度
     const sf::Vector2f& getVelocity() const { return m_velocity; }
 
-    // 更新玩家速度
+    // 更新玩家状态
     void update(float dt, const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize);
 
 private:
+    // 更新 X 速度
     void updateXSpeed(const sf::Vector2i& mousePosition, const sf::Vector2u& windowSize);
+    // 更新 Y 速度
     void updateYSpeed(float dt);
+    // 更新动画
     void updateAnimation(float dt);
 
 private:
