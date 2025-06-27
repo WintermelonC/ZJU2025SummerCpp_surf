@@ -54,6 +54,7 @@ public:
 private:
     void handleEvents();  // 处理事件
     void handleMouseLeftClick(const sf::Vector2f& mousePos);  // 处理鼠标左键点击事件
+    void handleMouseRightClick(const sf::Vector2f& mousePos);  // 处理鼠标右键点击事件
 
     void update();  // 更新游戏状态
     void updateView();  // 更新视图

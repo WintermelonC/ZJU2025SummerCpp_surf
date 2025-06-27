@@ -3,7 +3,7 @@
 Player::Player(sf::Vector2f position)
     : m_sprite(Utils::renderSprite(Textures::player_center_1, sf::Color::White, position, {PLAYER_SCALE, PLAYER_SCALE}, false)),
       m_velocity({0.f, 0.f}),
-      m_xState(XState::Center) {}
+      m_xState(PlayerState::Center) {}
 
 const std::vector<Textures> Player::getPaths() const { 
     return {
@@ -26,15 +26,24 @@ void Player::update(float dt, const sf::RenderWindow& window) {
     const sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
     if (deltaY >= 0.0f) {
         if (angle.asDegrees() >= ANGLE_2 || angle.asDegrees() <= -ANGLE_2) {
-            m_xState = (angle.asDegrees() >= 0.f) ? XState::Right2 : XState::Left2;
+            m_xState = (angle.asDegrees() >= 0.f) ? PlayerState::Right2 : PlayerState::Left2;
         } else if (angle.asDegrees() >= ANGLE_1 || angle.asDegrees() <= -ANGLE_1) {
-            m_xState = (angle.asDegrees() >= 0.f) ? XState::Right1 : XState::Left1;
+            m_xState = (angle.asDegrees() >= 0.f) ? PlayerState::Right1 : PlayerState::Left1;
         } else {
-            m_xState = XState::Center;
+            m_xState = PlayerState::Center;
         }
     } else {
         // 减速
-        m_xState = XState::Stop;
+        m_xState = PlayerState::Stop;
+    }
+    if (m_isAccelerating) {
+        m_powerTimer += dt;  // 增加能量计时器
+        if (m_powerTimer >= POWER_TIME) {
+            m_isAccelerating = false;  // 停止加速
+            m_powerTimer = 0.0f;  // 重置能量计时器
+        }
+    } else {
+        m_powerTimer = 0.0f;  // 重置能量计时器
     }
     updateXSpeed();
     updateYSpeed(dt);
@@ -43,35 +52,41 @@ void Player::update(float dt, const sf::RenderWindow& window) {
 
 void Player::initial() {
     m_velocity = {0.f, 0.f};
-    m_acceleration = ACCELERATION_1;
     m_hp = PLAYER_HP;
-    m_power = 0;
-    m_maxSpeed = MAX_SPEED_1;
-    m_xState = XState::Center;
+    m_power = 3;
+    m_xState = PlayerState::Center;
     m_currentFrame = 0;
     m_animTimer = 0.f;
     m_sprite.setTexture(*Utils::getTexture(Textures::player_center_1));
     m_sprite.setScale({PLAYER_SCALE, PLAYER_SCALE});
 }
 
+void Player::usePower() {
+    if (m_power > 0) {
+        m_power--;  // 使用能量
+        m_powerTimer = 0.0f;
+        m_isAccelerating = true;  // 开始加速
+    }
+}
+
 void Player::updateXSpeed() {
     switch (m_xState) {
-        case XState::Center:
+        case PlayerState::Center:
             m_velocity.x = 0.f;
             break;
-        case XState::Left1:
-            m_velocity.x = -X_SPEED_1;  // 向左移动
+        case PlayerState::Left1:
+            m_velocity.x = -X_SPEED_1 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向左移动
             break;
-        case XState::Left2:
-            m_velocity.x = -X_SPEED_2;  // 向左移动
+        case PlayerState::Left2:
+            m_velocity.x = -X_SPEED_2 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向左移动
             break;
-        case XState::Right1:
-            m_velocity.x = X_SPEED_1;  // 向右移动
+        case PlayerState::Right1:
+            m_velocity.x = X_SPEED_1 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向右移动
             break;
-        case XState::Right2:
-            m_velocity.x = X_SPEED_2;  // 向右移动
+        case PlayerState::Right2:
+            m_velocity.x = X_SPEED_2 * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 向右移动
             break;
-        case XState::Stop:
+        case PlayerState::Stop:
             m_velocity.x = 0.f;  // 停止移动
             break;
     }
@@ -79,20 +94,20 @@ void Player::updateXSpeed() {
 
 void Player::updateYSpeed(float dt) {
     switch (m_xState) {
-        case XState::Center:
-        case XState::Left1:
-        case XState::Left2:
-        case XState::Right1:
-        case XState::Right2:
-            if (m_velocity.y < m_maxSpeed) {
-                m_velocity.y += m_acceleration * dt;  // 增加速度
-                if (m_velocity.y > m_maxSpeed) {
-                    m_velocity.y = m_maxSpeed;  // 限制最大速度
+        case PlayerState::Center:
+        case PlayerState::Left1:
+        case PlayerState::Left2:
+        case PlayerState::Right1:
+        case PlayerState::Right2:
+            if (m_velocity.y <= MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f)) {
+                m_velocity.y += dt * (m_isAccelerating ? ACCELERATION_2 : ACCELERATION_1);  // 增加速度
+                if (m_velocity.y > MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f)) {
+                    m_velocity.y = MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 限制最大速度
                 }
             }
             break;
-        case XState::Stop:
-            if (m_velocity.y > 0.f) {
+        case PlayerState::Stop:
+            if (m_velocity.y >= 0.f) {
                 m_velocity.y -= ACCELERATION_2 * dt;  // 减少速度
                 if (m_velocity.y < 0.f) {
                     m_velocity.y = 0.f;  // 限制最小速度
@@ -107,22 +122,22 @@ void Player::updateAnimation(float dt) {
     const float m_animInterval = 0.1f;  // 动画间隔时间
     std::array<Textures, PLAYER_ANIM_FRAMES> paths;
     switch (m_xState) {
-        case XState::Center:
+        case PlayerState::Center:
             paths = {Textures::player_center_1, Textures::player_center_2, Textures::player_center_3};
             break;
-        case XState::Left1:
+        case PlayerState::Left1:
             paths = {Textures::player_left_11, Textures::player_left_12, Textures::player_left_13};
             break;
-        case XState::Left2:
+        case PlayerState::Left2:
             paths = {Textures::player_left_21, Textures::player_left_22, Textures::player_left_23};
             break;
-        case XState::Right1:
+        case PlayerState::Right1:
             paths = {Textures::player_right_11, Textures::player_right_12, Textures::player_right_13};
             break;
-        case XState::Right2:
+        case PlayerState::Right2:
             paths = {Textures::player_right_21, Textures::player_right_22, Textures::player_right_23};
             break;
-        case XState::Stop:
+        case PlayerState::Stop:
             paths = {Textures::player_stop_1, Textures::player_stop_2, Textures::player_stop_3};
             break;
     }

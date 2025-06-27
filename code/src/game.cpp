@@ -54,10 +54,11 @@ void Game::handleEvents() {
             if (mouseButton -> button == sf::Mouse::Button::Left) {
                 // 左键点击
                 handleMouseLeftClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
+            } else if (mouseButton -> button == sf::Mouse::Button::Right) {
+                // 右键点击
+                handleMouseRightClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
             }
-        }
-
-        if (const auto* keyPressed = event -> getIf<sf::Event::KeyPressed>()) {
+        } else if (const auto* keyPressed = event -> getIf<sf::Event::KeyPressed>()) {
             // 键盘按下事件
             if (keyPressed -> code == sf::Keyboard::Key::Space) {
                 // 空格
@@ -110,6 +111,14 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
             m_player.initial();
             m_clock.restart();  // 重置时钟
         }
+    }
+}
+
+void Game::handleMouseRightClick(const sf::Vector2f& mousePos) {
+    // 右键点击事件处理
+    if (m_state == GameState::Playing) {
+        // 使用能量加速
+        m_player.usePower(); 
     }
 }
 
@@ -330,8 +339,6 @@ void Game::updateBackground() {
 void Game::renderPlayerState() {
     const int hp = m_player.getHP();
     const int power = m_player.getPower();
-    std::vector<sf::Sprite> hearts;
-    std::vector<sf::Sprite> powers;
 
     for (int i = 1; i <= PLAYER_HP; i++) {
         sf::Sprite heart = Utils::renderSprite(
@@ -350,14 +357,7 @@ void Game::renderPlayerState() {
             {2.0f, 2.0f},
             false
         );
-        hearts.push_back(heart);
-        powers.push_back(powerIcon);
-    }
-
-    for (const auto& heart : hearts) {
         m_window.draw(heart);  // 绘制生命值图标
-    }
-    for (const auto& power : powers) {
-        m_window.draw(power);  // 绘制能量值图标
+        m_window.draw(powerIcon);  // 绘制能量值图标
     }
 }
