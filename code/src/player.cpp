@@ -53,16 +53,16 @@ void Player::updateXSpeed() {
             m_velocity.x = 0.f;
             break;
         case PlayerState::Left1:
-            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * -XY_SPEED_1;  // 左侧速度
+            m_velocity.x = m_velocity.y * -XY_SPEED_1;  // 左侧速度
             break;
         case PlayerState::Left2:
-            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * -XY_SPEED_2;  // 左侧速度
+            m_velocity.x = m_velocity.y * -XY_SPEED_2;  // 左侧速度
             break;
         case PlayerState::Right1:
-            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * XY_SPEED_1;  // 右侧速度
+            m_velocity.x = m_velocity.y * XY_SPEED_1;  // 右侧速度
             break;
         case PlayerState::Right2:
-            m_velocity.x = m_velocity.y * (m_isAccelerating ? SPEED_SCALE : 1.f) * XY_SPEED_2;  // 右侧速度
+            m_velocity.x = m_velocity.y * XY_SPEED_2;  // 右侧速度
             break;
         case PlayerState::Stop:
             m_velocity.x = 0.f;  // 停止移动
