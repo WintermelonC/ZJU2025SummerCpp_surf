@@ -45,6 +45,10 @@ private:
     void renderPlayerState();  // 渲染玩家状态（生命值、能量等）
     void renderScore();  // 渲染分数
 
+#ifdef DEBUG
+    void renderVelocity();  // 渲染玩家速度
+#endif  // DEBUG
+
 private:
     const sf::Vector2i WINDOW_SIZE = {720, 1280};  // 窗口大小
     const float PARALLAX_FACTOR = 0.1f;  // 视差因子
@@ -61,6 +65,7 @@ private:
     const float POWER_SCALE = HP_SCALE;  // 能量值图标缩放比例
     const float HP_GAP = 40.0f;  // 生命值图标之间的间隔
     const float POWER_GAP = HP_GAP;  // 能量值图标之间的间隔
+    const sf::Color BUTTON_COLOR = sf::Color(195, 240, 247);  // 按钮颜色
 
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图

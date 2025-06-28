@@ -138,11 +138,17 @@ void Game::render() {
         renderPausedMenu();
         renderPlayerState();
         renderScore();
+    #ifdef DEBUG
+        renderVelocity();  // 渲染玩家速度
+    #endif  // DEBUG
     } else if (m_state == GameState::Playing) {
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPlayerState();
         renderScore();  // 渲染分数
+    #ifdef DEBUG
+        renderVelocity();  // 渲染玩家速度
+    #endif  // DEBUG
     } else if (m_state == GameState::GameOver) {
 
     }
@@ -161,7 +167,7 @@ void Game::renderStartMenu() {
     // 开始按钮
     sf::Sprite startButton = Utils::renderSprite(
         Textures::start_button,
-        sf::Color(195, 240, 247),
+        BUTTON_COLOR,
         START_BUTTON_POS,
         START_BUTTON_SCALE
     );
@@ -216,7 +222,7 @@ void Game::renderPausedMenu() {
     // 继续游戏按钮
     sf::Sprite continueButton = Utils::renderSprite(
         Textures::start_button,
-        sf::Color(195, 240, 247),
+        BUTTON_COLOR,
         CONTINUE_BUTTON_POS,
         CONTINUE_BUTTON_SCALE
     );
@@ -243,7 +249,7 @@ void Game::renderPausedMenu() {
     // 返回菜单按钮
     sf::Sprite returnButton = Utils::renderSprite(
         Textures::start_button,
-        sf::Color(195, 240, 247),
+        BUTTON_COLOR,
         RETURN_BUTTON_POS,
         RETURN_BUTTON_SCALE
     );
@@ -369,7 +375,7 @@ void Game::renderScore() {
     // 分数版
     sf::Sprite scoreboard = Utils::renderSprite(
         Textures::scoreboard,
-        sf::Color::White,
+        BUTTON_COLOR,
         {RENDER_CENTER_POS.x,
          RENDER_CENTER_POS.y - m_window.getSize().y / 2 + 50}
     );
@@ -391,3 +397,18 @@ void Game::renderScore() {
     m_window.draw(scoreboard);  // 绘制分数板
     m_window.draw(scoreText);  // 绘制分数文本
 }
+
+#ifdef DEBUG
+void Game::renderVelocity() {
+    const sf::Vector2f& velocity = m_player.getVelocity();
+    // 速度文本
+    sf::Text velocityText = Utils::renderText(
+        Fonts::MSJHBD,
+        "Velocity: (" + std::to_string(static_cast<int>(velocity.x)) + ", " + std::to_string(static_cast<int>(velocity.y)) + ")",
+        20,
+        sf::Color::Black,
+        RENDER_CENTER_POS
+    );
+    m_window.draw(velocityText);  // 绘制速度文本
+}
+#endif  // DEBUG

@@ -50,10 +50,10 @@ private:
 
 private:
     const int POWER_TIME = 5;  // 能量持续时间（秒）
-    const float ACCELERATION_1 = 5.0f;  // 默认加速度
-    const float ACCELERATION_2 = 20.0f;  // 增强加速度
+    const float ACCELERATION_1 = 10.0f;  // 默认加速度
+    const float ACCELERATION_2 = 50.0f;  // 增强加速度
     const float ACCELERATION_3 = 50.0f;  // 减速加速度
-    const float MAX_SPEED = 25.0f;  // Y 最大速度
+    const float MAX_SPEED = 50.0f;  // Y 最大速度
     const float XY_SPEED_1 = 0.4f;  // Y / X 比例 1
     const float XY_SPEED_2 = 0.8f;  // Y / X 比例 2
     const float SPEED_SCALE = 2.0f;  // 速度加速比例

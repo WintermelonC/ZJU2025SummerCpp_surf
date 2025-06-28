@@ -104,6 +104,11 @@ void Player::updateYSpeed(float dt) {
                 if (m_velocity.y > MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f)) {
                     m_velocity.y = MAX_SPEED * (m_isAccelerating ? SPEED_SCALE : 1.f);  // 限制最大速度
                 }
+            } else if (m_velocity.y > MAX_SPEED) {
+                m_velocity.y -= dt * ACCELERATION_2;
+                if (m_velocity.y < MAX_SPEED) {
+                    m_velocity.y = MAX_SPEED;  // 限制最小速度
+                }
             }
             break;
         case PlayerState::Stop:

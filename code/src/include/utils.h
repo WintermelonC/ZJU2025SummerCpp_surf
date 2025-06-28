@@ -70,7 +70,7 @@ public:
      * @param ifCenter 是否将 Origin 设置为中心
      * @param ifSmooth 是否平滑纹理
      * 
-     * @warning 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
+     * @note 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
      */
     static sf::Sprite renderSprite(
         const Textures& texture,
