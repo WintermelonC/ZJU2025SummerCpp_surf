@@ -5,6 +5,7 @@ add_executable(surf
     inputManager.cpp
     renderSystem.cpp
     assetManager.cpp
+    entityManager.cpp
 )
 
 target_link_libraries(surf PRIVATE SFML::System SFML::Window SFML::Graphics SFML::Audio)
