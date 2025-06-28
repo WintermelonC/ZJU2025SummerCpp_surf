@@ -5,15 +5,15 @@
 #include "assetManager.h"
 
 enum class EntityType {
-    water,
+    water
 };
 
 class EntityManager { 
 public:
-    sf::Sprite& getSprite(const EntityType& type, const Textures& texture);
+    static sf::Sprite& getSprite(const EntityType& type, const Textures& texture);
 
 private:
 
 private:
-    std::map<EntityType, sf::Sprite> m_sprites;  // 存储实体类型与对应的精灵
+    static std::map<EntityType, sf::Sprite> m_sprites;  // 存储实体类型与对应的精灵
 };

@@ -1,5 +1,7 @@
 #include "entityManager.h"
 
+std::map<EntityType, sf::Sprite> EntityManager::m_sprites;
+
 sf::Sprite& EntityManager::getSprite(const EntityType& type, const Textures& texture) {
     auto it = m_sprites.find(type);
     if (it == m_sprites.end()) {
