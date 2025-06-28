@@ -10,6 +10,7 @@
 
 #include <string>
 #include <map>
+#include <random>
 #include <SFML/Graphics.hpp>
 
 constexpr sf::Vector2i RENDER_SIZE = {2560, 1440};  // 渲染区域大小
@@ -98,6 +99,7 @@ public:
 
     static sf::Font& getFont(const Fonts font);  // 获取字体
     static sf::Texture& getTexture(const Textures texture);  // 获取纹理
+    static float randomFloat(float a, float b);
 
 private:
     static void loadFont(const Fonts font);  // 加载字体

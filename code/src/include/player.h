@@ -8,7 +8,7 @@
 #include "utils.h"
 
 constexpr sf::Vector2f PLAYER_POS = {RENDER_CENTER_POS.x, RENDER_SIZE.y / 5 * 2};  // 玩家初始坐标
-constexpr float PLAYER_SCALE = 1.5f;  // 玩家缩放比例
+constexpr sf::Vector2i PLAYER_SIZE = {64, 96};  // 玩家尺寸
 constexpr int PLAYER_HP = 3;  // 玩家最大生命值
 constexpr int PLAYER_POWER = 3;  // 玩家最大能量值
 
@@ -37,18 +37,23 @@ public:
     const int getHP() const { return m_hp; }  // 获取玩家生命值
     const int getPower() const { return m_power; }  // 获取玩家能量值
     const bool isAccelerating() const { return m_isAccelerating; }  // 是否正在加速
+    const bool isTrun() const { return m_isTurn; }  // 是否转弯
 
     void usePower();  // 使用能量加速
 
-    void update(float dt, const sf::RenderWindow& window);  // 更新玩家状态
+    void update(const float& dt, const sf::RenderWindow& window);  // 更新玩家状态
     void initial();  // 初始化玩家状态
 
 private:
-    void updateXSpeed(float dt);  // 更新 X 速度
-    void updateYSpeed(float dt);  // 更新 Y 速度 
-    void updateAnimation(float dt);  // 更新动画
+    void updateXSpeed();  // 更新 X 速度
+    void updateYSpeed(const float& dt);  // 更新 Y 速度 
+    void updateAnimation(const float& dt);  // 更新动画
+    void updateState(const sf::RenderWindow& window);  // 更新玩家状态
+    void updatePower(const float& dt);  // 更新能量状态
+    void updateTurn();  // 更新转弯状态
 
 private:
+    const float PLAYER_SCALE = 1.5f;  // 玩家缩放比例
     const int POWER_TIME = 5;  // 能量持续时间（秒）
     const float ACCELERATION_1 = 10.0f;  // 默认加速度
     const float ACCELERATION_2 = 50.0f;  // 增强加速度
@@ -63,6 +68,8 @@ private:
     sf::Sprite m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
     PlayerState m_state;  // 当前状态
+    PlayerState m_lastState;  // 上一个状态
+    bool m_isTurn = false;  // 是否转弯
     int m_hp = PLAYER_HP;  // 玩家生命值
     int m_power = 3;  // 玩家能量值
     

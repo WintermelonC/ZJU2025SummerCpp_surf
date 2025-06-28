@@ -3,7 +3,8 @@
 Player::Player(sf::Vector2f position)
     : m_sprite(Utils::renderSprite(Textures::player_center_1, sf::Color::White, position, {PLAYER_SCALE, PLAYER_SCALE}, false)),
       m_velocity({0.f, 0.f}),
-      m_state(PlayerState::Center) {}
+      m_state(PlayerState::Center),
+      m_lastState(PlayerState::Center) {}
 
 const std::vector<Textures> Player::getPaths() const { 
     return {
@@ -18,34 +19,11 @@ const std::vector<Textures> Player::getPaths() const {
     };
 }
 
-void Player::update(float dt, const sf::RenderWindow& window) {
-    const sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-    const sf::Vector2f worldPos = window.mapPixelToCoords(mousePosition);
-    const float deltaX = worldPos.x - m_sprite.getPosition().x;
-    const float deltaY = worldPos.y - m_sprite.getPosition().y;
-    const sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
-    if (deltaY >= 0.0f) {
-        if (angle.asDegrees() >= ANGLE_2 || angle.asDegrees() <= -ANGLE_2) {
-            m_state = (angle.asDegrees() >= 0.f) ? PlayerState::Right2 : PlayerState::Left2;
-        } else if (angle.asDegrees() >= ANGLE_1 || angle.asDegrees() <= -ANGLE_1) {
-            m_state = (angle.asDegrees() >= 0.f) ? PlayerState::Right1 : PlayerState::Left1;
-        } else {
-            m_state = PlayerState::Center;
-        }
-    } else {
-        // 减速
-        m_state = PlayerState::Stop;
-    }
-    if (m_isAccelerating) {
-        m_powerTimer += dt;  // 增加能量计时器
-        if (m_powerTimer >= POWER_TIME) {
-            m_isAccelerating = false;  // 停止加速
-            m_powerTimer = 0.0f;  // 重置能量计时器
-        }
-    } else {
-        m_powerTimer = 0.0f;  // 重置能量计时器
-    }
-    updateXSpeed(dt);
+void Player::update(const float& dt, const sf::RenderWindow& window) {
+    updateState(window);  // 更新玩家状态
+    updateTurn();
+    updatePower(dt);  // 更新能量状态
+    updateXSpeed();
     updateYSpeed(dt);
     updateAnimation(dt);
 }
@@ -69,7 +47,7 @@ void Player::usePower() {
     }
 }
 
-void Player::updateXSpeed(float dt) {
+void Player::updateXSpeed() {
     switch (m_state) {
         case PlayerState::Center:
             m_velocity.x = 0.f;
@@ -92,7 +70,7 @@ void Player::updateXSpeed(float dt) {
     }
 }
 
-void Player::updateYSpeed(float dt) {
+void Player::updateYSpeed(const float& dt) {
     switch (m_state) {
         case PlayerState::Center:
         case PlayerState::Left1:
@@ -122,7 +100,7 @@ void Player::updateYSpeed(float dt) {
     }
 }
 
-void Player::updateAnimation(float dt) {
+void Player::updateAnimation(const float& dt) {
     // 动画更新逻辑
     const float m_animInterval = 0.1f;  // 动画间隔时间
     std::vector<Textures> paths;
@@ -153,4 +131,45 @@ void Player::updateAnimation(float dt) {
         m_currentFrame = (m_currentFrame + 1) % paths.size();
         m_sprite.setTexture(Utils::getTexture(paths[m_currentFrame]));
     }
+}
+
+void Player::updateState(const sf::RenderWindow& window) {
+    const sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
+    const sf::Vector2f worldPos = window.mapPixelToCoords(mousePosition);
+    const float deltaX = worldPos.x - m_sprite.getPosition().x;
+    const float deltaY = worldPos.y - m_sprite.getPosition().y;
+    const sf::Angle angle = sf::radians(std::atan2(deltaX, deltaY));  // 计算角度
+    if (deltaY >= 0.0f) {
+        if (angle.asDegrees() >= ANGLE_2 || angle.asDegrees() <= -ANGLE_2) {
+            m_state = (angle.asDegrees() >= 0.f) ? PlayerState::Right2 : PlayerState::Left2;
+        } else if (angle.asDegrees() >= ANGLE_1 || angle.asDegrees() <= -ANGLE_1) {
+            m_state = (angle.asDegrees() >= 0.f) ? PlayerState::Right1 : PlayerState::Left1;
+        } else {
+            m_state = PlayerState::Center;
+        }
+    } else {
+        // 减速
+        m_state = PlayerState::Stop;
+    }
+}
+
+void Player::updatePower(const float& dt) {
+    if (m_isAccelerating) {
+        m_powerTimer += dt;  // 增加能量计时器
+        if (m_powerTimer >= POWER_TIME) {
+            m_isAccelerating = false;  // 停止加速
+            m_powerTimer = 0.0f;  // 重置能量计时器
+        }
+    } else {
+        m_powerTimer = 0.0f;  // 重置能量计时器
+    }
+}
+
+void Player::updateTurn() {
+    if (m_state != PlayerState::Stop && m_lastState != m_state) {
+        m_isTurn = true;
+    } else {
+        m_isTurn = false;
+    }
+    m_lastState = m_state;  // 更新上一个状态
 }

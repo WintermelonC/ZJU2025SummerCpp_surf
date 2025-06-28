@@ -122,6 +122,7 @@ void Game::update() {
     updateView();
     updateBackground();
     updateScore();
+    updateRipple(dt);
 }
 
 void Game::render() {
@@ -134,6 +135,7 @@ void Game::render() {
         renderScore();
     } else if (m_state == GameState::Paused) {
         m_window.draw(m_bgShape);  // 绘制背景
+        renderTurnTrail();
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPausedMenu();
         renderPlayerState();
@@ -143,6 +145,7 @@ void Game::render() {
     #endif  // DEBUG
     } else if (m_state == GameState::Playing) {
         m_window.draw(m_bgShape);  // 绘制背景
+        renderTurnTrail();
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPlayerState();
         renderScore();  // 渲染分数
@@ -342,6 +345,39 @@ void Game::updateScore() {
     m_score += m_player.getVelocity().y * 0.001f;
 }
 
+void Game::updateRipple(const float& dt) {
+    const sf::Vector2f velocity = m_player.getVelocity();
+    for (auto it = m_ripples.begin(); it != m_ripples.end(); ) {
+        it -> lifetime -= dt;
+        if (it -> lifetime <= 0) {
+            it = m_ripples.erase(it);  // 移除过期的水波
+        } else {
+            it -> ripple.move({-velocity.x * PARALLAX_FACTOR, -velocity.y * PARALLAX_FACTOR});  // 更新水波位置
+            it -> ripple.rotate(sf::degrees(Utils::randomFloat(1.f, 3.f)));  // 随机旋转水波
+            it -> ripple.setFillColor(sf::Color(255, 255, 255,
+                static_cast<int>(150 * (it -> lifetime / RIPPLE_LIFETIME))));  // 渐变透明度
+            it++;
+        }
+    }
+
+    const bool isTurn = m_player.isTrun();
+    if (!isTurn || velocity.y < SPEED_THRESHOLD) {
+        return;
+    }
+
+    // 产生 RIPPLE_COUNT 个线段
+    for (int i = 0; i < RIPPLE_COUNT; i++) {
+        sf::RectangleShape line({3.f, 
+                                 Utils::randomFloat(10.f, 20.f)});
+        line.setRotation(sf::degrees(Utils::randomFloat(-20.f, 20.f)));
+        line.setPosition({PLAYER_POS.x + Utils::randomFloat(-PLAYER_SIZE.x / 3.f, PLAYER_SIZE.x / 3.f), 
+                          PLAYER_POS.y - Utils::randomFloat(PLAYER_SIZE.y / 3.f, PLAYER_SIZE.y / 2.f)});
+        line.setFillColor(sf::Color(255, 255, 255, 150));
+
+        m_ripples.push_back({line, RIPPLE_LIFETIME});
+    }
+}
+
 void Game::renderPlayerState() {
     const int hp = m_player.getHP();
     const int power = m_player.getPower();
@@ -396,6 +432,12 @@ void Game::renderScore() {
     m_window.draw(scoreboardShadow);  // 绘制分数版阴影
     m_window.draw(scoreboard);  // 绘制分数板
     m_window.draw(scoreText);  // 绘制分数文本
+}
+
+void Game::renderTurnTrail() {
+    for (auto& ripple : m_ripples) {
+        m_window.draw(ripple.ripple);  // 绘制水波线段
+    }
 }
 
 #ifdef DEBUG
