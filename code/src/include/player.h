@@ -44,6 +44,11 @@ public:
     void update(const float& dt, const sf::RenderWindow& window);  // 更新玩家状态
     void initial();  // 初始化玩家状态
 
+    // 碰撞检测
+    void onCollision(); // 被Game类调用，用于触发碰撞反应
+    // 设置无敌状态
+    bool isInvincible() const { return m_isInvincible; }
+
 private:
     void updateXSpeed();  // 更新 X 速度
     void updateYSpeed(const float& dt);  // 更新 Y 速度 
@@ -75,6 +80,17 @@ private:
     
     int m_currentFrame = 0;  // 当前帧索引
     float m_animTimer = 0.0f;  // 动画计时器
+    
+    XState m_xState;  // 当前 X 状态
+
+    bool m_isInvincible = false;    // 是否处于无敌（虚化）状态
+    bool m_isPaused = false;        // 是否处于碰撞后的停顿状态
+
+    sf::Clock m_invincibilityTimer; // 无敌状态的计时器
+    sf::Clock m_pauseTimer;         // 碰撞后停顿的计时器
+
+    const sf::Time INVINCIBILITY_DURATION = sf::seconds(3.0f); // 无敌总时长
+    const sf::Time PAUSE_DURATION = sf::seconds(1.0f);         // 停顿时长
     bool m_isAccelerating = false;  // 是否正在加速
     float m_powerTimer = 0.0f;  // 能量计时器
 };

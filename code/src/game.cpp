@@ -1,9 +1,12 @@
 #include "include/game.h"
+#include "iostream"
+#include "random"
 
 Game::Game()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(WINDOW_SIZE)), "Surf Game"),
       m_view(sf::FloatRect(RENDER_CENTER_POS, static_cast<sf::Vector2f>(WINDOW_SIZE))),
       m_state(GameState::Start),
+      m_obstacles(),
       m_bgShape(static_cast<sf::Vector2f>(RENDER_SIZE)),
       m_player(PLAYER_POS) {
     // 初始化视图
@@ -24,7 +27,13 @@ void Game::run() {
     while (m_window.isOpen()) {
         handleEvents();
         if (m_state == GameState::Playing) {
+            // 每隔一段时间生成一个障碍物
+            if (m_obstacleSpawnClock.getElapsedTime() >= m_spawnInterval){
+                createObstacle();
+                m_obstacleSpawnClock.restart();  // 重置生成时钟
+            }
             update();
+            
         }
         render();
     }
@@ -121,6 +130,7 @@ void Game::update() {
     m_player.update(dt, m_window);
     updateView();
     updateBackground();
+    updateObstacle();
     updateScore();
     updateRipple(dt);
 }
@@ -147,6 +157,7 @@ void Game::render() {
         m_window.draw(m_bgShape);  // 绘制背景
         renderTurnTrail();
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+        renderObstacle();  // 绘制障碍物
         renderPlayerState();
         renderScore();  // 渲染分数
     #ifdef DEBUG
@@ -283,6 +294,9 @@ void Game::renderPausedMenu() {
         {0.f, 0.3f}
     );
 
+    m_window.draw(m_bgShape);  // 绘制背景
+    m_window.draw(m_player.getSprite());  // 绘制玩家精灵
+    renderObstacle();  // 绘制障碍物
     m_window.draw(filter);  // 绘制半透明遮罩
     m_window.draw(pausedText);  // 绘制暂停文字
     m_window.draw(continueButtonShadow);  // 绘制继续按钮阴影
@@ -315,6 +329,36 @@ void Game::renderPlayerAnimation() {
     m_window.draw(sprite);  // 绘制玩家动画
 }
 
+void Game::renderObstacle() {
+    // 渲染所有障碍物
+    for(auto & obstacle : m_obstacles) {
+        m_window.draw(obstacle.getSprite());  // 绘制障碍物精灵
+    }
+}
+
+void Game::createObstacle() {
+    // 障碍物x坐标随机，y初始为屏幕底部
+    // 障碍物随机类型
+    std::random_device rd; 
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> disX(0, m_window.getSize().x);
+    std::uniform_int_distribution<> disType(0, RENDER_HEIGHT);
+    int x = disX(gen);  // 随机生成x坐标
+    int y = RENDER_HEIGHT;  // 初始y坐标为屏幕底
+
+    int type = disType(gen) % OBSTACLE_NUM - 1;  // 随机生成障碍物类型
+    sf::Sprite sprite = Utils::renderSprite(
+        static_cast<Textures>(static_cast<int>(Textures::obstacle_1) + type),  // 根据类型获取纹理
+        sf::Color::White,
+        {static_cast<float>(x), static_cast<float>(y)},
+        {1.0f, 1.0f}
+    );
+    // 创建障碍物对象
+    Obstacle obstacle(std::move(sprite), static_cast<Textures>(static_cast<int>(Textures::obstacle_1) + type));
+    // 将障碍物添加到队列中
+    m_obstacles.emplace_back(std::move(obstacle));
+}
+
 void Game::updateView() {
     // 更新视图中心为渲染中心
     m_view.setCenter(RENDER_CENTER_POS);
@@ -338,7 +382,27 @@ void Game::updateBackground() {
     } else if (m_offsetY >= texHeight) {
         m_offsetY -= texHeight;
     }
-    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, RENDER_SIZE));
+    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, {RENDER_WIDTH, RENDER_HEIGHT}));
+}
+
+void Game::updateObstacle() {
+    // 更新所有障碍物的位置
+    const float dt = m_clock.restart().asSeconds();  // 获取帧时间间隔
+    const sf::Vector2f playerVelocity = m_player.getVelocity();
+    for (auto& obstacle : m_obstacles) {
+        obstacle.update(dt, playerVelocity);  // 更新障碍物位置
+    }
+
+    // 移除超出屏幕的障碍物
+    auto it = std::remove_if(m_obstacles.begin(), m_obstacles.end(), 
+        [](const Obstacle& obstacle) {
+            // 这个 Lambda 函数是移除条件：
+            // 如果障碍物的Y坐标大于屏幕高度加上一个缓冲值，就返回 true
+            // 返回 true 意味着 "这个元素应该被移除"
+            return obstacle.getPosition().y < (-100);
+        }
+    );
+    m_obstacles.erase(it, m_obstacles.end());  // 从队列中移除超出屏幕的障碍物
 }
 
 void Game::updateScore() {
