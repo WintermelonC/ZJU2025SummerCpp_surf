@@ -3,6 +3,7 @@ add_executable(surf
     game.cpp
     player.cpp
     utils.cpp
+    obstacle.cpp
 )
 
 target_link_libraries(surf PRIVATE SFML::System SFML::Window SFML::Graphics SFML::Audio)

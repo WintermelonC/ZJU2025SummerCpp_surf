@@ -13,6 +13,8 @@
 #include <SFML/Window.hpp>
 #include "utils.h"
 #include "player.h"
+#include "entity.h"
+#include "obstacle.h"
 
 enum class GameState {
     Start,  // 主菜单
@@ -36,12 +38,16 @@ private:
     void update();  // 更新游戏状态
     void updateView();  // 更新视图
     void updateBackground();  // 更新背景
+    void updateObstacle();  // 更新障碍物
     void updateScore();  // 更新分数
 
     void render();  // 渲染游戏内容
     void renderStartMenu();  // 渲染开始菜单
     void renderPausedMenu();  // 渲染暂停菜单
     void renderPlayerAnimation();  // 渲染玩家动画
+    void renderObstacle();  // 渲染障碍物
+
+    void createObstacle();  // 新增随机障碍物
     void renderPlayerState();  // 渲染玩家状态（生命值、能量等）
     void renderScore();  // 渲染分数
 
@@ -72,7 +78,10 @@ private:
 
     sf::Clock m_animClock;  // 动画时钟
     int m_currentAnimFrame = 0; // 当前动画帧索引
+    sf::Clock m_obstacleSpawnClock; // 用于生成障碍物的时钟
+    sf::Time m_spawnInterval = sf::seconds(1.5f); // 设置生成间隔为1.5秒
 
     GameState m_state;  // 游戏状态
     Player m_player;  // 玩家对象
+    std::vector<Obstacle> m_obstacles;  // 障碍物队列
 };
