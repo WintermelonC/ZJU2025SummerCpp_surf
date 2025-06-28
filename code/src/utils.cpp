@@ -42,7 +42,6 @@ sf::Text Utils::renderText(
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCovert,
         const bool ifCenter
     ) {
     // 获取字体指针
@@ -57,6 +56,7 @@ sf::Text Utils::renderText(
     }
     text.setCharacterSize(size);
     text.setFillColor(color);
+
     if (ifCenter) {
         text.setOrigin(text.getLocalBounds().size / 2.0f);
     }

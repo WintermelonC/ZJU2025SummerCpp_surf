@@ -48,7 +48,7 @@ public:
      * @param ifCovert 是否转换为宽文本
      * @return 渲染后的文本对象
      * 
-     * @warning 如果为中文字符，必须将 ifCovert 设置为 true
+     * @note 此函数通过 sf::String 自动处理 UTF-8 编码，可正确显示所有语言。
      */
     static sf::Text renderText(
         const Fonts& font,
@@ -56,9 +56,9 @@ public:
         const int size,
         const sf::Color color,
         const sf::Vector2f position,
-        const bool ifCovert = false,
         const bool ifCenter = true
     );
+
 
     /**
      * @brief 渲染精灵

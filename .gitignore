@@ -1,6 +1,7 @@
 build-debug-mingw-ninja/
 build-release-mingw-ninja/
 .vscode/
+.DS_Store
 
 CMakePresets.json
 TODO.md
