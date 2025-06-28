@@ -10,6 +10,7 @@
 
 #include <string>
 #include <map>
+#include <random>
 #include <SFML/Graphics.hpp>
 
 constexpr sf::Vector2i RENDER_SIZE = {2560, 1440};  // 渲染区域大小
@@ -30,7 +31,7 @@ enum class Textures {
     player_left_21, player_left_22, player_left_23,
     player_right_11, player_right_12, player_right_13,
     player_right_21, player_right_22, player_right_23,
-    obstacle_1, obstacle_2
+    obstacle_1, obstacle_2,
     player_stop_1, player_stop_2, player_stop_3,
     heart_1, heart_2, power_1, power_2
 };
@@ -71,7 +72,7 @@ public:
      * @param ifCenter 是否将 Origin 设置为中心
      * @param ifSmooth 是否平滑纹理
      * 
-     * @warning 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
+     * @note 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
      */
     static sf::Sprite renderSprite(
         const Textures& texture,
@@ -99,6 +100,7 @@ public:
 
     static sf::Font& getFont(const Fonts font);  // 获取字体
     static sf::Texture& getTexture(const Textures texture);  // 获取纹理
+    static float randomFloat(float a, float b);
 
 private:
     static void loadFont(const Fonts font);  // 加载字体

@@ -9,6 +9,10 @@
 
 #include <string>
 #include <vector>
+#include <deque>
+#include <algorithm>
+#include <iostream>
+#include <random>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "utils.h"
@@ -40,6 +44,7 @@ private:
     void updateBackground();  // 更新背景
     void updateObstacle();  // 更新障碍物
     void updateScore();  // 更新分数
+    void updateRipple(const float& dt);  // 更新水波
 
     void render();  // 渲染游戏内容
     void renderStartMenu();  // 渲染开始菜单
@@ -50,6 +55,11 @@ private:
     void createObstacle();  // 新增随机障碍物
     void renderPlayerState();  // 渲染玩家状态（生命值、能量等）
     void renderScore();  // 渲染分数
+    void renderTurnTrail();  // 渲染转弯水波
+
+#ifdef DEBUG
+    void renderVelocity();  // 渲染玩家速度
+#endif  // DEBUG
 
 private:
     const sf::Vector2i WINDOW_SIZE = {720, 1280};  // 窗口大小
@@ -67,6 +77,15 @@ private:
     const float POWER_SCALE = HP_SCALE;  // 能量值图标缩放比例
     const float HP_GAP = 40.0f;  // 生命值图标之间的间隔
     const float POWER_GAP = HP_GAP;  // 能量值图标之间的间隔
+    const sf::Color BUTTON_COLOR = sf::Color(195, 240, 247);  // 按钮颜色
+    const float SPEED_THRESHOLD = 20.0f;  // 速度超过阈值，产生水波
+    const int RIPPLE_COUNT = 4;  // 水波数量
+    const float RIPPLE_LIFETIME = 0.8f;  // 水波生命周期（秒）
+
+    struct Ripple {
+        sf::RectangleShape ripple;
+        float lifetime;  // 剩余存活时间
+    };
 
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
@@ -83,5 +102,7 @@ private:
 
     GameState m_state;  // 游戏状态
     Player m_player;  // 玩家对象
+
+    std::deque<Ripple> m_ripples;  // 水波
     std::vector<Obstacle> m_obstacles;  // 障碍物队列
 };

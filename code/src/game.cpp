@@ -1,6 +1,4 @@
 #include "include/game.h"
-#include "iostream"
-#include "random"
 
 Game::Game()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(WINDOW_SIZE)), "Surf Game"),
@@ -132,6 +130,7 @@ void Game::update() {
     updateBackground();
     updateObstacle();
     updateScore();
+    updateRipple(dt);
 }
 
 void Game::render() {
@@ -144,16 +143,24 @@ void Game::render() {
         renderScore();
     } else if (m_state == GameState::Paused) {
         m_window.draw(m_bgShape);  // 绘制背景
+        renderTurnTrail();
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPausedMenu();
         renderPlayerState();
         renderScore();
+    #ifdef DEBUG
+        renderVelocity();  // 渲染玩家速度
+    #endif  // DEBUG
     } else if (m_state == GameState::Playing) {
         m_window.draw(m_bgShape);  // 绘制背景
+        renderTurnTrail();
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderObstacle();  // 绘制障碍物
         renderPlayerState();
         renderScore();  // 渲染分数
+    #ifdef DEBUG
+        renderVelocity();  // 渲染玩家速度
+    #endif  // DEBUG
     } else if (m_state == GameState::GameOver) {
 
     }
@@ -172,7 +179,7 @@ void Game::renderStartMenu() {
     // 开始按钮
     sf::Sprite startButton = Utils::renderSprite(
         Textures::start_button,
-        sf::Color(195, 240, 247),
+        BUTTON_COLOR,
         START_BUTTON_POS,
         START_BUTTON_SCALE
     );
@@ -227,7 +234,7 @@ void Game::renderPausedMenu() {
     // 继续游戏按钮
     sf::Sprite continueButton = Utils::renderSprite(
         Textures::start_button,
-        sf::Color(195, 240, 247),
+        BUTTON_COLOR,
         CONTINUE_BUTTON_POS,
         CONTINUE_BUTTON_SCALE
     );
@@ -254,7 +261,7 @@ void Game::renderPausedMenu() {
     // 返回菜单按钮
     sf::Sprite returnButton = Utils::renderSprite(
         Textures::start_button,
-        sf::Color(195, 240, 247),
+        BUTTON_COLOR,
         RETURN_BUTTON_POS,
         RETURN_BUTTON_SCALE
     );
@@ -333,9 +340,9 @@ void Game::createObstacle() {
     std::random_device rd; 
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> disX(0, m_window.getSize().x);
-    std::uniform_int_distribution<> disType(0, RENDER_HEIGHT);
+    std::uniform_int_distribution<> disType(0, 1);
     int x = disX(gen);  // 随机生成x坐标
-    int y = RENDER_HEIGHT;  // 初始y坐标为屏幕底
+    int y = RENDER_SIZE.y;  // 初始y坐标为屏幕底
 
     int type = disType(gen) % OBSTACLE_NUM - 1;  // 随机生成障碍物类型
     sf::Sprite sprite = Utils::renderSprite(
@@ -373,7 +380,7 @@ void Game::updateBackground() {
     } else if (m_offsetY >= texHeight) {
         m_offsetY -= texHeight;
     }
-    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, {RENDER_WIDTH, RENDER_HEIGHT}));
+    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, RENDER_SIZE));
 }
 
 void Game::updateObstacle() {
@@ -398,6 +405,39 @@ void Game::updateObstacle() {
 
 void Game::updateScore() {
     m_score += m_player.getVelocity().y * 0.001f;
+}
+
+void Game::updateRipple(const float& dt) {
+    const sf::Vector2f velocity = m_player.getVelocity();
+    for (auto it = m_ripples.begin(); it != m_ripples.end(); ) {
+        it -> lifetime -= dt;
+        if (it -> lifetime <= 0) {
+            it = m_ripples.erase(it);  // 移除过期的水波
+        } else {
+            it -> ripple.move({-velocity.x * PARALLAX_FACTOR, -velocity.y * PARALLAX_FACTOR});  // 更新水波位置
+            it -> ripple.rotate(sf::degrees(Utils::randomFloat(1.f, 3.f)));  // 随机旋转水波
+            it -> ripple.setFillColor(sf::Color(255, 255, 255,
+                static_cast<int>(150 * (it -> lifetime / RIPPLE_LIFETIME))));  // 渐变透明度
+            it++;
+        }
+    }
+
+    const bool isTurn = m_player.isTrun();
+    if (!isTurn || velocity.y < SPEED_THRESHOLD) {
+        return;
+    }
+
+    // 产生 RIPPLE_COUNT 个线段
+    for (int i = 0; i < RIPPLE_COUNT; i++) {
+        sf::RectangleShape line({3.f, 
+                                 Utils::randomFloat(10.f, 20.f)});
+        line.setRotation(sf::degrees(Utils::randomFloat(-20.f, 20.f)));
+        line.setPosition({PLAYER_POS.x + Utils::randomFloat(-PLAYER_SIZE.x / 3.f, PLAYER_SIZE.x / 3.f), 
+                          PLAYER_POS.y - Utils::randomFloat(PLAYER_SIZE.y / 3.f, PLAYER_SIZE.y / 2.f)});
+        line.setFillColor(sf::Color(255, 255, 255, 150));
+
+        m_ripples.push_back({line, RIPPLE_LIFETIME});
+    }
 }
 
 void Game::renderPlayerState() {
@@ -433,7 +473,7 @@ void Game::renderScore() {
     // 分数版
     sf::Sprite scoreboard = Utils::renderSprite(
         Textures::scoreboard,
-        sf::Color::White,
+        BUTTON_COLOR,
         {RENDER_CENTER_POS.x,
          RENDER_CENTER_POS.y - m_window.getSize().y / 2 + 50}
     );
@@ -455,4 +495,24 @@ void Game::renderScore() {
     m_window.draw(scoreboard);  // 绘制分数板
     m_window.draw(scoreText);  // 绘制分数文本
 }
->>>>>>> main -- Current Change
+
+void Game::renderTurnTrail() {
+    for (auto& ripple : m_ripples) {
+        m_window.draw(ripple.ripple);  // 绘制水波线段
+    }
+}
+
+#ifdef DEBUG
+void Game::renderVelocity() {
+    const sf::Vector2f& velocity = m_player.getVelocity();
+    // 速度文本
+    sf::Text velocityText = Utils::renderText(
+        Fonts::MSJHBD,
+        "Velocity: (" + std::to_string(static_cast<int>(velocity.x)) + ", " + std::to_string(static_cast<int>(velocity.y)) + ")",
+        20,
+        sf::Color::Black,
+        RENDER_CENTER_POS
+    );
+    m_window.draw(velocityText);  // 绘制速度文本
+}
+#endif  // DEBUG
