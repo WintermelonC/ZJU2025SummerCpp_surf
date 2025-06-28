@@ -4,7 +4,11 @@
 #include <SFML/Graphics.hpp>
 
 struct WindowCloseEvent {};
+struct WindowResizeEvent {
+    sf::Vector2u size;
+};
 
 using Event = std::variant<
-    WindowCloseEvent
+    WindowCloseEvent,
+    WindowResizeEvent
 >;
