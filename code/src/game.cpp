@@ -4,7 +4,7 @@ Game::Game()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(WINDOW_SIZE)), "Surf Game"),
       m_view(sf::FloatRect(RENDER_CENTER_POS, static_cast<sf::Vector2f>(WINDOW_SIZE))),
       m_state(GameState::Start),
-      m_bgShape(RENDER_CENTER_POS),
+      m_bgShape(static_cast<sf::Vector2f>(RENDER_SIZE)),
       m_player(PLAYER_POS) {
     // 初始化视图
     updateView();
@@ -15,8 +15,7 @@ Game::Game()
     sf::Texture& bgTexture = Utils::getTexture(Textures::water);
     bgTexture.setRepeated(true);  // 设置纹理重复
     m_bgShape.setTexture(&bgTexture);
-    // m_bgShape.setTextureRect(sf::IntRect({0, 0}, RENDER_SIZE));
-    m_bgShape.setTextureRect(sf::IntRect({0, 0}, {RENDER_SIZE.x, RENDER_SIZE.y}));
+    m_bgShape.setTextureRect(sf::IntRect({0, 0}, RENDER_SIZE));
 
     m_player.initial();  // 初始化玩家状态
 }
@@ -132,6 +131,7 @@ void Game::render() {
         renderStartMenu();
         renderPlayerAnimation();  // 绘制人物动画
         renderPlayerState();
+        renderScore();
     } else if (m_state == GameState::Paused) {
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
@@ -257,7 +257,7 @@ void Game::renderPausedMenu() {
         "返回菜单", 
         26, 
         sf::Color::Black, 
-        CONTINUE_BUTTON_SCALE - sf::Vector2f{0.f, 5.f},
+        RETURN_BUTTON_POS - sf::Vector2f{0.f, 5.f},
         true
     );
     // 鼠标悬停变化
@@ -344,10 +344,8 @@ void Game::renderPlayerState() {
         sf::Sprite heart = Utils::renderSprite(
             (i <= hp) ? Textures::heart_1 : Textures::heart_2,
             sf::Color::White,
-            RENDER_CENTER_POS - sf::Vector2f(
-                HEART_X_OFFSET + i * HP_GAP, 
-                m_window.getSize().y / 2 + 50
-            ),
+            {RENDER_CENTER_POS.x - HEART_X_OFFSET + i * HP_GAP, 
+             RENDER_CENTER_POS.y - m_window.getSize().y / 2 + 50},
             {HP_SCALE, HP_SCALE},
             false
         );
@@ -358,10 +356,8 @@ void Game::renderPlayerState() {
         sf::Sprite powerIcon = Utils::renderSprite(
             (i <= power) ? Textures::power_1 : Textures::power_2,
             sf::Color::White,
-            RENDER_CENTER_POS - sf::Vector2f(
-                POWER_X_OFFSET + i * POWER_GAP, 
-                m_window.getSize().y / 2 + 50
-            ),
+            {RENDER_CENTER_POS.x + POWER_X_OFFSET + i * POWER_GAP, 
+             RENDER_CENTER_POS.y - m_window.getSize().y / 2 + 50},
             {POWER_SCALE, POWER_SCALE},
             false
         );
@@ -374,9 +370,8 @@ void Game::renderScore() {
     sf::Sprite scoreboard = Utils::renderSprite(
         Textures::scoreboard,
         sf::Color::White,
-        RENDER_CENTER_POS - sf::Vector2f(0.f, m_window.getSize().y / 2 - 50),
-        SCOREBOARD_SCALE,
-        false
+        {RENDER_CENTER_POS.x,
+         RENDER_CENTER_POS.y - m_window.getSize().y / 2 + 50}
     );
     // 分数版阴影
     sf::Sprite scoreboardShadow = scoreboard;
@@ -388,7 +383,7 @@ void Game::renderScore() {
         std::to_string(static_cast<int>(m_score)),
         30,
         sf::Color::Black,
-        scoreboard.getPosition(),
+        scoreboard.getPosition() + sf::Vector2f{0.f, -6.f},
         true
     );
 

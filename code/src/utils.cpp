@@ -133,8 +133,8 @@ bool Utils::ifMouseOnButton(
     sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
     return (
         worldPos.x >= buttonPos.x - buttonWidth / 2 && 
-        worldPos.x <= buttonPos.y + buttonWidth / 2 &&
-        worldPos.y >= buttonPos.x - buttonHeight / 2 && 
+        worldPos.x <= buttonPos.x + buttonWidth / 2 &&
+        worldPos.y >= buttonPos.y - buttonHeight / 2 && 
         worldPos.y <= buttonPos.y + buttonHeight / 2
     );
 }

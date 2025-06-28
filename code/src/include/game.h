@@ -55,13 +55,12 @@ private:
     const sf::Vector2f CONTINUE_BUTTON_SCALE = {1.2f, 1.2f};  // 继续按钮缩放比例
     const sf::Vector2f RETURN_BUTTON_POS = RENDER_CENTER_POS + sf::Vector2f(0.f, 300.f);  // 返回按钮坐标
     const sf::Vector2f RETURN_BUTTON_SCALE = {0.8f, 0.8f};  // 返回按钮缩放比例
-    const int HEART_X_OFFSET = 300;  // 生命值图标 X 坐标偏移量
+    const int HEART_X_OFFSET = 260;  // 生命值图标 X 坐标偏移量
     const int POWER_X_OFFSET = 100;  // 能量值图标 X 坐标偏移量
     const float HP_SCALE = 1.5f;  // 生命值图标缩放比例
     const float POWER_SCALE = HP_SCALE;  // 能量值图标缩放比例
     const float HP_GAP = 40.0f;  // 生命值图标之间的间隔
     const float POWER_GAP = HP_GAP;  // 能量值图标之间的间隔
-    const sf::Vector2f SCOREBOARD_SCALE = {1.0f, 0.8f};  // 分数板缩放比例
 
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
