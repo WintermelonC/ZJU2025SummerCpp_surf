@@ -22,7 +22,9 @@ std::map<Textures, std::string> Utils::m_texturePaths = {
     {Textures::player_right_13, "../../assets/images/player/player_right_13.png"},
     {Textures::player_right_21, "../../assets/images/player/player_right_21.png"},
     {Textures::player_right_22, "../../assets/images/player/player_right_22.png"},
-    {Textures::player_right_23, "../../assets/images/player/player_right_23.png"}
+    {Textures::player_right_23, "../../assets/images/player/player_right_23.png"},
+    {Textures::obstacle_1, "../../assets/images/start_button.png"},
+    {Textures::obstacle_2, "../../assets/images/start_icon.png"}
 };
 
 std::map<Textures, sf::Texture*> Utils::m_textures;

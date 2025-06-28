@@ -47,6 +47,11 @@ public:
     // 更新玩家状态
     void update(float dt, const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
 
+    // 碰撞检测
+    void onCollision(); // 被Game类调用，用于触发碰撞反应
+    // 设置无敌状态
+    bool isInvincible() const { return m_isInvincible; }
+
 private:
     // 更新 X 速度
     void updateXSpeed(const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
@@ -65,4 +70,13 @@ private:
     float m_animTimer = 0.0f;  // 动画计时器
     
     XState m_xState;  // 当前 X 状态
+
+    bool m_isInvincible = false;    // 是否处于无敌（虚化）状态
+    bool m_isPaused = false;        // 是否处于碰撞后的停顿状态
+
+    sf::Clock m_invincibilityTimer; // 无敌状态的计时器
+    sf::Clock m_pauseTimer;         // 碰撞后停顿的计时器
+
+    const sf::Time INVINCIBILITY_DURATION = sf::seconds(3.0f); // 无敌总时长
+    const sf::Time PAUSE_DURATION = sf::seconds(1.0f);         // 停顿时长
 };
