@@ -31,7 +31,7 @@ enum class Textures {
     player_left_21, player_left_22, player_left_23,
     player_right_11, player_right_12, player_right_13,
     player_right_21, player_right_22, player_right_23,
-    obstacle_1, obstacle_2
+    obstacle_1, obstacle_2,
     player_stop_1, player_stop_2, player_stop_3,
     heart_1, heart_2, power_1, power_2
 };

@@ -10,6 +10,9 @@
 #include <string>
 #include <vector>
 #include <deque>
+#include <algorithm>
+#include <iostream>
+#include <random>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include "utils.h"

@@ -1,6 +1,4 @@
 #include "include/game.h"
-#include "iostream"
-#include "random"
 
 Game::Game()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(WINDOW_SIZE)), "Surf Game"),
@@ -342,9 +340,9 @@ void Game::createObstacle() {
     std::random_device rd; 
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> disX(0, m_window.getSize().x);
-    std::uniform_int_distribution<> disType(0, RENDER_HEIGHT);
+    std::uniform_int_distribution<> disType(0, 1);
     int x = disX(gen);  // 随机生成x坐标
-    int y = RENDER_HEIGHT;  // 初始y坐标为屏幕底
+    int y = RENDER_SIZE.y;  // 初始y坐标为屏幕底
 
     int type = disType(gen) % OBSTACLE_NUM - 1;  // 随机生成障碍物类型
     sf::Sprite sprite = Utils::renderSprite(
@@ -382,7 +380,7 @@ void Game::updateBackground() {
     } else if (m_offsetY >= texHeight) {
         m_offsetY -= texHeight;
     }
-    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, {RENDER_WIDTH, RENDER_HEIGHT}));
+    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, RENDER_SIZE));
 }
 
 void Game::updateObstacle() {

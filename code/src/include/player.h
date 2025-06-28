@@ -81,8 +81,6 @@ private:
     int m_currentFrame = 0;  // 当前帧索引
     float m_animTimer = 0.0f;  // 动画计时器
     
-    XState m_xState;  // 当前 X 状态
-
     bool m_isInvincible = false;    // 是否处于无敌（虚化）状态
     bool m_isPaused = false;        // 是否处于碰撞后的停顿状态
 
