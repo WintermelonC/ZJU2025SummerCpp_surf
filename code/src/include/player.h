@@ -7,32 +7,23 @@
 #include <SFML/Graphics.hpp>
 #include "utils.h"
 
-constexpr float ACCELERATION_1 = 5.0f;  // 默认加速度
-constexpr float ACCELERATION_2 = 10.0f;  // 增强加速度
-constexpr float MAX_SPEED_1 = 25.0f;  // 默认最大速度
-constexpr float MAX_SPEED_2 = 50.0f;  // 增强最大速度
-constexpr float X_SPEED_1 = 5.0f;  // X 速度 1
-constexpr float X_SPEED_2 = 10.0f;  // X 速度 2
-constexpr float ANGLE_1 = 20.0f;  // 角度 1
-constexpr float ANGLE_2 = 40.0f;  // 角度 2
+constexpr sf::Vector2f PLAYER_POS = {RENDER_CENTER_POS.x, RENDER_SIZE.y / 5 * 2};  // 玩家初始坐标
 constexpr float PLAYER_SCALE = 1.5f;  // 玩家缩放比例
-constexpr int PLAYER_ANIM_FRAMES = 3;  // 玩家动画帧数
-constexpr int PLAYER_WIDTH = 64;  // 玩家宽度
-constexpr int PLAYER_HEIGHT = 96;  // 玩家高度
-constexpr int PLAYER_X = RENDER_CENTER_X;  // 玩家初始 X 坐标
-constexpr int PLAYER_Y = RENDER_HEIGHT / 5 * 2;  // 玩家初始 Y 坐标
+constexpr int PLAYER_HP = 3;  // 玩家最大生命值
+constexpr int PLAYER_POWER = 3;  // 玩家最大能量值
 
-enum class XState {
-    CENTER,
-    LEFT1,
-    LEFT2,
-    RIGHT1,
-    RIGHT2
+enum class PlayerState {
+    Center,
+    Left1,
+    Left2,
+    Right1,
+    Right2,
+    Stop
 };
 
 class Player {
 public:
-    Player(sf::Vector2f position = {PLAYER_X, PLAYER_Y});
+    Player(sf::Vector2f position = PLAYER_POS);
     ~Player() = default;
 
     // 获取位置
@@ -43,26 +34,40 @@ public:
     const sf::Vector2f& getVelocity() const { return m_velocity; }
     // 获取玩家纹理路径
     const std::vector<Textures> getPaths() const;
+    const int getHP() const { return m_hp; }  // 获取玩家生命值
+    const int getPower() const { return m_power; }  // 获取玩家能量值
+    const bool isAccelerating() const { return m_isAccelerating; }  // 是否正在加速
 
-    // 更新玩家状态
-    void update(float dt, const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
+    void usePower();  // 使用能量加速
 
-private:
-    // 更新 X 速度
-    void updateXSpeed(const sf::Vector2i& mousePosition, const sf::RenderWindow& window);
-    // 更新 Y 速度
-    void updateYSpeed(float dt);
-    // 更新动画
-    void updateAnimation(float dt);
+    void update(float dt, const sf::RenderWindow& window);  // 更新玩家状态
+    void initial();  // 初始化玩家状态
 
 private:
+    void updateXSpeed(float dt);  // 更新 X 速度
+    void updateYSpeed(float dt);  // 更新 Y 速度 
+    void updateAnimation(float dt);  // 更新动画
+
+private:
+    const int POWER_TIME = 5;  // 能量持续时间（秒）
+    const float ACCELERATION_1 = 5.0f;  // 默认加速度
+    const float ACCELERATION_2 = 20.0f;  // 增强加速度
+    const float ACCELERATION_3 = 50.0f;  // 减速加速度
+    const float MAX_SPEED = 25.0f;  // Y 最大速度
+    const float XY_SPEED_1 = 0.4f;  // Y / X 比例 1
+    const float XY_SPEED_2 = 0.8f;  // Y / X 比例 2
+    const float SPEED_SCALE = 2.0f;  // 速度加速比例
+    const float ANGLE_1 = 20.0f;  // 角度 1
+    const float ANGLE_2 = 40.0f;  // 角度 2
+
     sf::Sprite m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
-    float m_acceleration = ACCELERATION_1;  // 当前加速度
-    float m_maxSpeed = MAX_SPEED_1;  // 当前最大速度
+    PlayerState m_state;  // 当前状态
+    int m_hp = PLAYER_HP;  // 玩家生命值
+    int m_power = 3;  // 玩家能量值
     
     int m_currentFrame = 0;  // 当前帧索引
     float m_animTimer = 0.0f;  // 动画计时器
-    
-    XState m_xState;  // 当前 X 状态
+    bool m_isAccelerating = false;  // 是否正在加速
+    float m_powerTimer = 0.0f;  // 能量计时器
 };

@@ -12,10 +12,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-constexpr int RENDER_WIDTH = 2560;  // 渲染宽度
-constexpr int RENDER_HEIGHT = 1440;  // 渲染高度
-constexpr int RENDER_CENTER_X = RENDER_WIDTH / 2;  // 渲染中心 X 坐标
-constexpr int RENDER_CENTER_Y = RENDER_HEIGHT / 2;  // 渲染中心 Y 坐标
+constexpr sf::Vector2i RENDER_SIZE = {2560, 1440};  // 渲染区域大小
+constexpr sf::Vector2f RENDER_CENTER_POS = static_cast<sf::Vector2f>(RENDER_SIZE) / 2.f;  // 渲染中心坐标
 
 enum class Fonts {
     MSJHBD,
@@ -26,18 +24,18 @@ enum class Textures {
     water,
     start_button,
     start_icon,
+    scoreboard,
     player_center_1, player_center_2, player_center_3,
     player_left_11, player_left_12, player_left_13,
     player_left_21, player_left_22, player_left_23,
     player_right_11, player_right_12, player_right_13,
     player_right_21, player_right_22, player_right_23,
+    player_stop_1, player_stop_2, player_stop_3,
+    heart_1, heart_2, power_1, power_2
 };
 
 class Utils {
 public:
-    // 释放资源
-    static void clear();
-
     /**
      * @brief 渲染文本
      * 
@@ -53,7 +51,7 @@ public:
      * @note 此函数通过 sf::String 自动处理 UTF-8 编码，可正确显示所有语言。
      */
     static sf::Text renderText(
-        const Fonts font, 
+        const Fonts& font,
         const std::string& content,
         const int size,
         const sf::Color color,
@@ -75,7 +73,7 @@ public:
      * @warning 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
      */
     static sf::Sprite renderSprite(
-        const Textures texture,
+        const Textures& texture,
         const sf::Color color,
         const sf::Vector2f position,
         const sf::Vector2f scale = {1.0f, 1.0f},
@@ -91,16 +89,24 @@ public:
         const sf::Color color = {255, 255, 255}
     );
 
+    static bool ifMouseOnButton(
+        const sf::RenderWindow& window,
+        const sf::Vector2f& buttonPos,
+        const float& buttonWidth, 
+        const float& buttonHeight
+    );
+
+    static sf::Font& getFont(const Fonts font);  // 获取字体
+    static sf::Texture& getTexture(const Textures texture);  // 获取纹理
+
+private:
     static void loadFont(const Fonts font);  // 加载字体
     static void loadTexture(const Textures texture);  // 加载纹理
-
-    static sf::Font* getFont(const Fonts font);  // 获取字体
-    static sf::Texture* getTexture(const Textures texture);  // 获取纹理
 
 private:
     static std::map<Fonts, std::string> m_fontPaths;  // 字体路径列表
     static std::map<Textures, std::string> m_texturePaths;  // 纹理路径列表
 
-    static std::map<Fonts, sf::Font*> m_fonts;  // 字体缓存
-    static std::map<Textures, sf::Texture*> m_textures;  // 纹理缓存
+    static std::map<Fonts, sf::Font> m_fonts;  // 字体缓存
+    static std::map<Textures, sf::Texture> m_textures;  // 纹理缓存
 };
