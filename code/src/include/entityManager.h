@@ -5,12 +5,25 @@
 #include "assetManager.h"
 
 enum class EntityType {
-    water
+    water,
+    player
 };
 
 class EntityManager { 
 public:
-    static sf::Sprite& getSprite(const EntityType& type, const Textures& texture);
+    static void loadSprites();
+    
+    static sf::Sprite& getSprite(const EntityType& type);
+
+    static void setSprite(
+        const EntityType& type,
+        const sf::Vector2f& position,
+        const sf::Vector2f& scale = {1.0f, 1.0f},
+        const bool& ifCenter = true,
+        const sf::Vector2f& origin = {0.0f, 0.0f}
+    );
+
+    static void setSpriteTexture(const EntityType& type, const Textures& texture);
 
 private:
 

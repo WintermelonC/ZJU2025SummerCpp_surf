@@ -4,6 +4,7 @@
 
 int main() {
     AssetManager::loadAssets();
+    EntityManager::loadSprites();
     Game game;
     try {
         game.run();
