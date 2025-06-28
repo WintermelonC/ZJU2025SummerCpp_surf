@@ -12,10 +12,8 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
-constexpr int RENDER_WIDTH = 2560;  // 渲染宽度
-constexpr int RENDER_HEIGHT = 1440;  // 渲染高度
-constexpr int RENDER_CENTER_X = RENDER_WIDTH / 2;  // 渲染中心 X 坐标
-constexpr int RENDER_CENTER_Y = RENDER_HEIGHT / 2;  // 渲染中心 Y 坐标
+constexpr sf::Vector2i RENDER_SIZE = {2560, 1440};  // 渲染区域大小
+constexpr sf::Vector2f RENDER_CENTER_POS = static_cast<sf::Vector2f>(RENDER_SIZE) / 2.f;  // 渲染中心坐标
 
 enum class Fonts {
     MSJHBD,
@@ -26,6 +24,7 @@ enum class Textures {
     water,
     start_button,
     start_icon,
+    scoreboard,
     player_center_1, player_center_2, player_center_3,
     player_left_11, player_left_12, player_left_13,
     player_left_21, player_left_22, player_left_23,
@@ -52,7 +51,7 @@ public:
      * @warning 如果为中文字符，必须将 ifCovert 设置为 true
      */
     static sf::Text renderText(
-        const Fonts font,
+        const Fonts& font,
         const std::string& content,
         const int size,
         const sf::Color color,
@@ -74,7 +73,7 @@ public:
      * @warning 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
      */
     static sf::Sprite renderSprite(
-        const Textures texture,
+        const Textures& texture,
         const sf::Color color,
         const sf::Vector2f position,
         const sf::Vector2f scale = {1.0f, 1.0f},
@@ -91,11 +90,10 @@ public:
     );
 
     static bool ifMouseOnButton(
-        const sf::Vector2f& mousePos, 
-        float buttonX, 
-        float buttonY, 
-        float buttonWidth, 
-        float buttonHeight
+        const sf::RenderWindow& window,
+        const sf::Vector2f& buttonPos,
+        const float& buttonWidth, 
+        const float& buttonHeight
     );
 
     static sf::Font& getFont(const Fonts font);  // 获取字体

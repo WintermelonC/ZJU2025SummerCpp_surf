@@ -1,11 +1,11 @@
 #include "include/game.h"
 
 Game::Game()
-    : m_window(sf::VideoMode({static_cast<unsigned int>(WINDOW_WIDTH), static_cast<unsigned int>(WINDOW_HEIGHT)}), "Surf Game"),
-      m_view(sf::FloatRect({RENDER_CENTER_X, RENDER_CENTER_Y}, {static_cast<float>(WINDOW_WIDTH), static_cast<float>(WINDOW_HEIGHT)})),
+    : m_window(sf::VideoMode(static_cast<sf::Vector2u>(WINDOW_SIZE)), "Surf Game"),
+      m_view(sf::FloatRect(RENDER_CENTER_POS, static_cast<sf::Vector2f>(WINDOW_SIZE))),
       m_state(GameState::Start),
-      m_bgShape({RENDER_WIDTH, RENDER_HEIGHT}),
-      m_player({PLAYER_X, PLAYER_Y}) {
+      m_bgShape(RENDER_CENTER_POS),
+      m_player(PLAYER_POS) {
     // 初始化视图
     updateView();
     // 激活垂直同步
@@ -15,7 +15,8 @@ Game::Game()
     sf::Texture& bgTexture = Utils::getTexture(Textures::water);
     bgTexture.setRepeated(true);  // 设置纹理重复
     m_bgShape.setTexture(&bgTexture);
-    m_bgShape.setTextureRect(sf::IntRect({0, 0}, {RENDER_WIDTH, RENDER_HEIGHT}));
+    // m_bgShape.setTextureRect(sf::IntRect({0, 0}, RENDER_SIZE));
+    m_bgShape.setTextureRect(sf::IntRect({0, 0}, {RENDER_SIZE.x, RENDER_SIZE.y}));
 
     m_player.initial();  // 初始化玩家状态
 }
@@ -53,10 +54,10 @@ void Game::handleEvents() {
             // 鼠标点击
             if (mouseButton -> button == sf::Mouse::Button::Left) {
                 // 左键点击
-                handleMouseLeftClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
+                handleMouseLeftClick();
             } else if (mouseButton -> button == sf::Mouse::Button::Right) {
                 // 右键点击
-                handleMouseRightClick({static_cast<float>(mouseButton -> position.x), static_cast<float>(mouseButton -> position.y)});
+                handleMouseRightClick();
             }
         } else if (const auto* keyPressed = event -> getIf<sf::Event::KeyPressed>()) {
             // 键盘按下事件
@@ -74,39 +75,33 @@ void Game::handleEvents() {
     }
 }
 
-void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
-    // 将鼠标坐标转换为视图坐标
-    sf::Vector2f worldPos = m_window.mapPixelToCoords(sf::Vector2i(mousePos));
-    
+void Game::handleMouseLeftClick() {
     // 检查是否点击了开始按钮
     if (m_state == GameState::Start) {
         // 开始按钮的位置和大小
-        float buttonX = START_BUTTON_X;
-        float buttonY = START_BUTTON_Y;
-        float buttonWidth = BUTTON_WIDTH * START_BUTTON_SCALE;  // 考虑缩放
-        float buttonHeight = BUTTON_HEIGHT * START_BUTTON_SCALE;
+        sf::Vector2f buttonPos = START_BUTTON_POS;
+        float buttonWidth = BUTTON_SIZE.x * START_BUTTON_SCALE.x;  // 考虑缩放
+        float buttonHeight = BUTTON_SIZE.y * START_BUTTON_SCALE.y;
         // 检查点击是否在按钮范围内
-        if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+        if (Utils::ifMouseOnButton(m_window, buttonPos, buttonWidth, buttonHeight)) {
             m_state = GameState::Playing;  // 切换到游戏状态
             m_clock.restart();  // 重置时钟
         }
     } else if (m_state == GameState::Paused) {
         // 继续按钮的位置和大小
-        float buttonX = CONTINUE_BUTTON_X;
-        float buttonY = CONTINUE_BUTTON_Y;
-        float buttonWidth = BUTTON_WIDTH * CONTINUE_BUTTON_SCALE;  // 考虑缩放
-        float buttonHeight = BUTTON_HEIGHT * CONTINUE_BUTTON_SCALE;
+        sf::Vector2f buttonPos = CONTINUE_BUTTON_POS;
+        float buttonWidth = BUTTON_SIZE.x * CONTINUE_BUTTON_SCALE.x;  // 考虑缩放
+        float buttonHeight = BUTTON_SIZE.y * CONTINUE_BUTTON_SCALE.y;
         // 检查点击是否在按钮范围内
-        if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+        if (Utils::ifMouseOnButton(m_window, buttonPos, buttonWidth, buttonHeight)) {
             m_state = GameState::Playing;  // 切换到游戏状态
             m_clock.restart();  // 重置时钟
         }
-        buttonX = RETURN_BUTTON_X;
-        buttonY = RETURN_BUTTON_Y;
-        buttonWidth = BUTTON_WIDTH * RETURN_BUTTON_SCALE;  // 考虑缩放
-        buttonHeight = BUTTON_HEIGHT * RETURN_BUTTON_SCALE;
+        buttonPos = RETURN_BUTTON_POS;  // 返回按钮位置
+        buttonWidth = BUTTON_SIZE.x * RETURN_BUTTON_SCALE.x;  // 考虑缩放
+        buttonHeight = BUTTON_SIZE.y * RETURN_BUTTON_SCALE.y;
         // 检查点击是否在返回按钮范围内
-        if (Utils::ifMouseOnButton(worldPos, buttonX, buttonY, buttonWidth, buttonHeight)) {
+        if (Utils::ifMouseOnButton(m_window, buttonPos, buttonWidth, buttonHeight)) {
             m_state = GameState::Start;  // 切换到开始状态
             m_player.initial();
             m_clock.restart();  // 重置时钟
@@ -114,7 +109,7 @@ void Game::handleMouseLeftClick(const sf::Vector2f& mousePos) {
     }
 }
 
-void Game::handleMouseRightClick(const sf::Vector2f& mousePos) {
+void Game::handleMouseRightClick() {
     // 右键点击事件处理
     if (m_state == GameState::Playing) {
         // 使用能量加速
@@ -127,6 +122,7 @@ void Game::update() {
     m_player.update(dt, m_window);
     updateView();
     updateBackground();
+    updateScore();
 }
 
 void Game::render() {
@@ -141,10 +137,12 @@ void Game::render() {
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPausedMenu();
         renderPlayerState();
+        renderScore();
     } else if (m_state == GameState::Playing) {
         m_window.draw(m_bgShape);  // 绘制背景
         m_window.draw(m_player.getSprite());  // 绘制玩家精灵
         renderPlayerState();
+        renderScore();  // 渲染分数
     } else if (m_state == GameState::GameOver) {
 
     }
@@ -158,14 +156,14 @@ void Game::renderStartMenu() {
         "LET'S SURF", 
         50, 
         sf::Color::Black, 
-        {RENDER_CENTER_X, RENDER_CENTER_Y - 200}
+        RENDER_CENTER_POS - sf::Vector2f{0.f, 200.f}
     );
     // 开始按钮
     sf::Sprite startButton = Utils::renderSprite(
         Textures::start_button,
         sf::Color(195, 240, 247),
-        {START_BUTTON_X, START_BUTTON_Y},
-        {START_BUTTON_SCALE, START_BUTTON_SCALE}
+        START_BUTTON_POS,
+        START_BUTTON_SCALE
     );
     // 开始按钮阴影
     sf::Sprite startButtonShadow = startButton;
@@ -175,7 +173,7 @@ void Game::renderStartMenu() {
     sf::Sprite startIcon = Utils::renderSprite(
         Textures::start_icon,
         sf::Color::White,
-        {START_BUTTON_X - 75, START_BUTTON_Y},
+        START_BUTTON_POS - sf::Vector2f{75.f, 0.f},
         {0.9f, 0.9f}
     );
     // 开始游戏文字
@@ -183,8 +181,8 @@ void Game::renderStartMenu() {
         Fonts::almmdfdk, 
         "开始游戏", 
         35, 
-        sf::Color::Black, 
-        {START_BUTTON_X + 20, START_BUTTON_Y - 6}, 
+        sf::Color::Black,
+        START_BUTTON_POS + sf::Vector2f{20.f, -6.f},
         true
     );
     // 鼠标悬停变化
@@ -204,7 +202,7 @@ void Game::renderStartMenu() {
 
 void Game::renderPausedMenu() {
     // 半透明遮罩
-    sf::RectangleShape filter({RENDER_WIDTH, RENDER_HEIGHT});
+    sf::RectangleShape filter(static_cast<sf::Vector2f>(RENDER_SIZE));
     filter.setFillColor(sf::Color(255, 255, 255, 30));
     // 暂停文字
     sf::Text pausedText = Utils::renderText(
@@ -212,15 +210,15 @@ void Game::renderPausedMenu() {
         "已暂停", 
         75, 
         sf::Color::Black, 
-        {RENDER_CENTER_X, RENDER_CENTER_Y - 400}, 
+        RENDER_CENTER_POS + sf::Vector2f{0.f, -400.f},
         true
     );
     // 继续游戏按钮
     sf::Sprite continueButton = Utils::renderSprite(
         Textures::start_button,
         sf::Color(195, 240, 247),
-        {CONTINUE_BUTTON_X, CONTINUE_BUTTON_Y},
-        {CONTINUE_BUTTON_SCALE, CONTINUE_BUTTON_SCALE}
+        CONTINUE_BUTTON_POS,
+        CONTINUE_BUTTON_SCALE
     );
     // 按钮阴影
     sf::Sprite continueButtonShadow = continueButton;
@@ -230,7 +228,7 @@ void Game::renderPausedMenu() {
     sf::Sprite continueIcon = Utils::renderSprite(
         Textures::start_icon,
         sf::Color::White,
-        {CONTINUE_BUTTON_X - 75, CONTINUE_BUTTON_Y},
+        CONTINUE_BUTTON_POS - sf::Vector2f{75.f, 0.f},
         {0.9f, 0.9f}
     );
     // 继续游戏文字
@@ -238,16 +236,16 @@ void Game::renderPausedMenu() {
         Fonts::almmdfdk, 
         "继续游戏", 
         35, 
-        sf::Color::Black, 
-        {CONTINUE_BUTTON_X + 20, CONTINUE_BUTTON_Y - 6}, 
+        sf::Color::Black,
+        CONTINUE_BUTTON_POS + sf::Vector2f{20.f, -6.f},
         true
     );
     // 返回菜单按钮
     sf::Sprite returnButton = Utils::renderSprite(
         Textures::start_button,
         sf::Color(195, 240, 247),
-        {RETURN_BUTTON_X, RETURN_BUTTON_Y},
-        {RETURN_BUTTON_SCALE, RETURN_BUTTON_SCALE}
+        RETURN_BUTTON_POS,
+        RETURN_BUTTON_SCALE
     );
     // 返回按钮阴影
     sf::Sprite returnButtonShadow = returnButton;
@@ -259,7 +257,7 @@ void Game::renderPausedMenu() {
         "返回菜单", 
         26, 
         sf::Color::Black, 
-        {RETURN_BUTTON_X, RETURN_BUTTON_Y - 5}, 
+        CONTINUE_BUTTON_SCALE - sf::Vector2f{0.f, 5.f},
         true
     );
     // 鼠标悬停变化
@@ -301,7 +299,7 @@ void Game::renderPlayerAnimation() {
     sf::Sprite sprite = Utils::renderSprite(
         paths[m_currentAnimFrame], 
         sf::Color::White,
-        {RENDER_CENTER_X, RENDER_CENTER_Y},
+        RENDER_CENTER_POS,
         {2.0f, 2.0f},
         false
     );
@@ -310,7 +308,7 @@ void Game::renderPlayerAnimation() {
 
 void Game::updateView() {
     // 更新视图中心为渲染中心
-    m_view.setCenter({RENDER_CENTER_X, RENDER_CENTER_Y});
+    m_view.setCenter(RENDER_CENTER_POS);
     m_window.setView(m_view);
 }
 
@@ -331,7 +329,11 @@ void Game::updateBackground() {
     } else if (m_offsetY >= texHeight) {
         m_offsetY -= texHeight;
     }
-    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, {RENDER_WIDTH, RENDER_HEIGHT}));
+    m_bgShape.setTextureRect(sf::IntRect({static_cast<int>(m_offsetX), static_cast<int>(m_offsetY)}, RENDER_SIZE));
+}
+
+void Game::updateScore() {
+    m_score += m_player.getVelocity().y * 0.001f;
 }
 
 void Game::renderPlayerState() {
@@ -342,9 +344,11 @@ void Game::renderPlayerState() {
         sf::Sprite heart = Utils::renderSprite(
             (i <= hp) ? Textures::heart_1 : Textures::heart_2,
             sf::Color::White,
-            {static_cast<float>(RENDER_CENTER_X - HEART_X_OFFSET + i * 50), 
-             static_cast<float>(RENDER_CENTER_Y - m_window.getSize().y / 2 + 50)},
-            {2.0f, 2.0f},
+            RENDER_CENTER_POS - sf::Vector2f(
+                HEART_X_OFFSET + i * HP_GAP, 
+                m_window.getSize().y / 2 + 50
+            ),
+            {HP_SCALE, HP_SCALE},
             false
         );
         m_window.draw(heart);  // 绘制生命值图标
@@ -354,11 +358,41 @@ void Game::renderPlayerState() {
         sf::Sprite powerIcon = Utils::renderSprite(
             (i <= power) ? Textures::power_1 : Textures::power_2,
             sf::Color::White,
-            {static_cast<float>(RENDER_CENTER_X + POWER_X_OFFSET + i * 50), 
-             static_cast<float>(RENDER_CENTER_Y - m_window.getSize().y / 2 + 50)},
-            {2.0f, 2.0f},
+            RENDER_CENTER_POS - sf::Vector2f(
+                POWER_X_OFFSET + i * POWER_GAP, 
+                m_window.getSize().y / 2 + 50
+            ),
+            {POWER_SCALE, POWER_SCALE},
             false
         );
         m_window.draw(powerIcon);  // 绘制能量值图标
     }
+}
+
+void Game::renderScore() {
+    // 分数版
+    sf::Sprite scoreboard = Utils::renderSprite(
+        Textures::scoreboard,
+        sf::Color::White,
+        RENDER_CENTER_POS - sf::Vector2f(0.f, m_window.getSize().y / 2 - 50),
+        SCOREBOARD_SCALE,
+        false
+    );
+    // 分数版阴影
+    sf::Sprite scoreboardShadow = scoreboard;
+    scoreboardShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    scoreboardShadow.move({0.f, 4.f});  // 向下偏移
+    // 分数文本
+    sf::Text scoreText = Utils::renderText(
+        Fonts::MSJHBD,
+        std::to_string(static_cast<int>(m_score)),
+        30,
+        sf::Color::Black,
+        scoreboard.getPosition(),
+        true
+    );
+
+    m_window.draw(scoreboardShadow);  // 绘制分数版阴影
+    m_window.draw(scoreboard);  // 绘制分数板
+    m_window.draw(scoreText);  // 绘制分数文本
 }

@@ -8,6 +8,7 @@ std::map<Textures, std::string> Utils::m_texturePaths = {
     {Textures::water, "../../assets/images/water_texture.png"},
     {Textures::start_button, "../../assets/images/start_button.png"},
     {Textures::start_icon, "../../assets/images/start_icon.png"},
+    {Textures::scoreboard, "../../assets/images/scoreboard.png"},
     {Textures::player_center_1, "../../assets/images/player/player_center_1.png"},
     {Textures::player_center_2, "../../assets/images/player/player_center_2.png"},
     {Textures::player_center_3, "../../assets/images/player/player_center_3.png"},
@@ -36,7 +37,7 @@ std::map<Textures, sf::Texture> Utils::m_textures;
 std::map<Fonts, sf::Font> Utils::m_fonts;
 
 sf::Text Utils::renderText(
-        const Fonts font,
+        const Fonts& font,
         const std::string& content,
         const int size,
         const sf::Color color,
@@ -65,7 +66,7 @@ sf::Text Utils::renderText(
 }
 
 sf::Sprite Utils::renderSprite(
-        const Textures texture,
+        const Textures& texture,
         const sf::Color color,
         const sf::Vector2f position,
         const sf::Vector2f scale,
@@ -94,16 +95,10 @@ void Utils::mouseHoverButton(
         const sf::Color color
     ) {
     // 鼠标悬停变化
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-    sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
-    float buttonX = button.getPosition().x;
-    float buttonY = button.getPosition().y;
+    sf::Vector2f buttonPos = button.getPosition();
     float buttonWidth = button.getLocalBounds().size.x * button.getScale().x;
     float buttonHeight = button.getLocalBounds().size.y * button.getScale().y;
-    if (worldPos.x >= buttonX - buttonWidth / 2 && 
-        worldPos.x <= buttonX + buttonWidth / 2 &&
-        worldPos.y >= buttonY - buttonHeight / 2 && 
-        worldPos.y <= buttonY + buttonHeight / 2) {
+    if (ifMouseOnButton(window, buttonPos, buttonWidth, buttonHeight)) {
         // 鼠标悬停在按钮上，改变按钮颜色
         button.setColor(sf::Color(255, 255, 255));  // 改变颜色
         buttonShadow.move({0.f, 3.f});
@@ -129,17 +124,18 @@ void Utils::loadTexture(const Textures texture) {
 }
 
 bool Utils::ifMouseOnButton(
-    const sf::Vector2f& mousePos, 
-    float buttonX, 
-    float buttonY, 
-    float buttonWidth, 
-    float buttonHeight
+    const sf::RenderWindow& window,
+    const sf::Vector2f& buttonPos,
+    const float& buttonWidth, 
+    const float& buttonHeight
     ) {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldPos = window.mapPixelToCoords(mousePos);
     return (
-        mousePos.x >= buttonX - buttonWidth / 2 && 
-        mousePos.x <= buttonX + buttonWidth / 2 &&
-        mousePos.y >= buttonY - buttonHeight / 2 && 
-        mousePos.y <= buttonY + buttonHeight / 2
+        worldPos.x >= buttonPos.x - buttonWidth / 2 && 
+        worldPos.x <= buttonPos.y + buttonWidth / 2 &&
+        worldPos.y >= buttonPos.x - buttonHeight / 2 && 
+        worldPos.y <= buttonPos.y + buttonHeight / 2
     );
 }
 

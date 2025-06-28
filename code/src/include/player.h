@@ -7,8 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "utils.h"
 
-constexpr int PLAYER_X = RENDER_CENTER_X;  // 玩家初始 X 坐标
-constexpr int PLAYER_Y = RENDER_HEIGHT / 5 * 2;  // 玩家初始 Y 坐标
+constexpr sf::Vector2f PLAYER_POS = {RENDER_CENTER_POS.x, RENDER_SIZE.y / 5 * 2};  // 玩家初始坐标
 constexpr float PLAYER_SCALE = 1.5f;  // 玩家缩放比例
 constexpr int PLAYER_HP = 3;  // 玩家最大生命值
 constexpr int PLAYER_POWER = 3;  // 玩家最大能量值
@@ -24,7 +23,7 @@ enum class PlayerState {
 
 class Player {
 public:
-    Player(sf::Vector2f position = {PLAYER_X, PLAYER_Y});
+    Player(sf::Vector2f position = PLAYER_POS);
     ~Player() = default;
 
     // 获取位置
