@@ -1,12 +1,15 @@
 add_executable(surf
     surf.cpp
     game.cpp
-    player.cpp
-    utils.cpp
-    obstacle.cpp
+    eventBus.cpp
+    inputManager.cpp
+    renderSystem.cpp
+    assetManager.cpp
+    entityManager.cpp
 )
 
 target_link_libraries(surf PRIVATE SFML::System SFML::Window SFML::Graphics SFML::Audio)
+target_include_directories(surf PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(surf PRIVATE DEBUG)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")

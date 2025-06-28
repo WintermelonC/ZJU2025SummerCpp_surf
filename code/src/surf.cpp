@@ -1,7 +1,9 @@
 #include <iostream>
-#include "include/game.h"
+#include "assetManager.h"
+#include "game.h"
 
 int main() {
+    AssetManager::loadAssets();
     Game game;
     try {
         game.run();
