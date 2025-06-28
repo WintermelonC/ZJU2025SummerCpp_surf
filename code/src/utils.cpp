@@ -32,19 +32,8 @@ std::map<Textures, std::string> Utils::m_texturePaths = {
     {Textures::power_2, "../../assets/images/player/power_2.png"}
 };
 
-std::map<Textures, sf::Texture*> Utils::m_textures;
-std::map<Fonts, sf::Font*> Utils::m_fonts;
-
-void Utils::clear() {
-    for (auto& [name, texture] : Utils::m_textures) {
-        delete texture;
-    }
-    for (auto& [name, font] : Utils::m_fonts) {
-        delete font;
-    }
-    Utils::m_textures.clear();
-    Utils::m_fonts.clear();
-}
+std::map<Textures, sf::Texture> Utils::m_textures;
+std::map<Fonts, sf::Font> Utils::m_fonts;
 
 sf::Text Utils::renderText(
         const Fonts font,
@@ -56,8 +45,8 @@ sf::Text Utils::renderText(
         const bool ifCenter
     ) {
     // 获取字体指针
-    sf::Font* fontPtr = Utils::getFont(font);
-    sf::Text text(*fontPtr);
+    sf::Font& fontPtr = Utils::getFont(font);
+    sf::Text text(fontPtr);
     if (ifCovert) {
         std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
         std::wstring wideStr = converter.from_bytes(content);
@@ -84,11 +73,11 @@ sf::Sprite Utils::renderSprite(
         const bool ifCenter
     ) {
     // 获取纹理指针
-    sf::Texture* texturePtr = Utils::getTexture(texture);
-    texturePtr -> setSmooth(ifSmooth);
-    sf::Sprite sprite(*texturePtr);
+    sf::Texture& texturePtr = Utils::getTexture(texture);
+    texturePtr.setSmooth(ifSmooth);
+    sf::Sprite sprite(texturePtr);
     if (ifCenter) {
-        sprite.setOrigin({texturePtr -> getSize().x / 2.f, texturePtr -> getSize().y / 2.f});
+        sprite.setOrigin({texturePtr.getSize().x / 2.f, texturePtr.getSize().y / 2.f});
     }
     sprite.setPosition(position);
     sprite.setScale(scale);
@@ -123,20 +112,20 @@ void Utils::mouseHoverButton(
 
 void Utils::loadFont(const Fonts font) {
     std::string path = m_fontPaths[font];
-    sf::Font* fontPtr = new sf::Font();
-    if (!fontPtr -> openFromFile(path)) {
+    sf::Font newFont;
+    if (!newFont.openFromFile(path)) {
         throw std::runtime_error("Failed to load font from " + path);
     }
-    m_fonts[font] = fontPtr;
+    m_fonts[font] = newFont;
 }
 
 void Utils::loadTexture(const Textures texture) {
     std::string path = m_texturePaths[texture];
-    sf::Texture* texturePtr = new sf::Texture();
-    if (!texturePtr -> loadFromFile(path)) {
+    sf::Texture newTexture;
+    if (!newTexture.loadFromFile(path)) {
         throw std::runtime_error("Failed to load texture from " + path);
     }
-    m_textures[texture] = texturePtr;
+    m_textures[texture] = newTexture;
 }
 
 bool Utils::ifMouseOnButton(
@@ -154,7 +143,7 @@ bool Utils::ifMouseOnButton(
     );
 }
 
-sf::Font* Utils::getFont(const Fonts font) {
+sf::Font& Utils::getFont(const Fonts font) {
     auto it = m_fonts.find(font);
     if (it != m_fonts.end()) {
         return it -> second;
@@ -169,7 +158,7 @@ sf::Font* Utils::getFont(const Fonts font) {
     }
 }
 
-sf::Texture* Utils::getTexture(const Textures texture) {
+sf::Texture& Utils::getTexture(const Textures texture) {
     auto it = m_textures.find(texture);
     if (it != m_textures.end()) {
         return it -> second;

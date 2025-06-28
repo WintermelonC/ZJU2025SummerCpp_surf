@@ -37,9 +37,6 @@ enum class Textures {
 
 class Utils {
 public:
-    // 释放资源
-    static void clear();
-
     /**
      * @brief 渲染文本
      * 
@@ -101,8 +98,8 @@ public:
         float buttonHeight
     );
 
-    static sf::Font* getFont(const Fonts font);  // 获取字体
-    static sf::Texture* getTexture(const Textures texture);  // 获取纹理
+    static sf::Font& getFont(const Fonts font);  // 获取字体
+    static sf::Texture& getTexture(const Textures texture);  // 获取纹理
 
 private:
     static void loadFont(const Fonts font);  // 加载字体
@@ -112,6 +109,6 @@ private:
     static std::map<Fonts, std::string> m_fontPaths;  // 字体路径列表
     static std::map<Textures, std::string> m_texturePaths;  // 纹理路径列表
 
-    static std::map<Fonts, sf::Font*> m_fonts;  // 字体缓存
-    static std::map<Textures, sf::Texture*> m_textures;  // 纹理缓存
+    static std::map<Fonts, sf::Font> m_fonts;  // 字体缓存
+    static std::map<Textures, sf::Texture> m_textures;  // 纹理缓存
 };

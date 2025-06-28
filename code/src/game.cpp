@@ -12,9 +12,9 @@ Game::Game()
     m_window.setVerticalSyncEnabled(true);
 
     // 设置背景纹理和形状大小
-    sf::Texture* bgTexture = Utils::getTexture(Textures::water);
-    bgTexture -> setRepeated(true);  // 设置纹理重复
-    m_bgShape.setTexture(bgTexture);
+    sf::Texture& bgTexture = Utils::getTexture(Textures::water);
+    bgTexture.setRepeated(true);  // 设置纹理重复
+    m_bgShape.setTexture(&bgTexture);
     m_bgShape.setTextureRect(sf::IntRect({0, 0}, {RENDER_WIDTH, RENDER_HEIGHT}));
 
     m_player.initial();  // 初始化玩家状态

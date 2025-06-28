@@ -57,7 +57,7 @@ void Player::initial() {
     m_state = PlayerState::Center;
     m_currentFrame = 0;
     m_animTimer = 0.f;
-    m_sprite.setTexture(*Utils::getTexture(Textures::player_center_1));
+    m_sprite.setTexture(Utils::getTexture(Textures::player_center_1));
     m_sprite.setScale({PLAYER_SCALE, PLAYER_SCALE});
 }
 
@@ -146,6 +146,6 @@ void Player::updateAnimation(float dt) {
     if (m_animTimer >= m_animInterval) {
         m_animTimer = 0.f;
         m_currentFrame = (m_currentFrame + 1) % paths.size();
-        m_sprite.setTexture(*Utils::getTexture(paths[m_currentFrame]));
+        m_sprite.setTexture(Utils::getTexture(paths[m_currentFrame]));
     }
 }
