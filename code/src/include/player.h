@@ -42,8 +42,6 @@ public:
     const int getHP() const { return m_hp; }  // 获取玩家生命值
     const int getPower() const { return m_power; }  // 获取玩家能量
 
-    const sf::Vector2f& getVelocity() const { return m_velocity; }  // 获取玩家速度
-
 private:
     void updateState(const sf::Vector2f& mousePos);  // 更新玩家状态
     void updateXSpeed();  // 更新 X 轴速度

@@ -7,7 +7,7 @@ void AssetManager::loadAssets() {
     // Textures
     loadTexture(Textures::water, "../../assets/images/water.png");
     loadTexture(Textures::scoreboard, "../../assets/images/scoreboard.png");
-    loadTexture(Textures::start_button, "../../assets/images/start_button.png");
+    loadTexture(Textures::button, "../../assets/images/button.png");
     loadTexture(Textures::start_icon, "../../assets/images/start_icon.png");
     // Player
     loadTexture(Textures::player_center_1, "../../assets/images/player/player_center_1.png");

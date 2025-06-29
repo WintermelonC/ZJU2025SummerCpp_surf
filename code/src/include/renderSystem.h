@@ -8,13 +8,17 @@
 
 class RenderSystem {
 public:
-    void render(sf::RenderWindow& window);
-    void renderPlayerState(
+    void renderPlayer(
         sf::RenderWindow& window, 
         const int& HP, 
         const int& power,
         const float& score
     );
+    void renderStartMenu(sf::RenderWindow& window);
+    void renderPauseMenu(sf::RenderWindow& window);
+    void renderBackground(sf::RenderWindow& window);
+    void renderRipple(sf::RenderWindow& window);
+    void renderTail(sf::RenderWindow& window);
 
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
@@ -59,7 +63,7 @@ private:
      * 
      * @note 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
      */
-    static sf::Sprite renderSprite(
+    sf::Sprite renderSprite(
         const Textures& texture,
         const sf::Color color,
         const sf::Vector2f position,
@@ -68,16 +72,18 @@ private:
         const bool ifCenter = true
     );
 
-    void renderRipple(sf::RenderWindow& window);
-    void renderTail(sf::RenderWindow& window);
-    void renderBackground(sf::RenderWindow& window);
-    void renderStartMenu(sf::RenderWindow& window);
-    void renderPauseMenu(sf::RenderWindow& window);
+    void renderPlayerAnimation(sf::RenderWindow& window);
 
     void spawnRipple(const bool& ifSpawn = false);
     void spawnTail(const sf::Angle& angle, const bool& ifSpawn = false);
 
-    void mouseHoverButton(sf::Sprite& button, sf::Sprite& buttonShadow, const sf::RenderWindow& window, const sf::Vector2f offset, const sf::Color color);
+    void mouseHoverButton(
+        sf::Sprite& button, 
+        sf::Sprite& buttonShadow, 
+        const sf::Vector2f& mousePos,
+        const sf::Vector2f offset = {0.f, 3.f},
+        const sf::Color color = {255, 255, 255}
+    );
 
 private:
     const int RIPPLE_COUNT = 4;  // 水波数量
@@ -103,4 +109,7 @@ private:
 
     std::deque<Trail> m_ripples;  // 水波
     std::deque<Trail> m_tails;  // 加速拖尾
+
+    sf::Clock m_animClock;
+    int m_currentAnimFrame = 0;
 };

@@ -33,6 +33,7 @@ private:
 private:
     const float SPEED_THRESHOLD_1 = 20.0f;  // 速度超过阈值，产生水波
     const float SPEED_THRESHOLD_2 = 40.0f;  // 速度超过阈值，产生水波
+    const sf::Vector2i BUTTON_SIZE = {180, 60};  // 按钮大小
 
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
