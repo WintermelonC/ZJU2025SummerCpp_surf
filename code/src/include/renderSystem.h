@@ -20,7 +20,7 @@ public:
     void renderRipple(sf::RenderWindow& window);
     void renderTail(sf::RenderWindow& window);
 
-    void updateRipple(const float& dt, const sf::Vector2f& velocity, const bool& ifSpawn = false);
+    void updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
 
 #ifdef DEBUG
@@ -74,7 +74,7 @@ private:
 
     void renderPlayerAnimation(sf::RenderWindow& window);
 
-    void spawnRipple(const bool& ifSpawn = false);
+    void spawnRipple(const sf::Angle& angle, const bool& ifSpawn = false);
     void spawnTail(const sf::Angle& angle, const bool& ifSpawn = false);
 
     void mouseHoverButton(
@@ -87,7 +87,7 @@ private:
 
 private:
     const int RIPPLE_COUNT = 4;  // 水波数量
-    const float RIPPLE_LIFETIME = 0.8f;  // 水波生命周期（秒）
+    const float RIPPLE_LIFETIME = 0.4f;  // 水波生命周期（秒）
     const int RIPPLE_ALPHA = 200;  // 水波初始透明度
     const sf::Color RIPPLE_COLOR = sf::Color(255, 255, 255, RIPPLE_ALPHA);  // 水波颜色
     const int TAIL_COUNT = 1;  // 拖尾数量
