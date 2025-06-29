@@ -9,6 +9,13 @@
 class RenderSystem {
 public:
     void render(sf::RenderWindow& window);
+    void renderPlayerState(
+        sf::RenderWindow& window, 
+        const int& HP, 
+        const int& power,
+        const float& score
+    );
+
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
 
@@ -40,6 +47,27 @@ private:
         const bool ifCenter = true
     );
 
+    /**
+     * @brief 渲染精灵
+     * 
+     * @param path 纹理路径
+     * @param color 颜色
+     * @param position 位置
+     * @param scale 缩放比例
+     * @param ifCenter 是否将 Origin 设置为中心
+     * @param ifSmooth 是否平滑纹理
+     * 
+     * @note 如果不想改变纹理颜色，将 color 设置为 sf::Color::White
+     */
+    static sf::Sprite renderSprite(
+        const Textures& texture,
+        const sf::Color color,
+        const sf::Vector2f position,
+        const sf::Vector2f scale = {1.0f, 1.0f},
+        const bool ifSmooth = true,
+        const bool ifCenter = true
+    );
+
     void renderRipple(sf::RenderWindow& window);
     void renderTail(sf::RenderWindow& window);
 
@@ -55,6 +83,13 @@ private:
     const float TAIL_LIFETIME = 1.0f;  // 拖尾生命周期（秒）
     const int TAIL_ALPHA = 150;  // 拖尾初始透明度
     const sf::Color TAIL_COLOR = sf::Color(141, 249, 196, TAIL_ALPHA);
+    const int HEART_X_OFFSET = 260;  // 生命值图标 X 坐标偏移量
+    const int POWER_X_OFFSET = 100;  // 能量值图标 X 坐标偏移量
+    const float HP_SCALE = 1.5f;  // 生命值图标缩放比例
+    const float POWER_SCALE = HP_SCALE;  // 能量值图标缩放比例
+    const float HP_GAP = 40.0f;  // 生命值图标之间的间隔
+    const float POWER_GAP = HP_GAP;  // 能量值图标之间的间隔
+    const sf::Color BUTTON_COLOR = sf::Color(195, 240, 247);  // 按钮颜色
 
     struct Trail {
         sf::RectangleShape trail;

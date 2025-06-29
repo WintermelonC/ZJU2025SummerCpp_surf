@@ -39,6 +39,8 @@ public:
         }
         return sf::degrees(0.f);
     }
+    const int getHP() const { return m_hp; }  // 获取玩家生命值
+    const int getPower() const { return m_power; }  // 获取玩家能量
 
 private:
     void updateState(const sf::Vector2f& mousePos);  // 更新玩家状态
@@ -57,17 +59,15 @@ private:
     const float XY_SPEED_2 = 0.8f;  // Y / X 比例 2
     const float ANGLE_1 = 20.0f;  // 角度 1
     const float ANGLE_2 = 40.0f;  // 角度 2
-    const int PLAYER_HP = 3;  // 玩家最大生命值
-    const int PLAYER_POWER = 3;  // 玩家最大能量值
     const int POWER_TIME = 5;  // 能量持续时间（秒）
-    const float SPEED_SCALE = 2.0f;  // 速度加速比例
+    const float SPEED_SCALE = 1.5f;  // 速度加速比例
 
     sf::Sprite& m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
     PlayerState m_state;  // 玩家状态
     PlayerState m_lastState;  // 上一个状态
     bool m_isTurn = false;  // 是否转弯
-    int m_hp = PLAYER_HP;  // 玩家生命值
+    int m_hp = Config::Player::PLAYER_HP;  // 玩家生命值
     int m_power = 0;  // 玩家能量值
     bool m_isPower = false;  // 玩家是否使用能量
     float m_powerTimer = 0.0f;  // 能量计时器

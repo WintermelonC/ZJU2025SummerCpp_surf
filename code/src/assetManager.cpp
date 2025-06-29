@@ -6,6 +6,7 @@ std::map<Fonts, sf::Font> AssetManager::m_fonts;
 void AssetManager::loadAssets() {
     // Textures
     loadTexture(Textures::water, "../../assets/images/water.png");
+    loadTexture(Textures::scoreboard, "../../assets/images/scoreboard.png");
     // Player
     loadTexture(Textures::player_center_1, "../../assets/images/player/player_center_1.png");
     loadTexture(Textures::player_center_2, "../../assets/images/player/player_center_2.png");
@@ -25,7 +26,12 @@ void AssetManager::loadAssets() {
     loadTexture(Textures::player_stop_1, "../../assets/images/player/player_stop_1.png");
     loadTexture(Textures::player_stop_2, "../../assets/images/player/player_stop_2.png");
     loadTexture(Textures::player_stop_3, "../../assets/images/player/player_stop_3.png");
-
+    // PlayerState
+    loadTexture(Textures::heart_1, "../../assets/images/player/heart_1.png");
+    loadTexture(Textures::heart_2, "../../assets/images/player/heart_2.png");
+    loadTexture(Textures::power_1, "../../assets/images/player/power_1.png");
+    loadTexture(Textures::power_2, "../../assets/images/player/power_2.png");
+    
     // Font
     loadFont(Fonts::MSYHBD, "../../assets/fonts/MSYHBD.TTC");
 }

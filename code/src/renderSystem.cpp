@@ -14,6 +14,62 @@ void RenderSystem::render(sf::RenderWindow& window) {
     window.draw(player); // 绘制玩家
 }
 
+void RenderSystem::renderPlayerState(
+        sf::RenderWindow& window, 
+        const int& HP, 
+        const int& power,
+        const float& score
+    ) {
+    for (int i = 1; i <= Config::Player::PLAYER_HP; i++) {
+        sf::Sprite heart = renderSprite(
+            (i <= HP) ? Textures::heart_1 : Textures::heart_2,
+            sf::Color::White,
+            {Config::Window::RENDER_CENTER.x - HEART_X_OFFSET + i * HP_GAP, 
+             Config::Window::RENDER_CENTER.y - window.getSize().y / 2 + 50},
+            {HP_SCALE, HP_SCALE},
+            false
+        );
+        window.draw(heart);  // 绘制生命值图标
+    }
+
+    for (int i = 1; i <= Config::Player::PLAYER_HP; i++) {
+        sf::Sprite powerIcon = renderSprite(
+            (i <= power) ? Textures::power_1 : Textures::power_2,
+            sf::Color::White,
+            {Config::Window::RENDER_CENTER.x + POWER_X_OFFSET + i * POWER_GAP, 
+             Config::Window::RENDER_CENTER.y - window.getSize().y / 2 + 50},
+            {POWER_SCALE, POWER_SCALE},
+            false
+        );
+        window.draw(powerIcon);  // 绘制能量值图标
+    }
+
+    // 分数版
+    sf::Sprite scoreboard = renderSprite(
+        Textures::scoreboard,
+        BUTTON_COLOR,
+        {Config::Window::RENDER_CENTER.x,
+         Config::Window::RENDER_CENTER.y - window.getSize().y / 2 + 50}
+    );
+    // 分数版阴影
+    sf::Sprite scoreboardShadow = scoreboard;
+    scoreboardShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    scoreboardShadow.move({0.f, 4.f});  // 向下偏移
+    // 分数文本
+    sf::Text scoreText = renderText(
+        Fonts::MSYHBD,
+        std::to_string(static_cast<int>(score)),
+        30,
+        sf::Color::Black,
+        scoreboard.getPosition() + sf::Vector2f{0.f, -6.f},
+        true
+    );
+
+    window.draw(scoreboardShadow);  // 绘制分数版阴影
+    window.draw(scoreboard);  // 绘制分数板
+    window.draw(scoreText);  // 绘制分数文本
+}
+
 void RenderSystem::updateRipple(const float& dt, const sf::Vector2f& velocity, const bool& ifSpawn) {
     for (auto it = m_ripples.begin(); it != m_ripples.end(); ) {
         it -> lifetime -= dt;
@@ -48,7 +104,6 @@ void RenderSystem::updateTail(const float& dt, const sf::Vector2f& velocity, con
 
     spawnTail(-angle, ifSpawn);  // 生成新的拖尾
 }
-
 sf::Text RenderSystem::renderText(
         const Fonts& font,
         const std::string& content,
@@ -71,6 +126,28 @@ sf::Text RenderSystem::renderText(
     text.setPosition(position);
 
     return text;
+}
+
+sf::Sprite RenderSystem::renderSprite(
+        const Textures& texture,
+        const sf::Color color,
+        const sf::Vector2f position,
+        const sf::Vector2f scale,
+        const bool ifSmooth,
+        const bool ifCenter
+    ) {
+    // 获取纹理指针
+    sf::Texture& texturePtr = AssetManager::getTexture(texture);
+    texturePtr.setSmooth(ifSmooth);
+    sf::Sprite sprite(texturePtr);
+    if (ifCenter) {
+        sprite.setOrigin({texturePtr.getSize().x / 2.f, texturePtr.getSize().y / 2.f});
+    }
+    sprite.setPosition(position);
+    sprite.setScale(scale);
+    sprite.setColor(color);
+
+    return sprite;
 }
 
 void RenderSystem::renderRipple(sf::RenderWindow& window) {

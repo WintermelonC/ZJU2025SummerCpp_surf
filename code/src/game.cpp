@@ -46,10 +46,12 @@ void Game::update() {
     m_renderSystem.updateRipple(dt, m_player.getVelocity(), ifSpawnRipple);  // 更新水波状态
     m_renderSystem.updateTail(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnTail);  // 更新拖尾状态
     m_player.update(dt, mousePos);  // 更新玩家状态
+    updateScore();  // 更新分数
 }
 
 void Game::render() {
     m_renderSystem.render(m_window);
+    m_renderSystem.renderPlayerState(m_window, m_player.getHP(), m_player.getPower(), m_score);  // 渲染玩家状态
 #ifdef DEBUG
     m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
 #endif  // DEBUG
@@ -74,4 +76,8 @@ void Game::updateWater() {
         false, 
         {Config::Texture::WATER_SIZE.x, 0.f}
     );
+}
+
+void Game::updateScore() {
+    m_score += m_player.getVelocity().y * 0.001f;
 }
