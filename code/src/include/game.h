@@ -23,7 +23,8 @@ private:
     void render();
 
 private:
-    const float PARALLAX_FACTOR = 0.1f;  // 视差因子
+    const float SPEED_THRESHOLD_1 = 20.0f;  // 速度超过阈值，产生水波
+    const float SPEED_THRESHOLD_2 = 50.0f;  // 速度超过阈值，产生水波
 
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图

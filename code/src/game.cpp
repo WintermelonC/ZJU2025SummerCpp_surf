@@ -37,9 +37,14 @@ void Game::processGameEvents() {
 }
 
 void Game::update() {
-    updateWater();  // 更新水面状态
     const float dt = m_clock.restart().asSeconds();  // 获取帧时间间隔
     const sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));  // 获取鼠标位置
+    const bool ifSpawnRipple = m_player.isTrun() && m_player.getVelocity().y > SPEED_THRESHOLD_1;  // 判断是否生成水波
+    const bool ifSpawnTail = m_player.isPower() && m_player.getVelocity().y > SPEED_THRESHOLD_2;  // 判断是否生成拖尾
+    
+    updateWater();  // 更新水面状态
+    m_renderSystem.updateRipple(dt, m_player.getVelocity(), ifSpawnRipple);  // 更新水波状态
+    m_renderSystem.updateTail(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnTail);  // 更新拖尾状态
     m_player.update(dt, mousePos);  // 更新玩家状态
 }
 
@@ -53,7 +58,7 @@ void Game::render() {
 
 void Game::updateWater() {
     // 根据玩家移动方向反向移动水面
-    m_offset -= m_player.getVelocity() * PARALLAX_FACTOR;
+    m_offset -= m_player.getVelocity() * Config::Game::PARALLAX_FACTOR;
     if (m_offset.x <= 0) {
         m_offset.x += Config::Texture::WATER_SIZE.x;
     } else if (m_offset.x >= Config::Texture::WATER_SIZE.x) {

@@ -4,7 +4,7 @@ Player::Player()
     : m_sprite(EntityManager::getSprite(EntityType::player)),
       m_velocity({0.0f, 0.0f}),
       m_state(PlayerState::Center) {
-    EntityManager::setSprite(EntityType::player, POSITION, SCALE);  // 设置玩家精灵位置和缩放
+    EntityManager::setSprite(EntityType::player, Config::Player::PLAYER_POS, SCALE);  // 设置玩家精灵位置和缩放
 #ifdef DEBUG
     m_power = PLAYER_POWER;
 #endif  // DEBUG
@@ -12,6 +12,7 @@ Player::Player()
 
 void Player::update(const float& dt, const sf::Vector2f& mousePos) {
     updateState(mousePos);  // 更新玩家状态
+    updateTurn();  // 更新转弯状态
     updatePower(dt);  // 更新能量状态
     updateYSpeed(dt);  // 更新 Y 轴速度
     updateXSpeed();  // 更新 X 轴速度
@@ -142,4 +143,13 @@ void Player::updatePower(const float& dt) {
     } else {
         m_powerTimer = 0.0f;  // 重置能量计时器
     }
+}
+
+void Player::updateTurn() {
+    if (m_state != PlayerState::Stop && m_lastState != m_state) {
+        m_isTurn = true;
+    } else {
+        m_isTurn = false;
+    }
+    m_lastState = m_state;  // 更新上一个状态
 }

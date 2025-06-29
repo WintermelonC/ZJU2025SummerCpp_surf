@@ -26,6 +26,19 @@ public:
     void usePower();
 
     const sf::Vector2f& getVelocity() const { return m_velocity; }  // 获取玩家速度
+    const bool isTrun() const { return m_isTurn; }  // 是否转弯
+    const bool isPower() const { return m_isPower; }  // 是否使用能量
+    const sf::Angle getAngle() const {
+        switch (m_state) {
+            case PlayerState::Left1:
+            case PlayerState::Right1:
+                return sf::degrees(m_velocity.x >= 0.f ? ANGLE_1 : -ANGLE_1);
+            case PlayerState::Left2:
+            case PlayerState::Right2:
+                return sf::degrees(m_velocity.x >= 0.f ? ANGLE_2 : -ANGLE_2);
+        }
+        return sf::degrees(0.f);
+    }
 
 private:
     void updateState(const sf::Vector2f& mousePos);  // 更新玩家状态
@@ -33,12 +46,9 @@ private:
     void updateYSpeed(const float& dt);  // 更新 Y 轴速度
     void updateAnimation(const float& dt);  // 更新动画
     void updatePower(const float& dt);  // 更新能量状态
+    void updateTurn();  // 更新转弯状态
 
 private:
-    const sf::Vector2f POSITION = {
-        Config::Window::RENDER_CENTER.x, 
-        Config::Window::RENDER_SIZE.y / 5.0f * 2.0f
-    };  // 玩家初始位置
     const sf::Vector2f SCALE = {1.5f, 1.5f};  // 玩家缩放比例
     const float ACCELERATION_1 = 10.0f;  // 加速度 1
     const float ACCELERATION_2 = 50.0f;  // 加速度 2
@@ -55,6 +65,8 @@ private:
     sf::Sprite& m_sprite;  // 玩家精灵
     sf::Vector2f m_velocity;  // 玩家速度
     PlayerState m_state;  // 玩家状态
+    PlayerState m_lastState;  // 上一个状态
+    bool m_isTurn = false;  // 是否转弯
     int m_hp = PLAYER_HP;  // 玩家生命值
     int m_power = 0;  // 玩家能量值
     bool m_isPower = false;  // 玩家是否使用能量

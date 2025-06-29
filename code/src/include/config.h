@@ -12,4 +12,13 @@ namespace Config {
     namespace Texture {
         constexpr sf::Vector2i WATER_SIZE{256, 256};
     }
+
+    namespace Player {
+        constexpr sf::Vector2f PLAYER_POS{ Config::Window::RENDER_CENTER.x, Config::Window::RENDER_SIZE.y / 5.0f * 2.0f};
+        constexpr sf::Vector2i PLAYER_SIZE{64, 96};
+    }
+
+    namespace Game {
+        constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
+    }
 }
