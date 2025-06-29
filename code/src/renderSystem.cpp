@@ -188,7 +188,7 @@ void RenderSystem::renderPauseMenu(sf::RenderWindow& window) {
     mouseHoverButton(returnButton, returnButtonShadow, window, {0.f, 0.3f}, {255, 255, 255});
 
     // 绘制所有元素
-    // window.draw(player);
+    window.draw(EntityManager::getSprite(EntityType::player));  // 绘制水的精灵
     window.draw(filter);
     window.draw(pausedText);  // 绘制暂停文字
     window.draw(continueButtonShadow);  // 绘制继续按钮阴影
