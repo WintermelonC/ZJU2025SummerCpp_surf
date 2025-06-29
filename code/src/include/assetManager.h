@@ -10,6 +10,9 @@ enum class Fonts {
 
 enum class Textures {
     water,
+    start_button,
+    start_icon,
+    scoreboard,
     player_center_1, player_center_2, player_center_3,
     player_left_11, player_left_12, player_left_13,
     player_left_21, player_left_22, player_left_23,

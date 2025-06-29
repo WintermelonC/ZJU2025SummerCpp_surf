@@ -70,9 +70,14 @@ private:
 
     void renderRipple(sf::RenderWindow& window);
     void renderTail(sf::RenderWindow& window);
+    void renderBackground(sf::RenderWindow& window);
+    void renderStartMenu(sf::RenderWindow& window);
+    void renderPauseMenu(sf::RenderWindow& window);
 
     void spawnRipple(const bool& ifSpawn = false);
     void spawnTail(const sf::Angle& angle, const bool& ifSpawn = false);
+
+    void mouseHoverButton(sf::Sprite& button, sf::Sprite& buttonShadow, const sf::RenderWindow& window, const sf::Vector2f offset, const sf::Color color);
 
 private:
     const int RIPPLE_COUNT = 4;  // 水波数量
