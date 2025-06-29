@@ -7,8 +7,10 @@ struct WindowCloseEvent {};
 struct WindowResizeEvent {
     sf::Vector2u size;
 };
+struct MouseRightClickEvent {};
 
 using Event = std::variant<
     WindowCloseEvent,
-    WindowResizeEvent
+    WindowResizeEvent,
+    MouseRightClickEvent
 >;

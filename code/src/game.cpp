@@ -14,7 +14,7 @@ void Game::run() {
     while (m_window.isOpen()) {
         m_inputManager.processInput(m_window);  // 接收输入
         processGameEvents();  // 处理游戏事件
-        update();  // 更新游戏状态-
+        update();  // 更新游戏状态
         render();  // 渲染
     }
 }
@@ -29,6 +29,9 @@ void Game::processGameEvents() {
             // 窗口大小调整事件
             m_view.setSize(static_cast<sf::Vector2f>(std::get<WindowResizeEvent>(event).size));
             m_window.setView(m_view);
+        } else if (std::holds_alternative<MouseRightClickEvent>(event)) {
+            // 鼠标右键点击事件
+            m_player.usePower();  // 玩家使用能量
         }
     }
 }
@@ -42,6 +45,10 @@ void Game::update() {
 
 void Game::render() {
     m_renderSystem.render(m_window);
+#ifdef DEBUG
+    m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
+#endif  // DEBUG
+    m_window.display();  // 显示渲染结果
 }
 
 void Game::updateWater() {

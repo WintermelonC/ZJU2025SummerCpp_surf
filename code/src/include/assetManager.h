@@ -4,6 +4,10 @@
 #include <map>
 #include <SFML/Graphics.hpp>
 
+enum class Fonts {
+    MSYHBD
+};
+
 enum class Textures {
     water,
     player_center_1, player_center_2, player_center_3,
@@ -18,10 +22,13 @@ class AssetManager {
 public:
     static void loadAssets();
     static sf::Texture& getTexture(const Textures& texture);
+    static sf::Font& getFont(const Fonts& font);
 
 private:
     static void loadTexture(const Textures& texture, const std::string& filePath);
+    static void loadFont(const Fonts& font, const std::string& filePath);
 
 private:
     static std::map<Textures, sf::Texture> m_textures;  // 存储纹理
+    static std::map<Fonts, sf::Font> m_fonts;  // 存储字体
 };

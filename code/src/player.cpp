@@ -5,13 +5,25 @@ Player::Player()
       m_velocity({0.0f, 0.0f}),
       m_state(PlayerState::Center) {
     EntityManager::setSprite(EntityType::player, POSITION, SCALE);  // 设置玩家精灵位置和缩放
+#ifdef DEBUG
+    m_power = PLAYER_POWER;
+#endif  // DEBUG
 };
 
 void Player::update(const float& dt, const sf::Vector2f& mousePos) {
     updateState(mousePos);  // 更新玩家状态
+    updatePower(dt);  // 更新能量状态
     updateYSpeed(dt);  // 更新 Y 轴速度
     updateXSpeed();  // 更新 X 轴速度
     updateAnimation(dt);  // 更新动画
+}
+
+void Player::usePower() {
+    if (m_power > 0) {
+        m_power--;
+        m_powerTimer = 0.0f;
+        m_isPower = true;
+    }
 }
 
 void Player::updateState(const sf::Vector2f& mousePos) {
@@ -61,10 +73,15 @@ void Player::updateYSpeed(const float& dt) {
         case PlayerState::Left2:
         case PlayerState::Right1:
         case PlayerState::Right2:
-            if (m_velocity.y < MAX_SPEED) {
-                m_velocity.y += ACCELERATION_1 * dt;  // 增加 Y 轴速度
-                if (m_velocity.y > MAX_SPEED) {
-                    m_velocity.y = MAX_SPEED;  // 限制 Y 轴速度不超过最大值
+            if (m_velocity.y < MAX_SPEED * (m_isPower ? SPEED_SCALE : 1.f)) {
+                m_velocity.y += dt * (m_isPower ? ACCELERATION_2 : ACCELERATION_1);  // 增加速度
+                if (m_velocity.y > MAX_SPEED * (m_isPower ? SPEED_SCALE : 1.f)) {
+                    m_velocity.y = MAX_SPEED * (m_isPower ? SPEED_SCALE : 1.f);  // 限制最大速度
+                }
+            } else if (m_velocity.y > MAX_SPEED) {
+                m_velocity.y -= dt * ACCELERATION_2;
+                if (m_velocity.y < MAX_SPEED) {
+                    m_velocity.y = MAX_SPEED;  // 限制最小速度
                 }
             }
             break;
@@ -112,5 +129,17 @@ void Player::updateAnimation(const float& dt) {
         m_animTimer = 0.f;
         m_currentFrame = (m_currentFrame + 1) % paths.size();
         EntityManager::setSpriteTexture(EntityType::player, paths[m_currentFrame]);  // 更新玩家精灵纹理
+    }
+}
+
+void Player::updatePower(const float& dt) {
+    if (m_isPower) {
+        m_powerTimer += dt;
+        if (m_powerTimer >= POWER_TIME) {
+            m_isPower = false;  // 能量时间结束
+            m_powerTimer = 0.0f;  // 重置计时器
+        }
+    } else {
+        m_powerTimer = 0.0f;  // 重置能量计时器
     }
 }
