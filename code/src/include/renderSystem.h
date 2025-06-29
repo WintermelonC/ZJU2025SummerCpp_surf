@@ -22,5 +22,5 @@ private:
     void mouseHoverButton(sf::Sprite& button, sf::Sprite& buttonShadow, const sf::RenderWindow& window, const sf::Vector2f offset, const sf::Color color);
 
 private:
-    EntityManager m_entityManager;  // 实体管理器，用于获取实体的精灵
+
 };

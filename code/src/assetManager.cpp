@@ -8,6 +8,25 @@ void AssetManager::loadAssets() {
     loadTexture(Textures::water, "../../assets/images/water.png");
     loadTexture(Textures::start_button, "../../assets/images/start_button.png");
     loadTexture(Textures::start_icon, "../../assets/images/start_icon.png");
+    // Player
+    loadTexture(Textures::player_center_1, "../../assets/images/player/player_center_1.png");
+    loadTexture(Textures::player_center_2, "../../assets/images/player/player_center_2.png");
+    loadTexture(Textures::player_center_3, "../../assets/images/player/player_center_3.png");
+    loadTexture(Textures::player_left_11, "../../assets/images/player/player_left_11.png");
+    loadTexture(Textures::player_left_12, "../../assets/images/player/player_left_12.png");
+    loadTexture(Textures::player_left_13, "../../assets/images/player/player_left_13.png");
+    loadTexture(Textures::player_left_21, "../../assets/images/player/player_left_21.png");
+    loadTexture(Textures::player_left_22, "../../assets/images/player/player_left_22.png");
+    loadTexture(Textures::player_left_23, "../../assets/images/player/player_left_23.png");
+    loadTexture(Textures::player_right_11, "../../assets/images/player/player_right_11.png");
+    loadTexture(Textures::player_right_12, "../../assets/images/player/player_right_12.png");
+    loadTexture(Textures::player_right_13, "../../assets/images/player/player_right_13.png");
+    loadTexture(Textures::player_right_21, "../../assets/images/player/player_right_21.png");
+    loadTexture(Textures::player_right_22, "../../assets/images/player/player_right_22.png");
+    loadTexture(Textures::player_right_23, "../../assets/images/player/player_right_23.png");
+    loadTexture(Textures::player_stop_1, "../../assets/images/player/player_stop_1.png");
+    loadTexture(Textures::player_stop_2, "../../assets/images/player/player_stop_2.png");
+    loadTexture(Textures::player_stop_3, "../../assets/images/player/player_stop_3.png");
 }
 
 sf::Texture& AssetManager::getTexture(const Textures& texture) {

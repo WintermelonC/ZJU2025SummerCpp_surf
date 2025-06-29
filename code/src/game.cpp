@@ -3,8 +3,9 @@
 Game::Game()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(Config::Window::WINDOW_SIZE)), "Surf Game"),
       m_view(sf::FloatRect({0, 0}, static_cast<sf::Vector2f>(Config::Window::WINDOW_SIZE))),
-      m_gameState(GameState::Paused),  // 初始化游戏状态为主菜单
-      m_inputManager(m_eventBus) {
+      m_gameState(GameState::StartMenu),  // 初始化游戏状态为主菜单
+      m_inputManager(m_eventBus),
+      m_offset({0.0f, 0.0f}) {
     m_view.setCenter(static_cast<sf::Vector2f>(Config::Window::RENDER_SIZE / 2));  // 设置视图中心为渲染区域中心
     m_window.setView(m_view);
     m_window.setVerticalSyncEnabled(true);  // 启用垂直同步
@@ -12,14 +13,10 @@ Game::Game()
 
 void Game::run() {
     while (m_window.isOpen()) {
-        // 接收输入
-        m_inputManager.processInput(m_window);
-
-        // 处理游戏事件
-        processGameEvents();
-
-        // 渲染
-        render();
+        m_inputManager.processInput(m_window);  // 接收输入
+        processGameEvents();  // 处理游戏事件
+        update();  // 更新游戏状态
+        render();  // 渲染
     }
 }
 
@@ -100,7 +97,12 @@ void Game::processGameEvents() {
 void Game::update() {
     if( m_gameState == GameState::Playing) {
         // 更新游戏逻辑
+        updateWater();  // 更新水面状态
+        const float dt = m_clock.restart().asSeconds();  // 获取帧时间间隔
+        const sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));  // 获取鼠标位置
+        m_player.update(dt, mousePos);  // 更新玩家状态
     }
+    
 }
 
 void Game::render() {
@@ -114,4 +116,18 @@ void Game::render() {
     } else if (m_gameState == GameState::GameOver) {
         // 渲染游戏结束界面
     }
+}
+
+void Game::updateWater() {
+    // 根据玩家移动方向反向移动水面
+    m_offset -= m_player.getVelocity() * PARALLAX_FACTOR;
+    if (m_offset.x < 0) {
+        m_offset.x += Config::Texture::WATER_SIZE.x;
+    } else if (m_offset.x > Config::Texture::WATER_SIZE.x) {
+        m_offset.x -= Config::Texture::WATER_SIZE.x;
+    }
+    if (m_offset.y < -Config::Texture::WATER_SIZE.x) {
+        m_offset.y += Config::Texture::WATER_SIZE.y;
+    }
+    EntityManager::setSprite(EntityType::water, m_offset, {1.0f, 1.0f}, false);
 }

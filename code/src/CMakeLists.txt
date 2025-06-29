@@ -1,6 +1,7 @@
 add_executable(surf
     surf.cpp
     game.cpp
+    player.cpp
     eventBus.cpp
     inputManager.cpp
     renderSystem.cpp
