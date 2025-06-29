@@ -4,9 +4,10 @@ std::map<Textures, sf::Texture> AssetManager::m_textures;
 std::map<Fonts, sf::Font> AssetManager::m_fonts;
 
 void AssetManager::loadAssets() {
-    loadFont(Fonts::MSYHBD, "../../assets/fonts/MSYHBD.TTC");
+    // Textures
     loadTexture(Textures::water, "../../assets/images/water.png");
-    loadTexture(Textures::start_button, "../../assets/images/start_button.png");
+    loadTexture(Textures::scoreboard, "../../assets/images/scoreboard.png");
+    loadTexture(Textures::button, "../../assets/images/button.png");
     loadTexture(Textures::start_icon, "../../assets/images/start_icon.png");
     // Player
     loadTexture(Textures::player_center_1, "../../assets/images/player/player_center_1.png");
@@ -27,6 +28,14 @@ void AssetManager::loadAssets() {
     loadTexture(Textures::player_stop_1, "../../assets/images/player/player_stop_1.png");
     loadTexture(Textures::player_stop_2, "../../assets/images/player/player_stop_2.png");
     loadTexture(Textures::player_stop_3, "../../assets/images/player/player_stop_3.png");
+    // PlayerState
+    loadTexture(Textures::heart_1, "../../assets/images/player/heart_1.png");
+    loadTexture(Textures::heart_2, "../../assets/images/player/heart_2.png");
+    loadTexture(Textures::power_1, "../../assets/images/player/power_1.png");
+    loadTexture(Textures::power_2, "../../assets/images/player/power_2.png");
+    
+    // Font
+    loadFont(Fonts::MSYHBD, "../../assets/fonts/MSYHBD.TTC");
 }
 
 sf::Texture& AssetManager::getTexture(const Textures& texture) {
@@ -56,9 +65,9 @@ void AssetManager::loadTexture(const Textures& texture, const std::string& fileP
 }
 
 void AssetManager::loadFont(const Fonts& font, const std::string& filePath) {
-    sf::Font fnt;
-    if (!fnt.openFromFile(filePath)) {
+    sf::Font f;
+    if (!f.openFromFile(filePath)) {
         throw std::runtime_error("Failed to load font from " + filePath);
     }
-    m_fonts[font] = std::move(fnt);
+    m_fonts[font] = std::move(f);
 }

@@ -23,13 +23,13 @@ void InputManager::processInput(sf::RenderWindow& window) {
                 // 左键点击事件
                 const auto& mousePos = sf::Mouse::getPosition(window);
                 const auto worldPos = window.mapPixelToCoords(mousePos);
-                m_eventBus.publish(WindowMouseLeftClickEvent{
+                m_eventBus.publish(MouseLeftClickEvent{
                     mousePos,
                     worldPos
                 });
             } else if (mouseButton -> button == sf::Mouse::Button::Right) {
                 // 右键点击事件
-                m_eventBus.publish(WindowMouseRightClickEvent{});
+                m_eventBus.publish(MouseRightClickEvent{});
             }
         } else if (const auto* keyPressed = event -> getIf<sf::Event::KeyPressed>()){
             // 键盘按下

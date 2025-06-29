@@ -9,11 +9,11 @@ struct WindowResizeEvent {
 };
 struct WindowFocusLostEvent {};
 struct WindowFocusGainedEvent {};
-struct WindowMouseLeftClickEvent {
+struct MouseLeftClickEvent {
     sf::Vector2i mousePos;
     sf::Vector2f worldPos;
 };
-struct WindowMouseRightClickEvent {};
+struct MouseRightClickEvent {};
 struct SpacePressedEvent {};
 
 using Event = std::variant<
@@ -21,7 +21,7 @@ using Event = std::variant<
     WindowResizeEvent,
     WindowFocusLostEvent,
     WindowFocusGainedEvent,
-    WindowMouseLeftClickEvent,
-    WindowMouseRightClickEvent,
+    MouseLeftClickEvent,
+    MouseRightClickEvent,
     SpacePressedEvent
 >;
