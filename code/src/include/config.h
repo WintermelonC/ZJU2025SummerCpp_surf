@@ -29,5 +29,7 @@ namespace Config {
 
     namespace Game {
         constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
+        constexpr sf::Time OBSTACLE_SPAWN_INTERVAL = sf::seconds(0.5f);  // 障碍物生成间隔
+        constexpr int OBSTACLE_NUM = 9;  // 障碍物种类数量
     }
 }

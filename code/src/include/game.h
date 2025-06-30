@@ -2,11 +2,17 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <random>
 #include "config.h"
 #include "player.h"
 #include "eventBus.h"
 #include "inputManager.h"
 #include "renderSystem.h"
+#include "entityManager.h"
+#include "utils.h"
+#include "assetManager.h"
+#include "entity.h"
+#include "obstacle.h"
 
 enum class GameState {
     StartMenu,
@@ -27,6 +33,7 @@ private:
     void update();
     void updateWater();
     void updateScore();  // 更新分数
+    void spawnObstacle();
 
     void render();
 
@@ -38,6 +45,8 @@ private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
     sf::Clock m_clock;  // 时钟
+    sf::Clock m_obstacleSpawnClock; // 用于生成障碍物的时钟
+    sf::Time m_obstacleSpawnInterval = Config::Game::OBSTACLE_SPAWN_INTERVAL; // 设置障碍物生成间隔
     GameState m_gameState;  // 游戏状态
 
     EventBus m_eventBus;  // 事件总线

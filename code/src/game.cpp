@@ -90,6 +90,8 @@ void Game::update() {
         m_renderSystem.updateTail(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnTail);  // 更新拖尾状态
         m_player.update(dt, mousePos);  // 更新玩家状态
         updateScore();  // 更新分数
+        spawnObstacle();  // 生成障碍物
+        EntityManager::updateEntities(m_player.getVelocity());  // 更新所有实体状态
     }
 }
 
@@ -101,7 +103,9 @@ void Game::render() {
         m_renderSystem.renderBackground(m_window);  // 渲染背景
         m_renderSystem.renderRipple(m_window);  // 渲染水波
         m_renderSystem.renderTail(m_window);
+        m_renderSystem.renderEntities(m_window);  // 渲染所有实体
         m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score);  // 渲染玩家状态
+        
     #ifdef DEBUG
         m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
     #endif  // DEBUG
@@ -110,6 +114,7 @@ void Game::render() {
         m_renderSystem.renderRipple(m_window);  // 渲染水波
         m_renderSystem.renderTail(m_window);
         m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score);  // 渲染玩家状态
+        m_renderSystem.renderEntities(m_window);  // 渲染所有实体
     #ifdef DEBUG
         m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
     #endif  // DEBUG
@@ -142,4 +147,32 @@ void Game::updateWater() {
 
 void Game::updateScore() {
     m_score += m_player.getVelocity().y * 0.001f;
+}
+
+void Game::spawnObstacle() {
+    if (m_obstacleSpawnClock.getElapsedTime() < m_obstacleSpawnInterval){
+        return;
+    }
+    m_obstacleSpawnClock.restart();  // 重置生成时钟
+
+    std::random_device rd; 
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> disX(0, m_window.getSize().x);
+    std::uniform_int_distribution<> disType(0, Config::Game::OBSTACLE_NUM - 1);
+    int x = disX(gen);  // 随机生成x坐标
+    int y = Config::Window::RENDER_SIZE.y;  // 初始y坐标为屏幕底
+
+    int randomType = disType(gen);  // 随机生成障碍物类型
+    Textures texutreType = static_cast<Textures>(static_cast<int>(Textures::obstacle_1) + randomType);  // 转换为纹理类型
+    EntityType entityType = static_cast<EntityType>(static_cast<int>(EntityType::obstacle_1) + randomType);  // 转换为实体类型
+
+    sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
+    EntityManager::setSprite(
+        obstacleSprite,
+        sf::Color::White,
+        {static_cast<float>(x), static_cast<float>(y)},
+        {1.0f, 1.0f}
+    );
+    Obstacle obstacle(obstacleSprite, texutreType);  // 创建障碍物实体
+    EntityManager::pushNewEntity(obstacle);  // 将障碍物实体添加到实体管理器中
 }
