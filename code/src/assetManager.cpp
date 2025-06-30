@@ -35,15 +35,15 @@ void AssetManager::loadAssets() {
     loadTexture(Textures::power_2, "../../assets/images/player/power_2.png");
 
     // Obstacles
-    loadTexture(Textures::obstacle_1, "../../assets/images/obstacles/obstacle_1.png");
-    loadTexture(Textures::obstacle_2, "../../assets/images/obstacles/obstacle_2.png");
-    loadTexture(Textures::obstacle_3, "../../assets/images/obstacles/obstacle_3.png");
-    loadTexture(Textures::obstacle_4, "../../assets/images/obstacles/obstacle_4.png");
-    loadTexture(Textures::obstacle_5, "../../assets/images/obstacles/obstacle_5.png");
-    loadTexture(Textures::obstacle_6, "../../assets/images/obstacles/obstacle_6.png");
-    loadTexture(Textures::obstacle_7, "../../assets/images/obstacles/obstacle_7.png");
-    loadTexture(Textures::obstacle_8, "../../assets/images/obstacles/obstacle_8.png");
-    loadTexture(Textures::obstacle_9, "../../assets/images/obstacles/obstacle_9.png");
+    loadTexture(Textures::wood_1, "../../assets/images/obstacles/wood_1.png");
+    loadTexture(Textures::wood_2, "../../assets/images/obstacles/wood_2.png");
+    loadTexture(Textures::wood_3, "../../assets/images/obstacles/wood_3.png");
+    loadTexture(Textures::wood_4, "../../assets/images/obstacles/wood_4.png");
+    loadTexture(Textures::stone_1, "../../assets/images/obstacles/stone_1.png");
+    loadTexture(Textures::stone_2, "../../assets/images/obstacles/stone_2.png");
+    loadTexture(Textures::boat_1, "../../assets/images/obstacles/boat_1.png");
+    loadTexture(Textures::boat_2, "../../assets/images/obstacles/boat_2.png");
+    loadTexture(Textures::beach_1, "../../assets/images/obstacles/beach_1.png");
     
     // Font
     loadFont(Fonts::MSYHBD, "../../assets/fonts/MSYHBD.TTC");

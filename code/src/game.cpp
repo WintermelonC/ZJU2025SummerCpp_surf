@@ -90,7 +90,6 @@ void Game::update() {
         m_renderSystem.updateTail(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnTail);  // 更新拖尾状态
         m_player.update(dt, mousePos);  // 更新玩家状态
         updateScore();  // 更新分数
-        spawnObstacle();  // 生成障碍物
         EntityManager::updateEntities(m_player.getVelocity());  // 更新所有实体状态
     }
 }
@@ -163,16 +162,16 @@ void Game::spawnObstacle() {
     int y = Config::Window::RENDER_SIZE.y;  // 初始y坐标为屏幕底
 
     int randomType = disType(gen);  // 随机生成障碍物类型
-    Textures texutreType = static_cast<Textures>(static_cast<int>(Textures::obstacle_1) + randomType);  // 转换为纹理类型
-    EntityType entityType = static_cast<EntityType>(static_cast<int>(EntityType::obstacle_1) + randomType);  // 转换为实体类型
+    Textures textureType = static_cast<Textures>(static_cast<int>(Textures::wood_1) + randomType);  // 转换为纹理类型
+    EntityType entityType = static_cast<EntityType>(static_cast<int>(EntityType::wood_1) + randomType);  // 转换为实体类型
 
     sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
     EntityManager::setSprite(
         obstacleSprite,
         sf::Color::White,
         {static_cast<float>(x), static_cast<float>(y)},
-        {1.0f, 1.0f}
+        Config::Player::PLAYER_SCALE
     );
-    Obstacle obstacle(obstacleSprite, texutreType);  // 创建障碍物实体
+    Obstacle obstacle(obstacleSprite, textureType);  // 创建障碍物实体
     EntityManager::pushNewEntity(obstacle);  // 将障碍物实体添加到实体管理器中
 }

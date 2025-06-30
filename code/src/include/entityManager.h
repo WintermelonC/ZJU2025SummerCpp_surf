@@ -2,6 +2,7 @@
 
 #include <map>
 #include <iostream>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "assetManager.h"
 #include "entity.h"
@@ -12,9 +13,10 @@
 enum class EntityType {
     water,
     player,
-    obstacle_1, obstacle_2, obstacle_3,
-    obstacle_4, obstacle_5, obstacle_6,
-    obstacle_7, obstacle_8, obstacle_9,
+    wood_1, wood_2, wood_3, wood_4, 
+    stone_1, stone_2,
+    boat_1, boat_2, 
+    beach_1
 };
 
 class EntityManager { 

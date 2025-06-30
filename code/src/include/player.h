@@ -51,7 +51,6 @@ private:
     void updateTurn();  // 更新转弯状态
 
 private:
-    const sf::Vector2f SCALE = {1.5f, 1.5f};  // 玩家缩放比例
     const float ACCELERATION_1 = 10.0f;  // 加速度 1
     const float ACCELERATION_2 = 50.0f;  // 加速度 2
     const float MAX_SPEED = 50.0f;  // Y 最大速度

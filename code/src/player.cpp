@@ -4,7 +4,7 @@ Player::Player()
     : m_sprite(EntityManager::getSprite(EntityType::player)),
       m_velocity({0.0f, 0.0f}),
       m_state(PlayerState::Center) {
-    EntityManager::setSprite(EntityType::player, Config::Player::PLAYER_POS, SCALE);  // 设置玩家精灵位置和缩放
+    EntityManager::setSprite(EntityType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SCALE);  // 设置玩家精灵位置和缩放
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;
 #endif  // DEBUG
