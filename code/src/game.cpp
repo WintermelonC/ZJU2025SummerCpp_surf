@@ -86,7 +86,7 @@ void Game::update() {
         const bool ifSpawnTail = m_player.isPower() && m_player.getVelocity().y > SPEED_THRESHOLD_2;  // 判断是否生成拖尾
 
         updateWater();  // 更新水面状态
-        m_renderSystem.updateRipple(dt, m_player.getVelocity(), ifSpawnRipple);  // 更新水波状态
+        m_renderSystem.updateRipple(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnRipple);  // 更新水波状态
         m_renderSystem.updateTail(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnTail);  // 更新拖尾状态
         m_player.update(dt, mousePos);  // 更新玩家状态
         updateScore();  // 更新分数

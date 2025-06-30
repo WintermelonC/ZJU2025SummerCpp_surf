@@ -78,14 +78,14 @@ void RenderSystem::renderEntities(sf::RenderWindow& window) {
     }
 }
 
-void RenderSystem::updateRipple(const float& dt, const sf::Vector2f& velocity, const bool& ifSpawn) {
+void RenderSystem::updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn) {
     for (auto it = m_ripples.begin(); it != m_ripples.end(); ) {
         it -> lifetime -= dt;
         if (it -> lifetime <= 0) {
             it = m_ripples.erase(it);  // 移除过期的水波
         } else {
             it -> trail.move({-velocity.x * Config::Game::PARALLAX_FACTOR, -velocity.y * Config::Game::PARALLAX_FACTOR});  // 更新水波位置
-            it -> trail.rotate(sf::degrees(Utils::randomFloat(1.f, 3.f)));  // 随机旋转水波
+            it -> trail.setSize({3.f, it -> trail.getSize().y + dt * 100.f});
             sf::Color color = RIPPLE_COLOR;
             color.a = static_cast<int>(RIPPLE_ALPHA * (it -> lifetime / RIPPLE_LIFETIME));  // 渐变透明度
             it -> trail.setFillColor(color);  // 渐变透明度
@@ -93,7 +93,7 @@ void RenderSystem::updateRipple(const float& dt, const sf::Vector2f& velocity, c
         }
     }
 
-    spawnRipple(ifSpawn);  // 生成新的水波
+    spawnRipple(-angle, ifSpawn);  // 生成新的水波
 }
 
 void RenderSystem::updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn) {
@@ -171,7 +171,7 @@ void RenderSystem::renderTail(sf::RenderWindow& window) {
     }
 }
 
-void RenderSystem::spawnRipple(const bool& ifSpawn) {
+void RenderSystem::spawnRipple(const sf::Angle& angle, const bool& ifSpawn) {
     if (!ifSpawn) {
         return;
     }
@@ -179,8 +179,8 @@ void RenderSystem::spawnRipple(const bool& ifSpawn) {
     // 产生 RIPPLE_COUNT 个线段
     for (int i = 0; i < RIPPLE_COUNT; i++) {
         sf::RectangleShape line({3.f, 
-                                 Utils::randomFloat(10.f, 20.f)});
-        line.setRotation(sf::degrees(Utils::randomFloat(-20.f, 20.f)));
+                                 Utils::randomFloat(5.f, 10.f)});
+        line.setRotation(angle + sf::degrees(Utils::randomFloat(-5.f, 5.f)));
         line.setPosition({Config::Player::PLAYER_POS.x + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
                           Config::Player::PLAYER_POS.y});
         line.setFillColor(RIPPLE_COLOR);
