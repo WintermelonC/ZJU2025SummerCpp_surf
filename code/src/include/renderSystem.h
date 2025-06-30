@@ -24,6 +24,8 @@ public:
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
 
+    void spawnObstacle();
+
 #ifdef DEBUG
     void renderVelocity(sf::RenderWindow& window, const sf::Vector2f& velocity);
 #endif  // DEBUG
@@ -113,4 +115,6 @@ private:
 
     sf::Clock m_animClock;
     int m_currentAnimFrame = 0;
+    sf::Clock m_obstacleSpawnClock; // 用于生成障碍物的时钟
+    sf::Time m_obstacleSpawnInterval = Config::Game::OBSTACLE_SPAWN_INTERVAL; // 设置障碍物生成间隔
 };
