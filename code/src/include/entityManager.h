@@ -49,9 +49,6 @@ public:
 
     static void pushNewEntity(const Entity& entity) {
         m_entities.emplace_back(std::make_unique<Entity>(entity));
-        #ifdef DEBUG
-        std::cout << "EntityManager: EntityNumber = " << m_entities.size() << std::endl;
-        #endif  // DEBUG
     }
 
     static void updateEntities(const sf::Vector2f& playerVelocity);
@@ -64,4 +61,5 @@ private:
     static std::vector<std::unique_ptr<Entity>> m_entities;  // 存储所有实体对象
 
     friend class RenderSystem;
+    friend class Game;
 };
