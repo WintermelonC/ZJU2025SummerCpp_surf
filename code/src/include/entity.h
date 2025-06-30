@@ -11,10 +11,10 @@ class Entity {
 public:
     explicit Entity(sf::Sprite sprite, Textures tType)
         : m_sprite(std::move(sprite)), 
-          m_texutreType(tType),
-          m_collisionBox(m_sprite.getGlobalBounds().size) {
-            m_collisionBox.setPosition(m_sprite.getPosition());
+          m_textureType(tType) {
+            m_collisionBox.setSize(m_sprite.getGlobalBounds().size);
             m_collisionBox.setOrigin(m_collisionBox.getLocalBounds().size / 2.f);
+            m_collisionBox.setPosition(m_sprite.getPosition());  
           }
 
     virtual ~Entity() = default;
@@ -24,6 +24,7 @@ public:
         float moveY = -playerVelocity.y * 0.1;
 
         m_sprite.move(sf::Vector2f(moveX, moveY));
+        m_collisionBox.setPosition(m_sprite.getPosition());
     }
 
     virtual bool isObstacle() { return false;}  // 是否是障碍物
@@ -36,5 +37,5 @@ public:
 protected:
     sf::Sprite m_sprite;
     sf::RectangleShape m_collisionBox;  // 碰撞框
-    Textures m_texutreType;
+    Textures m_textureType;
 };

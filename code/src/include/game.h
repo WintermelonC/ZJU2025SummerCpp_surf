@@ -54,4 +54,8 @@ private:
     float m_score = 0.0f;  // 分数
 
     sf::Vector2f m_offset;  // 水面偏移量
+
+#ifdef DEBUG
+    sf::RectangleShape m_intersectionBox;  // 调试用碰撞框
+#endif  // DEBUG
 };

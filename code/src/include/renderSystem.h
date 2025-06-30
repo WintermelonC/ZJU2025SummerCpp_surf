@@ -32,6 +32,7 @@ public:
 
 #ifdef DEBUG
     void renderVelocity(sf::RenderWindow& window, const sf::Vector2f& velocity);
+    void renderPlayerCollisionBox(sf::RenderWindow& window, const sf::RectangleShape& collisionBox);
 #endif  // DEBUG
 
 private:

@@ -9,7 +9,7 @@ public:
         : Entity(std::move(sprite), tType) {}
 
     explicit Obstacle(const Obstacle& other)
-        : Entity(other.m_sprite, other.m_texutreType) {}
+        : Entity(other.m_sprite, other.m_textureType) {}
 
 
     ~Obstacle() = default;

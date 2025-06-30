@@ -75,60 +75,34 @@ void RenderSystem::renderPlayer(
     window.draw(scoreboardShadow);  // 绘制分数版阴影
     window.draw(scoreboard);  // 绘制分数板
     window.draw(scoreText);  // 绘制分数文本
-
-    #ifdef DEBUG
-    // 绘制玩家动画的碰撞框
-    sf::FloatRect bounds = player.getGlobalBounds();
-    sf::RectangleShape collisionBox(bounds.size);
-    collisionBox.setPosition(Config::Player::PLAYER_POS);
-    collisionBox.setFillColor(sf::Color(255, 255, 255, 100));  // 半透明白色
-    collisionBox.setOutlineColor(sf::Color::Red);  // 红色边框
-    collisionBox.setOutlineThickness(1.f);
-    collisionBox.setOrigin(collisionBox.getLocalBounds().size / 2.f);  // 设置原点为中心
-    collisionBox.setRotation(-playerAngle);  // 设置旋转角度
-    window.draw(collisionBox);  // 绘制碰撞框
-
-    // 绘制play floatRect参数
-    sf::Text floatRectText = renderText(
-        Fonts::MSYHBD,
-        "Width: " + std::to_string(bounds.size.x) + ", Height: "
-        + std::to_string(bounds.size.y) + "\n" +
-        "Left: " + std::to_string(bounds.position.x) + ", Top: "
-        + std::to_string(bounds.position.y),
-        15,
-        sf::Color::Black,
-        {bounds.position.x, bounds.position.y - 50},
-        false
-    );
-    window.draw(floatRectText);  // 绘制floatRect参数文本
-    #endif  // DEBUG
 }
 
 void RenderSystem::renderEntities(sf::RenderWindow& window) {
     // 渲染所有实体
     for (const auto& entity : EntityManager::m_entities) {
         window.draw(entity->getSprite());  // 绘制实体精灵
+
         #ifdef DEBUG
         // 绘制实体的碰撞框
-        sf::FloatRect bounds = entity->getSprite().getGlobalBounds();
+        sf::FloatRect bounds = entity -> getCollisionBox().getGlobalBounds();
         sf::RectangleShape collisionBox(bounds.size);
         collisionBox.setPosition(bounds.position);
-        collisionBox.setFillColor(sf::Color(255, 255, 255, 100));  // 半透明黄色
+        collisionBox.setFillColor(sf::Color(255, 255, 255, 50));  // 半透明黄色
         collisionBox.setOutlineColor(sf::Color::White);  // 红色边框
         collisionBox.setOutlineThickness(1.f);  // 边框厚度
         window.draw(collisionBox);  // 绘制碰撞框
 
         // 绘制floatRect参数
-        sf::Text floatRectText = renderText(
-            Fonts::MSYHBD,
-            "Width: " + std::to_string(bounds.size.x) + ", Height: " + std::to_string(bounds.size.y) + "\n" +
-            + "Left: " + std::to_string(bounds.position.x) + ", Top: " + std::to_string(bounds.position.y),
-            15,
-            sf::Color::Black,
-            {bounds.position.x, bounds.position.y - 20},
-            false
-        );
-        window.draw(floatRectText);  // 绘制floatRect参数文本
+        // sf::Text floatRectText = renderText(
+        //     Fonts::MSYHBD,
+        //     "Width: " + std::to_string(static_cast<int>(bounds.size.x)) + ", Height: " + std::to_string(static_cast<int>(bounds.size.y)) + "\n" +
+        //     + "Left: " + std::to_string(static_cast<int>(bounds.position.x)) + ", Top: " + std::to_string(static_cast<int>(bounds.position.y)),
+        //     15,
+        //     sf::Color::Black,
+        //     {bounds.position.x, bounds.position.y - 20},
+        //     false
+        // );
+        // window.draw(floatRectText);  // 绘制floatRect参数文本
         #endif  // DEBUG
     }
 }
@@ -572,4 +546,29 @@ void RenderSystem::renderVelocity(sf::RenderWindow& window, const sf::Vector2f& 
 
     window.draw(velocityText);
 }
-#endif
+
+void RenderSystem::renderPlayerCollisionBox(sf::RenderWindow& window, const sf::RectangleShape& collisionBox) {
+    // 绘制玩家动画的碰撞框
+    sf::FloatRect bound = collisionBox.getGlobalBounds();
+    sf::RectangleShape box(bound.size);
+    box.setPosition(bound.position);
+    box.setFillColor(sf::Color(255, 255, 255, 50));  // 半透明白色
+    box.setOutlineColor(sf::Color::White);  // 红色边框
+    box.setOutlineThickness(1.f);  // 边框厚度
+    window.draw(box);  // 绘制碰撞框
+
+    // 绘制play floatRect参数
+    // sf::Text floatRectText = renderText(
+    //     Fonts::MSYHBD,
+    //     "Width: " + std::to_string(static_cast<int>(bound.size.x)) + ", Height: "
+    //     + std::to_string(static_cast<int>(bound.size.y)) + "\n" +
+    //     "Left: " + std::to_string(static_cast<int>(bound.position.x)) + ", Top: "
+    //     + std::to_string(static_cast<int>(bound.position.y)),
+    //     15,
+    //     sf::Color::Black,
+    //     {Config::Window::RENDER_CENTER.x, 
+    //      Config::Window::RENDER_CENTER.y + 50}
+    // );
+    // window.draw(floatRectText);  // 绘制floatRect参数文本
+}
+#endif  // DEBUG

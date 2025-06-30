@@ -35,9 +35,11 @@ void Game::processGameEvents() {
             m_player.usePower();  // 玩家使用能量
         } else if (std::holds_alternative<WindowFocusLostEvent>(event)) {
             // 窗口失去焦点事件
+            // #ifndef DEBUG
             if (m_gameState == GameState::Playing) {
                 m_gameState = GameState::Paused;  // 暂停游戏
             }
+            // #endif  // DEBUG
         } else if (std::holds_alternative<WindowFocusGainedEvent>(event)) {
             // 窗口获得焦点事件
             if (m_gameState == GameState::Paused) {
@@ -106,9 +108,10 @@ void Game::render() {
         m_renderSystem.renderTail(m_window);
         m_renderSystem.renderEntities(m_window);  // 渲染所有实体
         m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score, m_player.getAngle());  // 渲染玩家状态
-        
     #ifdef DEBUG
         m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
+        m_renderSystem.renderPlayerCollisionBox(m_window, m_player.getCollisionBox());  // 渲染玩家碰撞框
+        m_window.draw(m_intersectionBox);  // 渲染碰撞框
     #endif  // DEBUG
     } else if (m_gameState == GameState::Paused) {
         m_renderSystem.renderBackground(m_window);  // 渲染背景
@@ -118,6 +121,8 @@ void Game::render() {
         m_renderSystem.renderEntities(m_window);  // 渲染所有实体
     #ifdef DEBUG
         m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
+        m_renderSystem.renderPlayerCollisionBox(m_window, m_player.getCollisionBox());  // 渲染玩家碰撞框
+        m_window.draw(m_intersectionBox);  // 渲染碰撞框
     #endif  // DEBUG
         m_renderSystem.renderPauseMenu(m_window);  // 渲染暂停菜单
     } else if (m_gameState == GameState::GameOver) {
@@ -156,12 +161,18 @@ void Game::checkCollisions() {
         const auto& entityCollisionBox = entity->getCollisionBox();  // 获取实体碰撞框
         sf::FloatRect playerCollisionBoxRect = playerCollisionBox.getGlobalBounds();
         sf::FloatRect entityCollisionBoxRect = entityCollisionBox.getGlobalBounds();
-        if (playerCollisionBoxRect.findIntersection(entityCollisionBoxRect) != std::nullopt) {
-            std::cout << "hhh" << std::endl;  // 调试输出
-            // 检测到碰撞
-            if (entity->isObstacle()){
-                std::cout << "Obstacle collision detected!" << std::endl;
-            }
+        auto intersectionOpt = playerCollisionBoxRect.findIntersection(entityCollisionBoxRect);  // 检测碰撞
+        if (intersectionOpt.has_value()) {
+            const sf::FloatRect& intersection = intersectionOpt.value();
+            // 处理碰撞
+            
+        #ifdef DEBUG
+            // std::cout << "Collision detected!" << std::endl;
+            m_intersectionBox.setSize(intersection.size);
+            m_intersectionBox.setPosition(intersection.position);
+            m_intersectionBox.setFillColor(sf::Color(255, 0, 0, 50));  // 半透明红色
+            m_intersectionBox.setOutlineColor(sf::Color::Red);
+        #endif  // DEBUG
         }
     }
 }
