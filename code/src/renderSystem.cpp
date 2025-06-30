@@ -71,6 +71,13 @@ void RenderSystem::renderPlayer(
     window.draw(scoreText);  // 绘制分数文本
 }
 
+void RenderSystem::renderEntities(sf::RenderWindow& window) {
+    // 渲染所有实体
+    for (const auto& entity : EntityManager::m_entities) {
+        window.draw(entity->getSprite());  // 绘制实体精灵
+    }
+}
+
 void RenderSystem::updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn) {
     for (auto it = m_ripples.begin(); it != m_ripples.end(); ) {
         it -> lifetime -= dt;

@@ -19,7 +19,10 @@ enum class Textures {
     player_right_11, player_right_12, player_right_13,
     player_right_21, player_right_22, player_right_23,
     player_stop_1, player_stop_2, player_stop_3,
-    heart_1, heart_2, power_1, power_2
+    heart_1, heart_2, power_1, power_2,
+    obstacle_1, obstacle_2, obstacle_3,
+    obstacle_4, obstacle_5, obstacle_6,
+    obstacle_7, obstacle_8, obstacle_9,
 };
 
 class AssetManager {

@@ -19,6 +19,7 @@ public:
     void renderBackground(sf::RenderWindow& window);
     void renderRipple(sf::RenderWindow& window);
     void renderTail(sf::RenderWindow& window);
+    void renderEntities(sf::RenderWindow& window);
 
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
