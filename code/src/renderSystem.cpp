@@ -1,5 +1,10 @@
 #include "renderSystem.h"
 
+RenderSystem::RenderSystem() {
+    // 初始化渲染系统
+    initObstaclePatterns();  // 初始化障碍物模式
+}
+
 void RenderSystem::renderBackground(sf::RenderWindow& window) {
     // 渲染背景逻辑
     // 清除窗口
@@ -236,6 +241,55 @@ void RenderSystem::spawnObstacle() {
     EntityManager::pushNewEntity(obstacle);  // 将障碍物实体添加到实体管理器中
 }
 
+void RenderSystem::spawnObstacleGroup() {
+    if (m_obstacleSpawnClock.getElapsedTime() < m_obstacleSpawnInterval) {
+        return;
+    }
+    m_obstacleSpawnClock.restart();
+
+     // 随机选择一个障碍物组模式
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> patternDis(0, m_obstaclePatterns.size() - 1);
+    const auto& pattern = m_obstaclePatterns[patternDis(gen)];
+    
+    // 计算生成位置（确保整个组都在屏幕范围内）
+    std::uniform_real_distribution<float> xDis(
+        pattern.width / 2.f, 
+        Config::Window::RENDER_SIZE.x - pattern.width / 2.f
+    );
+    float centerX = xDis(gen);
+    float centerY = Config::Window::RENDER_SIZE.y + pattern.height / 2.f;
+    
+    // 生成障碍物组中的每个障碍物
+    for (size_t i = 0; i < pattern.positions.size(); i++) {
+        sf::Vector2f worldPos = {
+            centerX + pattern.positions[i].x,
+            centerY + pattern.positions[i].y
+        };
+        
+        // 确保障碍物在屏幕范围内
+        if (worldPos.x >= 0 && worldPos.x <= Config::Window::RENDER_SIZE.x) {
+            Textures textureType = pattern.types[i];
+            EntityType entityType = static_cast<EntityType>(
+                static_cast<int>(EntityType::wood_1) + 
+                (static_cast<int>(textureType) - static_cast<int>(Textures::wood_1))
+            );
+            
+            sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
+            EntityManager::setSprite(
+                obstacleSprite,
+                sf::Color::White,
+                worldPos,
+                Config::Player::PLAYER_SCALE
+            );
+            
+            Obstacle obstacle(obstacleSprite, textureType);
+            EntityManager::pushNewEntity(obstacle);
+        }
+    }
+}
+
 void RenderSystem::renderStartMenu(sf::RenderWindow& window) {
     // 渲染开始菜单逻辑
     // 标题
@@ -413,6 +467,32 @@ void RenderSystem::renderPlayerAnimation(sf::RenderWindow& window) {
     );
 
     window.draw(sprite);  // 绘制玩家动画
+}
+
+void RenderSystem::initObstaclePatterns() {
+    m_obstaclePatterns.clear();  // 清空现有模式
+
+    // 模式 1：聚集排列
+    ObstaclePattern pattern1;
+    pattern1.positions = {
+        {-Config::Texture::SMALL_OBSTACLE_SIZE.x, Config::Texture::SMALL_OBSTACLE_SIZE.y / 4},
+        {0.f, 0.f},
+        {-Config::Texture::SMALL_OBSTACLE_SIZE.x / 2, Config::Texture::SMALL_OBSTACLE_SIZE.y},
+        {Config::Texture::SMALL_OBSTACLE_SIZE.x, Config::Texture::SMALL_OBSTACLE_SIZE.y * 2 / 3}
+    };
+    pattern1.types = {
+        static_cast<Textures>(static_cast<int>(Textures::stone_1) + Utils::randomInt(0, Config::Game::STONE_NUM - 1)),
+        static_cast<Textures>(static_cast<int>(Textures::stone_1) + Utils::randomInt(0, Config::Game::STONE_NUM - 1)),
+        static_cast<Textures>(static_cast<int>(Textures::wood_1) + Utils::randomInt(0, Config::Game::WOOD_NUM - 1)),
+        static_cast<Textures>(static_cast<int>(Textures::stone_1) + Utils::randomInt(0, Config::Game::STONE_NUM - 1)),
+    };
+    pattern1.width = 0.f;
+    pattern1.height = 0.f;
+    for (const auto& pos : pattern1.positions) {
+        pattern1.width += std::abs(pos.x);
+        pattern1.height += std::abs(pos.y);
+    }
+    m_obstaclePatterns.push_back(pattern1);
 }
 
 void RenderSystem::mouseHoverButton(

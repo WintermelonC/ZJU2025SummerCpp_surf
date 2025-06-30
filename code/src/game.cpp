@@ -90,7 +90,7 @@ void Game::update() {
         m_renderSystem.updateTail(dt, m_player.getVelocity(), m_player.getAngle(), ifSpawnTail);  // 更新拖尾状态
         m_player.update(dt, mousePos);  // 更新玩家状态
         updateScore();  // 更新分数
-        m_renderSystem.spawnObstacle();  // 更新障碍物状态
+        m_renderSystem.spawnObstacleGroup();  // 更新障碍物状态
         EntityManager::updateEntities(m_player.getVelocity());  // 更新所有实体状态
     }
 }

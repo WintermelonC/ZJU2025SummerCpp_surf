@@ -41,6 +41,10 @@ void AssetManager::loadAssets() {
     loadTexture(Textures::wood_4, "../../assets/images/obstacles/wood_4.png");
     loadTexture(Textures::stone_1, "../../assets/images/obstacles/stone_1.png");
     loadTexture(Textures::stone_2, "../../assets/images/obstacles/stone_2.png");
+    loadTexture(Textures::stone_3, "../../assets/images/obstacles/stone_3.png");
+    loadTexture(Textures::stone_4, "../../assets/images/obstacles/stone_4.png");
+    loadTexture(Textures::stone_5, "../../assets/images/obstacles/stone_5.png");
+    loadTexture(Textures::stone_6, "../../assets/images/obstacles/stone_6.png");
     loadTexture(Textures::boat_1, "../../assets/images/obstacles/boat_1.png");
     loadTexture(Textures::boat_2, "../../assets/images/obstacles/boat_2.png");
     loadTexture(Textures::beach_1, "../../assets/images/obstacles/beach_1.png");

@@ -14,7 +14,7 @@ enum class EntityType {
     water,
     player,
     wood_1, wood_2, wood_3, wood_4, 
-    stone_1, stone_2,
+    stone_1, stone_2, stone_3, stone_4, stone_5, stone_6,
     boat_1, boat_2, 
     beach_1
 };

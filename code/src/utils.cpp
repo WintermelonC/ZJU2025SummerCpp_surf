@@ -6,6 +6,12 @@ float Utils::randomFloat(float a, float b) {
     return dist(rng);
 }
 
+int Utils::randomInt(int a, int b) {
+    static std::mt19937 rng(std::random_device{}());
+    std::uniform_int_distribution<int> dist(a, b);
+    return dist(rng);
+}
+
 bool Utils::ifMouseOnButton(
     const sf::Vector2f& mousePos,
     const sf::Vector2f& buttonPos,
