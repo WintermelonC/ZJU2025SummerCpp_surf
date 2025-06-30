@@ -33,7 +33,6 @@ private:
     void update();
     void updateWater();
     void updateScore();  // 更新分数
-    void spawnObstacle();
     void checkCollisions();  // 检测碰撞
 
     void render();
@@ -46,8 +45,6 @@ private:
     sf::RenderWindow m_window;  // 窗口
     sf::View m_view;  // 视图
     sf::Clock m_clock;  // 时钟
-    sf::Clock m_obstacleSpawnClock; // 用于生成障碍物的时钟
-    sf::Time m_obstacleSpawnInterval = Config::Game::OBSTACLE_SPAWN_INTERVAL; // 设置障碍物生成间隔
     GameState m_gameState;  // 游戏状态
 
     EventBus m_eventBus;  // 事件总线
@@ -57,4 +54,8 @@ private:
     float m_score = 0.0f;  // 分数
 
     sf::Vector2f m_offset;  // 水面偏移量
+
+#ifdef DEBUG
+    sf::RectangleShape m_intersectionBox;  // 调试用碰撞框
+#endif  // DEBUG
 };

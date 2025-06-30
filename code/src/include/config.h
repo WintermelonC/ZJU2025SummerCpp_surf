@@ -18,11 +18,13 @@ namespace Config {
 
     namespace Texture {
         constexpr sf::Vector2i WATER_SIZE{256, 256};
+        constexpr sf::Vector2i SMALL_OBSTACLE_SIZE{64, 64};
     }
 
     namespace Player {
         constexpr sf::Vector2f PLAYER_POS{Config::Window::RENDER_CENTER.x, Config::Window::RENDER_SIZE.y / 5.0f * 2.0f};
         constexpr sf::Vector2i PLAYER_SIZE{64, 96};
+        constexpr sf::Vector2f PLAYER_SCALE = {1.5f, 1.5f};  // 玩家缩放比例
         constexpr int PLAYER_HP = 3;  // 玩家最大生命值
         constexpr int PLAYER_POWER = 3;  // 玩家最大能量值
     }
@@ -30,6 +32,10 @@ namespace Config {
     namespace Game {
         constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
         constexpr sf::Time OBSTACLE_SPAWN_INTERVAL = sf::seconds(0.5f);  // 障碍物生成间隔
-        constexpr int OBSTACLE_NUM = 9;  // 障碍物种类数量
+        constexpr int WOOD_NUM = 4;
+        constexpr int STONE_NUM = 6;  // 石头种类数量
+        constexpr int BOAT_NUM = 2;  // 船种类数量
+        constexpr int BEACH_NUM = 1;  // 沙滩种类数量
+        constexpr int OBSTACLE_NUM = WOOD_NUM + STONE_NUM + BOAT_NUM + BEACH_NUM; // 障碍物种类数量
     }
 }

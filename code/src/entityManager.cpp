@@ -8,8 +8,8 @@ void EntityManager::loadSprites() {
     m_sprites.emplace(EntityType::water, sf::Sprite(AssetManager::getTexture(Textures::water)));
     m_sprites.emplace(EntityType::player, sf::Sprite(AssetManager::getTexture(Textures::player_center_1)));
     for (int i = 1; i <= Config::Game::OBSTACLE_NUM; ++i) {
-        EntityType entityType = static_cast<EntityType>(static_cast<int>(EntityType::obstacle_1) + i - 1);
-        Textures textureType = static_cast<Textures>(static_cast<int>(Textures::obstacle_1) + i - 1);
+        EntityType entityType = static_cast<EntityType>(static_cast<int>(EntityType::wood_1) + i - 1);
+        Textures textureType = static_cast<Textures>(static_cast<int>(Textures::wood_1) + i - 1);
         m_sprites.emplace(entityType, sf::Sprite(AssetManager::getTexture(textureType)));
     }
 }
@@ -19,7 +19,8 @@ sf::Sprite& EntityManager::getSprite(const EntityType& type) {
     if (it != m_sprites.end()) {
         return it -> second;
     } else {
-        throw std::runtime_error("Sprite for the given entity type does not exist");
+        throw std::runtime_error("Sprite for the given entity type does not exist" + 
+                                  std::to_string(static_cast<int>(type)));
     }
 }
 

@@ -1,5 +1,10 @@
 #include "renderSystem.h"
 
+RenderSystem::RenderSystem() {
+    // 初始化渲染系统
+    initObstaclePatterns();  // 初始化障碍物模式
+}
+
 void RenderSystem::renderBackground(sf::RenderWindow& window) {
     // 渲染背景逻辑
     // 清除窗口
@@ -70,60 +75,34 @@ void RenderSystem::renderPlayer(
     window.draw(scoreboardShadow);  // 绘制分数版阴影
     window.draw(scoreboard);  // 绘制分数板
     window.draw(scoreText);  // 绘制分数文本
-
-    #ifdef DEBUG
-    // 绘制玩家动画的碰撞框
-    sf::FloatRect bounds = player.getGlobalBounds();
-    sf::RectangleShape collisionBox(bounds.size);
-    collisionBox.setPosition(Config::Player::PLAYER_POS);
-    collisionBox.setFillColor(sf::Color(255, 255, 255, 100));  // 半透明白色
-    collisionBox.setOutlineColor(sf::Color::Red);  // 红色边框
-    collisionBox.setOutlineThickness(1.f);
-    collisionBox.setOrigin(collisionBox.getLocalBounds().size / 2.f);  // 设置原点为中心
-    collisionBox.setRotation(-playerAngle);  // 设置旋转角度
-    window.draw(collisionBox);  // 绘制碰撞框
-
-    // 绘制play floatRect参数
-    sf::Text floatRectText = renderText(
-        Fonts::MSYHBD,
-        "Width: " + std::to_string(bounds.size.x) + ", Height: "
-        + std::to_string(bounds.size.y) + "\n" +
-        "Left: " + std::to_string(bounds.position.x) + ", Top: "
-        + std::to_string(bounds.position.y),
-        15,
-        sf::Color::Black,
-        {bounds.position.x, bounds.position.y - 50},
-        false
-    );
-    window.draw(floatRectText);  // 绘制floatRect参数文本
-    #endif  // DEBUG
 }
 
 void RenderSystem::renderEntities(sf::RenderWindow& window) {
     // 渲染所有实体
     for (const auto& entity : EntityManager::m_entities) {
         window.draw(entity->getSprite());  // 绘制实体精灵
+
         #ifdef DEBUG
         // 绘制实体的碰撞框
-        sf::FloatRect bounds = entity->getSprite().getGlobalBounds();
+        sf::FloatRect bounds = entity -> getCollisionBox().getGlobalBounds();
         sf::RectangleShape collisionBox(bounds.size);
         collisionBox.setPosition(bounds.position);
-        collisionBox.setFillColor(sf::Color(255, 255, 255, 100));  // 半透明黄色
+        collisionBox.setFillColor(sf::Color(255, 255, 255, 50));  // 半透明黄色
         collisionBox.setOutlineColor(sf::Color::White);  // 红色边框
         collisionBox.setOutlineThickness(1.f);  // 边框厚度
         window.draw(collisionBox);  // 绘制碰撞框
 
         // 绘制floatRect参数
-        sf::Text floatRectText = renderText(
-            Fonts::MSYHBD,
-            "Width: " + std::to_string(bounds.size.x) + ", Height: " + std::to_string(bounds.size.y) + "\n" +
-            + "Left: " + std::to_string(bounds.position.x) + ", Top: " + std::to_string(bounds.position.y),
-            15,
-            sf::Color::Black,
-            {bounds.position.x, bounds.position.y - 20},
-            false
-        );
-        window.draw(floatRectText);  // 绘制floatRect参数文本
+        // sf::Text floatRectText = renderText(
+        //     Fonts::MSYHBD,
+        //     "Width: " + std::to_string(static_cast<int>(bounds.size.x)) + ", Height: " + std::to_string(static_cast<int>(bounds.size.y)) + "\n" +
+        //     + "Left: " + std::to_string(static_cast<int>(bounds.position.x)) + ", Top: " + std::to_string(static_cast<int>(bounds.position.y)),
+        //     15,
+        //     sf::Color::Black,
+        //     {bounds.position.x, bounds.position.y - 20},
+        //     false
+        // );
+        // window.draw(floatRectText);  // 绘制floatRect参数文本
         #endif  // DEBUG
     }
 }
@@ -255,6 +234,83 @@ void RenderSystem::spawnTail(const sf::Angle& angle, const bool& ifSpawn) {
         line.setFillColor(TAIL_COLOR);
 
         m_tails.push_back({line, TAIL_LIFETIME});
+    }
+}
+
+void RenderSystem::spawnObstacle() {
+    if (m_obstacleSpawnClock.getElapsedTime() < m_obstacleSpawnInterval){
+        return;
+    }
+    m_obstacleSpawnClock.restart();  // 重置生成时钟
+
+    std::random_device rd; 
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> disX(0, Config::Window::RENDER_SIZE.x);
+    std::uniform_int_distribution<> disType(0, Config::Game::OBSTACLE_NUM - 1);
+    int x = disX(gen);  // 随机生成x坐标
+    int y = Config::Window::RENDER_SIZE.y;  // 初始y坐标为屏幕底
+
+    int randomType = disType(gen);  // 随机生成障碍物类型
+    Textures textureType = static_cast<Textures>(static_cast<int>(Textures::wood_1) + randomType);  // 转换为纹理类型
+    EntityType entityType = static_cast<EntityType>(static_cast<int>(EntityType::wood_1) + randomType);  // 转换为实体类型
+
+    sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
+    EntityManager::setSprite(
+        obstacleSprite,
+        sf::Color::White,
+        {static_cast<float>(x), static_cast<float>(y)},
+        Config::Player::PLAYER_SCALE
+    );
+    Obstacle obstacle(obstacleSprite, textureType);  // 创建障碍物实体
+    EntityManager::pushNewEntity(obstacle);  // 将障碍物实体添加到实体管理器中
+}
+
+void RenderSystem::spawnObstacleGroup() {
+    if (m_obstacleSpawnClock.getElapsedTime() < m_obstacleSpawnInterval) {
+        return;
+    }
+    m_obstacleSpawnClock.restart();
+
+     // 随机选择一个障碍物组模式
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> patternDis(0, m_obstaclePatterns.size() - 1);
+    const auto& pattern = m_obstaclePatterns[patternDis(gen)];
+    
+    // 计算生成位置（确保整个组都在屏幕范围内）
+    std::uniform_real_distribution<float> xDis(
+        pattern.width / 2.f, 
+        Config::Window::RENDER_SIZE.x - pattern.width / 2.f
+    );
+    float centerX = xDis(gen);
+    float centerY = Config::Window::RENDER_SIZE.y + pattern.height / 2.f;
+    
+    // 生成障碍物组中的每个障碍物
+    for (size_t i = 0; i < pattern.positions.size(); i++) {
+        sf::Vector2f worldPos = {
+            centerX + pattern.positions[i].x,
+            centerY + pattern.positions[i].y
+        };
+        
+        // 确保障碍物在屏幕范围内
+        if (worldPos.x >= 0 && worldPos.x <= Config::Window::RENDER_SIZE.x) {
+            Textures textureType = pattern.types[i];
+            EntityType entityType = static_cast<EntityType>(
+                static_cast<int>(EntityType::wood_1) + 
+                (static_cast<int>(textureType) - static_cast<int>(Textures::wood_1))
+            );
+            
+            sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
+            EntityManager::setSprite(
+                obstacleSprite,
+                sf::Color::White,
+                worldPos,
+                Config::Player::PLAYER_SCALE
+            );
+            
+            Obstacle obstacle(obstacleSprite, textureType);
+            EntityManager::pushNewEntity(obstacle);
+        }
     }
 }
 
@@ -437,6 +493,32 @@ void RenderSystem::renderPlayerAnimation(sf::RenderWindow& window) {
     window.draw(sprite);  // 绘制玩家动画
 }
 
+void RenderSystem::initObstaclePatterns() {
+    m_obstaclePatterns.clear();  // 清空现有模式
+
+    // 模式 1：聚集排列
+    ObstaclePattern pattern1;
+    pattern1.positions = {
+        {-Config::Texture::SMALL_OBSTACLE_SIZE.x, Config::Texture::SMALL_OBSTACLE_SIZE.y / 4},
+        {0.f, 0.f},
+        {-Config::Texture::SMALL_OBSTACLE_SIZE.x / 2, Config::Texture::SMALL_OBSTACLE_SIZE.y},
+        {Config::Texture::SMALL_OBSTACLE_SIZE.x, Config::Texture::SMALL_OBSTACLE_SIZE.y * 2 / 3}
+    };
+    pattern1.types = {
+        static_cast<Textures>(static_cast<int>(Textures::stone_1) + Utils::randomInt(0, Config::Game::STONE_NUM - 1)),
+        static_cast<Textures>(static_cast<int>(Textures::stone_1) + Utils::randomInt(0, Config::Game::STONE_NUM - 1)),
+        static_cast<Textures>(static_cast<int>(Textures::wood_1) + Utils::randomInt(0, Config::Game::WOOD_NUM - 1)),
+        static_cast<Textures>(static_cast<int>(Textures::stone_1) + Utils::randomInt(0, Config::Game::STONE_NUM - 1)),
+    };
+    pattern1.width = 0.f;
+    pattern1.height = 0.f;
+    for (const auto& pos : pattern1.positions) {
+        pattern1.width += std::abs(pos.x);
+        pattern1.height += std::abs(pos.y);
+    }
+    m_obstaclePatterns.push_back(pattern1);
+}
+
 void RenderSystem::mouseHoverButton(
         sf::Sprite& button, 
         sf::Sprite& buttonShadow, 
@@ -464,4 +546,29 @@ void RenderSystem::renderVelocity(sf::RenderWindow& window, const sf::Vector2f& 
 
     window.draw(velocityText);
 }
-#endif
+
+void RenderSystem::renderPlayerCollisionBox(sf::RenderWindow& window, const sf::RectangleShape& collisionBox) {
+    // 绘制玩家动画的碰撞框
+    sf::FloatRect bound = collisionBox.getGlobalBounds();
+    sf::RectangleShape box(bound.size);
+    box.setPosition(bound.position);
+    box.setFillColor(sf::Color(255, 255, 255, 50));  // 半透明白色
+    box.setOutlineColor(sf::Color::White);  // 红色边框
+    box.setOutlineThickness(1.f);  // 边框厚度
+    window.draw(box);  // 绘制碰撞框
+
+    // 绘制play floatRect参数
+    // sf::Text floatRectText = renderText(
+    //     Fonts::MSYHBD,
+    //     "Width: " + std::to_string(static_cast<int>(bound.size.x)) + ", Height: "
+    //     + std::to_string(static_cast<int>(bound.size.y)) + "\n" +
+    //     "Left: " + std::to_string(static_cast<int>(bound.position.x)) + ", Top: "
+    //     + std::to_string(static_cast<int>(bound.position.y)),
+    //     15,
+    //     sf::Color::Black,
+    //     {Config::Window::RENDER_CENTER.x, 
+    //      Config::Window::RENDER_CENTER.y + 50}
+    // );
+    // window.draw(floatRectText);  // 绘制floatRect参数文本
+}
+#endif  // DEBUG

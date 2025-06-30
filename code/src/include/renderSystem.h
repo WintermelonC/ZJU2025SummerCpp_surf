@@ -8,6 +8,8 @@
 
 class RenderSystem {
 public:
+    RenderSystem();
+
     void renderPlayer(
         sf::RenderWindow& window, 
         const int& HP, 
@@ -25,8 +27,12 @@ public:
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
 
+    void spawnObstacle();
+    void spawnObstacleGroup();
+
 #ifdef DEBUG
     void renderVelocity(sf::RenderWindow& window, const sf::Vector2f& velocity);
+    void renderPlayerCollisionBox(sf::RenderWindow& window, const sf::RectangleShape& collisionBox);
 #endif  // DEBUG
 
 private:
@@ -79,6 +85,9 @@ private:
     void spawnRipple(const sf::Angle& angle, const bool& ifSpawn = false);
     void spawnTail(const sf::Angle& angle, const bool& ifSpawn = false);
 
+    // 初始化障碍物模式
+    void initObstaclePatterns();
+
     void mouseHoverButton(
         sf::Sprite& button, 
         sf::Sprite& buttonShadow, 
@@ -109,9 +118,19 @@ private:
         float lifetime;  // 剩余存活时间
     };
 
+    struct ObstaclePattern {
+        std::vector<sf::Vector2f> positions;  // 相对位置
+        std::vector<Textures> types;  // 障碍物类型
+        float width;  // 模式宽度
+        float height;  // 模式高度
+    };
+
     std::deque<Trail> m_ripples;  // 水波
     std::deque<Trail> m_tails;  // 加速拖尾
 
     sf::Clock m_animClock;
     int m_currentAnimFrame = 0;
+    sf::Clock m_obstacleSpawnClock; // 用于生成障碍物的时钟
+    sf::Time m_obstacleSpawnInterval = Config::Game::OBSTACLE_SPAWN_INTERVAL; // 设置障碍物生成间隔
+    std::vector<ObstaclePattern> m_obstaclePatterns;  // 预定义的障碍物组模式
 };

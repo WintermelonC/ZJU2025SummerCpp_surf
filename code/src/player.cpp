@@ -4,10 +4,10 @@ Player::Player()
     : m_sprite(EntityManager::getSprite(EntityType::player)),
       m_velocity({0.0f, 0.0f}),
       m_state(PlayerState::Center) {
-    EntityManager::setSprite(EntityType::player, Config::Player::PLAYER_POS, SCALE);  // 设置玩家精灵位置和缩放
-    m_collisionBox.setSize({m_sprite.getGlobalBounds().size});
-    m_collisionBox.setPosition(Config::Player::PLAYER_POS);
+    EntityManager::setSprite(EntityType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SCALE);  // 设置玩家精灵位置和缩放
+    m_collisionBox.setSize(m_sprite.getGlobalBounds().size);
     m_collisionBox.setOrigin(m_collisionBox.getLocalBounds().size / 2.f);  // 设置原点为中心
+    m_collisionBox.setPosition(Config::Player::PLAYER_POS);
     m_collisionBox.setRotation(-getAngle());  // 设置旋转角度
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;
