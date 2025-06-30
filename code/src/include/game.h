@@ -34,6 +34,7 @@ private:
     void updateWater();
     void updateScore();  // 更新分数
     void spawnObstacle();
+    void checkCollisions();  // 检测碰撞
 
     void render();
 

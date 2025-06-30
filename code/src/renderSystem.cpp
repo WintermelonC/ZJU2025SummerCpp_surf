@@ -15,7 +15,8 @@ void RenderSystem::renderPlayer(
         sf::RenderWindow& window, 
         const int& HP, 
         const int& power,
-        const float& score
+        const float& score,
+        const sf::Angle& playerAngle
     ) {
     // 绘制玩家
     sf::Sprite& player = EntityManager::getSprite(EntityType::player);
@@ -69,12 +70,61 @@ void RenderSystem::renderPlayer(
     window.draw(scoreboardShadow);  // 绘制分数版阴影
     window.draw(scoreboard);  // 绘制分数板
     window.draw(scoreText);  // 绘制分数文本
+
+    #ifdef DEBUG
+    // 绘制玩家动画的碰撞框
+    sf::FloatRect bounds = player.getGlobalBounds();
+    sf::RectangleShape collisionBox(bounds.size);
+    collisionBox.setPosition(Config::Player::PLAYER_POS);
+    collisionBox.setFillColor(sf::Color(255, 255, 255, 100));  // 半透明白色
+    collisionBox.setOutlineColor(sf::Color::Red);  // 红色边框
+    collisionBox.setOutlineThickness(1.f);
+    collisionBox.setOrigin(collisionBox.getLocalBounds().size / 2.f);  // 设置原点为中心
+    collisionBox.setRotation(-playerAngle);  // 设置旋转角度
+    window.draw(collisionBox);  // 绘制碰撞框
+
+    // 绘制play floatRect参数
+    sf::Text floatRectText = renderText(
+        Fonts::MSYHBD,
+        "Width: " + std::to_string(bounds.size.x) + ", Height: "
+        + std::to_string(bounds.size.y) + "\n" +
+        "Left: " + std::to_string(bounds.position.x) + ", Top: "
+        + std::to_string(bounds.position.y),
+        15,
+        sf::Color::Black,
+        {bounds.position.x, bounds.position.y - 50},
+        false
+    );
+    window.draw(floatRectText);  // 绘制floatRect参数文本
+    #endif  // DEBUG
 }
 
 void RenderSystem::renderEntities(sf::RenderWindow& window) {
     // 渲染所有实体
     for (const auto& entity : EntityManager::m_entities) {
         window.draw(entity->getSprite());  // 绘制实体精灵
+        #ifdef DEBUG
+        // 绘制实体的碰撞框
+        sf::FloatRect bounds = entity->getSprite().getGlobalBounds();
+        sf::RectangleShape collisionBox(bounds.size);
+        collisionBox.setPosition(bounds.position);
+        collisionBox.setFillColor(sf::Color(255, 255, 255, 100));  // 半透明黄色
+        collisionBox.setOutlineColor(sf::Color::White);  // 红色边框
+        collisionBox.setOutlineThickness(1.f);  // 边框厚度
+        window.draw(collisionBox);  // 绘制碰撞框
+
+        // 绘制floatRect参数
+        sf::Text floatRectText = renderText(
+            Fonts::MSYHBD,
+            "Width: " + std::to_string(bounds.size.x) + ", Height: " + std::to_string(bounds.size.y) + "\n" +
+            + "Left: " + std::to_string(bounds.position.x) + ", Top: " + std::to_string(bounds.position.y),
+            15,
+            sf::Color::Black,
+            {bounds.position.x, bounds.position.y - 20},
+            false
+        );
+        window.draw(floatRectText);  // 绘制floatRect参数文本
+        #endif  // DEBUG
     }
 }
 

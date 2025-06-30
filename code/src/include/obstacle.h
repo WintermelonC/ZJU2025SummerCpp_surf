@@ -13,4 +13,8 @@ public:
 
 
     ~Obstacle() = default;
+
+    bool isObstacle() override {
+        return true;  // 确认是障碍物
+    }
 };
