@@ -2,6 +2,7 @@
 
 #include <variant>
 #include <SFML/Graphics.hpp>
+#include "entityManager.h"
 
 struct WindowCloseEvent {};
 struct WindowResizeEvent {
@@ -15,6 +16,10 @@ struct MouseLeftClickEvent {
 };
 struct MouseRightClickEvent {};
 struct SpacePressedEvent {};
+struct ObstacleCollisionEvent {};
+struct ItemCollisionEvent {
+    EntityType itemType;  // 碰撞的物品类型
+};
 
 using Event = std::variant<
     WindowCloseEvent,
@@ -23,5 +28,7 @@ using Event = std::variant<
     WindowFocusGainedEvent,
     MouseLeftClickEvent,
     MouseRightClickEvent,
-    SpacePressedEvent
+    SpacePressedEvent,
+    ObstacleCollisionEvent,
+    ItemCollisionEvent
 >;

@@ -41,6 +41,7 @@ public:
     }
     const int getHP() const { return m_hp; }  // 获取玩家生命值
     const int getPower() const { return m_power; }  // 获取玩家能量
+    const sf::RectangleShape& getCollisionBox() const { return m_collisionBox; }  // 获取玩家碰撞框 
 
 private:
     void updateState(const sf::Vector2f& mousePos);  // 更新玩家状态
@@ -65,6 +66,7 @@ private:
     sf::Vector2f m_velocity;  // 玩家速度
     PlayerState m_state;  // 玩家状态
     PlayerState m_lastState;  // 上一个状态
+    sf::RectangleShape m_collisionBox;  // 玩家碰撞框
     bool m_isTurn = false;  // 是否转弯
     int m_hp = Config::Player::PLAYER_HP;  // 玩家生命值
     int m_power = 0;  // 玩家能量值

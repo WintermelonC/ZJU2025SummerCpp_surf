@@ -14,7 +14,8 @@ public:
         sf::RenderWindow& window, 
         const int& HP, 
         const int& power,
-        const float& score
+        const float& score,
+        const sf::Angle& playerAngle
     );
     void renderStartMenu(sf::RenderWindow& window);
     void renderPauseMenu(sf::RenderWindow& window);

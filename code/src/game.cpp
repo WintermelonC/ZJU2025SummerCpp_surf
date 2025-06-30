@@ -92,6 +92,7 @@ void Game::update() {
         updateScore();  // 更新分数
         m_renderSystem.spawnObstacleGroup();  // 更新障碍物状态
         EntityManager::updateEntities(m_player.getVelocity());  // 更新所有实体状态
+        checkCollisions();  // 检测碰撞
     }
 }
 
@@ -104,7 +105,7 @@ void Game::render() {
         m_renderSystem.renderRipple(m_window);  // 渲染水波
         m_renderSystem.renderTail(m_window);
         m_renderSystem.renderEntities(m_window);  // 渲染所有实体
-        m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score);  // 渲染玩家状态
+        m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score, m_player.getAngle());  // 渲染玩家状态
         
     #ifdef DEBUG
         m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
@@ -113,7 +114,7 @@ void Game::render() {
         m_renderSystem.renderBackground(m_window);  // 渲染背景
         m_renderSystem.renderRipple(m_window);  // 渲染水波
         m_renderSystem.renderTail(m_window);
-        m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score);  // 渲染玩家状态
+        m_renderSystem.renderPlayer(m_window, m_player.getHP(), m_player.getPower(), m_score, m_player.getAngle());  // 渲染玩家状态
         m_renderSystem.renderEntities(m_window);  // 渲染所有实体
     #ifdef DEBUG
         m_renderSystem.renderVelocity(m_window, m_player.getVelocity());  // 渲染玩家速度
@@ -147,4 +148,20 @@ void Game::updateWater() {
 
 void Game::updateScore() {
     m_score += m_player.getVelocity().y * 0.001f;
+}
+
+void Game::checkCollisions() {
+    const auto& playerCollisionBox = m_player.getCollisionBox();  // 获取玩家碰撞框
+    for (const auto& entity : EntityManager::m_entities) {
+        const auto& entityCollisionBox = entity->getCollisionBox();  // 获取实体碰撞框
+        sf::FloatRect playerCollisionBoxRect = playerCollisionBox.getGlobalBounds();
+        sf::FloatRect entityCollisionBoxRect = entityCollisionBox.getGlobalBounds();
+        if (playerCollisionBoxRect.findIntersection(entityCollisionBoxRect) != std::nullopt) {
+            std::cout << "hhh" << std::endl;  // 调试输出
+            // 检测到碰撞
+            if (entity->isObstacle()){
+                std::cout << "Obstacle collision detected!" << std::endl;
+            }
+        }
+    }
 }
