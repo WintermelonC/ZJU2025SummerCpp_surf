@@ -33,6 +33,17 @@ void AssetManager::loadAssets() {
     loadTexture(Textures::heart_2, "../../assets/images/player/heart_2.png");
     loadTexture(Textures::power_1, "../../assets/images/player/power_1.png");
     loadTexture(Textures::power_2, "../../assets/images/player/power_2.png");
+
+    // Obstacles
+    loadTexture(Textures::obstacle_1, "../../assets/images/obstacles/obstacle_1.png");
+    loadTexture(Textures::obstacle_2, "../../assets/images/obstacles/obstacle_2.png");
+    loadTexture(Textures::obstacle_3, "../../assets/images/obstacles/obstacle_3.png");
+    loadTexture(Textures::obstacle_4, "../../assets/images/obstacles/obstacle_4.png");
+    loadTexture(Textures::obstacle_5, "../../assets/images/obstacles/obstacle_5.png");
+    loadTexture(Textures::obstacle_6, "../../assets/images/obstacles/obstacle_6.png");
+    loadTexture(Textures::obstacle_7, "../../assets/images/obstacles/obstacle_7.png");
+    loadTexture(Textures::obstacle_8, "../../assets/images/obstacles/obstacle_8.png");
+    loadTexture(Textures::obstacle_9, "../../assets/images/obstacles/obstacle_9.png");
     
     // Font
     loadFont(Fonts::MSYHBD, "../../assets/fonts/MSYHBD.TTC");
