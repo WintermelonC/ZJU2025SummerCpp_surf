@@ -1,5 +1,10 @@
 #include "views/renderSystem.h"
 
+void RenderSystem::reset() {
+    m_ripples.clear();  // 清除水波特效
+    m_tails.clear();  // 清除拖尾特效
+}
+
 void RenderSystem::renderBackground(sf::RenderWindow& window) {
     // 渲染背景逻辑
     // 清除窗口

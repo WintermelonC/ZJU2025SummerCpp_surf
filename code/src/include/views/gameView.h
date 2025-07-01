@@ -17,6 +17,7 @@ public:
     virtual void renderGameOver() = 0;
     virtual void display() = 0;
     virtual void clear() = 0;
+    virtual void reset() = 0;
     
     // 事件处理
     virtual bool isOpen() const = 0;
@@ -43,6 +44,7 @@ public:
     void renderGameOver() override;
     void display() override;
     void clear() override;
+    void reset();
     
     bool isOpen() const override;
     sf::Vector2i getMousePosition() const override;

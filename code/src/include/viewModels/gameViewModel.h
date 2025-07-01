@@ -19,6 +19,7 @@ public:
     // 主要控制方法
     void initialize();
     void update(float deltaTime);
+    void reset();
     void handleInput();
     void render();
     

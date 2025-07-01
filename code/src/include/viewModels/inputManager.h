@@ -9,6 +9,8 @@ public:
 
     void processInput(sf::RenderWindow& window);
 
+    void reset() { m_eventBus.clear(); }
+
 private:
     EventBus& m_eventBus;
 };

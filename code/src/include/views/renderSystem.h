@@ -8,6 +8,8 @@
 
 class RenderSystem {
 public:
+    void reset();
+
     void renderPlayer(
         sf::RenderWindow& window, 
         const int& HP, 

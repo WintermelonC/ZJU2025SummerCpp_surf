@@ -7,6 +7,7 @@ class EventBus {
 public:
     void publish(const Event& event);
     bool poll(Event& event);
+    void clear() { m_eventQueue.clear(); }
 
 private:
     std::deque<Event> m_eventQueue;  // 事件队列

@@ -54,6 +54,20 @@ void SFMLGameView::clear() {
     m_window.clear(sf::Color(0, 192, 222));
 }
 
+void SFMLGameView::reset() {
+    m_window.setView(m_view);
+    m_waterOffset = {0.0f, 0.0f};
+    
+    // 重置渲染系统状态
+    m_renderSystem.reset();
+    
+    // 重置玩家数据
+    m_playerData = PlayerModel();
+    
+    // 重置游戏数据
+    m_gameData = GameModel();
+}
+
 bool SFMLGameView::isOpen() const {
     return m_window.isOpen();
 }

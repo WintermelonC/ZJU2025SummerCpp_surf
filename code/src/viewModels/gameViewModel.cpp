@@ -58,6 +58,26 @@ void GameViewModel::update(float deltaTime) {
     m_view->updateWaterOffset(m_gameModel->getWaterOffset());
 }
 
+void GameViewModel::reset() {
+    // 重置游戏状态
+    m_gameModel->resetGame();
+    
+    // 重置玩家状态
+    m_playerModel->resetPlayer();
+    
+    // 重置视图
+    m_view->reset();
+    
+    // 重置输入管理器
+    m_inputManager.reset();
+    
+    // 重置事件总线
+    m_eventBus.clear();
+    
+    // 重置时钟
+    m_clock.restart();
+}
+
 void GameViewModel::handleInput() {
     // 通过InputManager处理输入事件
     auto* sfmlView = dynamic_cast<SFMLGameView*>(m_view.get());
@@ -157,7 +177,7 @@ void GameViewModel::handleMouseClick(const sf::Vector2f& worldPos) {
             m_gameModel->setGameState(GameState::Playing);
         } else if (isButtonClicked(worldPos, Config::Window::RETURN_BUTTON_POS, 
             {BUTTON_SIZE.x * Config::Window::RETURN_BUTTON_SCALE.x, BUTTON_SIZE.y * Config::Window::RETURN_BUTTON_SCALE.y})) {
-            m_gameModel->setGameState(GameState::StartMenu);
+            reset();
         }
     }
 }
