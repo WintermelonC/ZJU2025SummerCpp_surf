@@ -2,9 +2,9 @@
 
 #include <deque>
 #include <SFML/Graphics.hpp>
-#include "entityManager.h"
-#include "config.h"
-#include "utils.h"
+#include "views/entityManager.h"
+#include "infrastructure/config.h"
+#include "infrastructure/utils.h"
 
 class RenderSystem {
 public:

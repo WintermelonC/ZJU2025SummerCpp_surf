@@ -25,6 +25,10 @@ namespace Config {
         constexpr sf::Vector2i PLAYER_SIZE{64, 96};
         constexpr int PLAYER_HP = 3;  // 玩家最大生命值
         constexpr int PLAYER_POWER = 3;  // 玩家最大能量值
+        constexpr float POWER_DURATION = 2.0f;  // 能量持续时间（秒）
+        constexpr float POWER_MULTIPLIER = 2.0f;  // 能量加速倍数
+        constexpr float TURN_SPEED_1 = 30.0f;  // 轻微转向速度
+        constexpr float TURN_SPEED_2 = 60.0f;  // 急转弯速度
     }
 
     namespace Game {
