@@ -1,4 +1,4 @@
-#include "entityManager.h"
+#include "views/entityManager.h"
 
 std::map<EntityType, sf::Sprite> EntityManager::m_sprites;
 

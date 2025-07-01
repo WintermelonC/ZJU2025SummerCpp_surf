@@ -1,4 +1,4 @@
-#include "inputManager.h"
+#include "viewModels/inputManager.h"
 
 InputManager::InputManager(EventBus& eventBus)
     : m_eventBus(eventBus) {}

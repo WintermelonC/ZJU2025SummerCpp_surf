@@ -1,4 +1,4 @@
-#include "renderSystem.h"
+#include "views/renderSystem.h"
 
 void RenderSystem::renderBackground(sf::RenderWindow& window) {
     // 渲染背景逻辑

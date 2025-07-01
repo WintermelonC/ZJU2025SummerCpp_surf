@@ -2,7 +2,7 @@
 
 #include <map>
 #include <SFML/Graphics.hpp>
-#include "assetManager.h"
+#include "infrastructure/assetManager.h"
 
 enum class EntityType {
     water,

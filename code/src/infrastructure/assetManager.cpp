@@ -1,4 +1,4 @@
-#include "assetManager.h"
+#include "infrastructure/assetManager.h"
 
 std::map<Textures, sf::Texture> AssetManager::m_textures;
 std::map<Fonts, sf::Font> AssetManager::m_fonts;
