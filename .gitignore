@@ -4,5 +4,6 @@ build-release-mingw-ninja/
 .DS_Store
 
 assets/fonts/
+document/
 CMakePresets.json
 TODO.md
