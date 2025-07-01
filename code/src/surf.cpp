@@ -1,12 +1,10 @@
 #include <iostream>
-#include "assetManager.h"
-#include "game.h"
+#include "mvvmGame.h"
 
 int main() {
-    AssetManager::loadAssets();
-    EntityManager::loadSprites();
-    Game game;
+    MVVMGame game;
     try {
+        game.initialize();
         game.run();
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

@@ -1,13 +1,25 @@
 add_executable(surf
     surf.cpp
-    game.cpp
-    player.cpp
-    eventBus.cpp
-    inputManager.cpp
-    renderSystem.cpp
-    assetManager.cpp
-    entityManager.cpp
-    utils.cpp
+    # 基础设施层文件
+    infrastructure/eventBus.cpp
+    infrastructure/assetManager.cpp
+    infrastructure/utils.cpp
+    infrastructure/animationController.cpp
+    # ViewModel层文件
+    viewModels/inputManager.cpp
+    viewModels/gameViewModel.cpp
+    # View层文件
+    views/renderSystem.cpp
+    views/spriteManager.cpp
+    views/gameView.cpp
+    # Model层文件
+    models/entityModel.cpp
+    models/gameModel.cpp
+    models/playerModel.cpp
+    # Service层文件
+    services/playerService.cpp
+    # 应用协调器
+    mvvmGame.cpp
 )
 
 target_link_libraries(surf PRIVATE SFML::System SFML::Window SFML::Graphics SFML::Audio)
