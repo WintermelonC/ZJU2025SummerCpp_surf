@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "models/gameModel.h"
 #include "models/playerModel.h"
+#include "views/renderSystem.h"
 
 // View接口
 class IGameView {
@@ -27,6 +28,7 @@ public:
     virtual void updatePlayerData(const PlayerModel& player) = 0;
     virtual void updateGameData(const GameModel& game) = 0;
     virtual void updateWaterOffset(const sf::Vector2f& offset) = 0;
+    virtual void updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) = 0;
 };
 
 // SFML实现的View
@@ -51,19 +53,26 @@ public:
     void updatePlayerData(const PlayerModel& player) override;
     void updateGameData(const GameModel& game) override;
     void updateWaterOffset(const sf::Vector2f& offset) override;
+    void updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) override;
     
     // 获取窗口引用（用于事件处理）
     sf::RenderWindow& getWindow() { return m_window; }
 
+    void setViewSize(const sf::Vector2f& size) {
+        m_view.setSize(size);
+        m_window.setView(m_view);
+    }
+
 private:
-    void renderBackground();
     void renderPlayer();
-    void renderUI();
     void renderWater();
     
 private:
     sf::RenderWindow m_window;
     sf::View m_view;
+    
+    // 渲染系统
+    RenderSystem m_renderSystem;
     
     // 缓存的渲染数据
     PlayerModel m_playerData;

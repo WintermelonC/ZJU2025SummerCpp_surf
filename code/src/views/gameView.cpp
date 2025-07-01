@@ -15,26 +15,21 @@ SFMLGameView::SFMLGameView()
 
 void SFMLGameView::renderStartMenu() {
     clear();
-    renderBackground();
+    renderWater();
     // 渲染开始菜单UI
-    RenderSystem renderSystem;
-    renderSystem.renderStartMenu(m_window);
+    m_renderSystem.renderStartMenu(m_window);
 }
 
 void SFMLGameView::renderGameplay() {
     clear();
-    renderBackground();
     renderWater();
-    renderPlayer();
-    renderUI();
-    
     // 渲染水波和拖尾效果
-    RenderSystem renderSystem;
-    renderSystem.renderRipple(m_window);
-    renderSystem.renderTail(m_window);
+    m_renderSystem.renderRipple(m_window);
+    m_renderSystem.renderTail(m_window);
+    renderPlayer();
     
 #ifdef DEBUG
-    renderSystem.renderVelocity(m_window, m_playerData.getVelocity());
+    m_renderSystem.renderVelocity(m_window, m_playerData.getVelocity());
 #endif
 }
 
@@ -43,13 +38,11 @@ void SFMLGameView::renderPauseMenu() {
     renderGameplay();
     
     // 然后渲染暂停菜单
-    RenderSystem renderSystem;
-    renderSystem.renderPauseMenu(m_window);
+    m_renderSystem.renderPauseMenu(m_window);
 }
 
 void SFMLGameView::renderGameOver() {
     clear();
-    renderBackground();
     // TODO: 实现游戏结束界面
 }
 
@@ -89,17 +82,16 @@ void SFMLGameView::updateWaterOffset(const sf::Vector2f& offset) {
     m_waterOffset = offset;
 }
 
-void SFMLGameView::renderBackground() {
-    // 渲染背景色已在clear()中完成
+void SFMLGameView::updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) {
+    // 更新水波特效
+    m_renderSystem.updateRipple(deltaTime, velocity, angle, shouldSpawnRipple);
+    
+    // 更新拖尾特效
+    m_renderSystem.updateTail(deltaTime, velocity, angle, shouldSpawnTail);
 }
 
 void SFMLGameView::renderPlayer() {
-    RenderSystem renderSystem;
-    renderSystem.renderPlayer(m_window, m_playerData.getHP(), m_playerData.getPower(), m_gameData.getScore());
-}
-
-void SFMLGameView::renderUI() {
-    // UI渲染已在renderPlayer中包含
+    m_renderSystem.renderPlayer(m_window, m_playerData.getHP(), m_playerData.getPower(), m_gameData.getScore());
 }
 
 void SFMLGameView::renderWater() {

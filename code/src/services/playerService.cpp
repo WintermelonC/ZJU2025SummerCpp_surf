@@ -18,7 +18,6 @@ void PlayerService::update(float deltaTime, const sf::Vector2f& mousePos) {
     updateYSpeed(deltaTime);
     updateXSpeed();
     updateAnimation(deltaTime);
-    updatePosition(deltaTime);
 }
 
 void PlayerService::usePower() {
@@ -41,19 +40,21 @@ void PlayerService::updateState(const sf::Vector2f& mousePos) {
     const sf::Vector2f delta = mousePos - m_playerModel->getPosition();
     const sf::Angle angle = sf::radians(std::atan2(delta.x, delta.y));
     
-    m_playerModel->setAngle(angle);
-    
     if (delta.y >= 0.0f) {
         const float angleDeg = angle.asDegrees();
         if (angleDeg >= ANGLE_2 || angleDeg <= -ANGLE_2) {
             m_playerModel->setState((angleDeg >= 0.f) ? PlayerState::Right2 : PlayerState::Left2);
+            m_playerModel->setAngle(sf::degrees((angleDeg >= 0.f) ? ANGLE_2 : -ANGLE_2));
         } else if (angleDeg >= ANGLE_1 || angleDeg <= -ANGLE_1) {
             m_playerModel->setState((angleDeg >= 0.f) ? PlayerState::Right1 : PlayerState::Left1);
+            m_playerModel->setAngle(sf::degrees((angleDeg >= 0.f) ? ANGLE_1 : -ANGLE_1));
         } else {
             m_playerModel->setState(PlayerState::Center);
+            m_playerModel->setAngle(sf::degrees(0.0f));
         }
     } else {
         m_playerModel->setState(PlayerState::Stop);
+        m_playerModel->setAngle(sf::degrees(0.0f));
     }
 }
 
@@ -85,15 +86,17 @@ void PlayerService::updateYSpeed(float deltaTime) {
     
     if (m_playerModel->getState() == PlayerState::Stop) {
         // 减速
-        velocity.y = std::max(0.0f, velocity.y - DECELERATION * deltaTime);
+        velocity.y = std::max(0.0f, velocity.y - ACCELERATION_2 * deltaTime);
     } else {
         // 加速
-        float acceleration = ACCELERATION;
+        float acceleration = ACCELERATION_1;
+        float maxSpeed = MAX_SPEED;
         if (m_playerModel->isPower()) {
-            acceleration *= Config::Player::POWER_MULTIPLIER;
+            acceleration = ACCELERATION_2;
+            maxSpeed = MAX_SPEED * Config::Player::POWER_MULTIPLIER;
         }
         
-        velocity.y = std::min(MAX_SPEED, velocity.y + acceleration * deltaTime);
+        velocity.y = std::min(maxSpeed, velocity.y + acceleration * deltaTime);
     }
     
     m_playerModel->setVelocity(velocity);
@@ -107,19 +110,19 @@ void PlayerService::updateXSpeed() {
             velocity.x = 0.0f;
             break;
         case PlayerState::Left1:
-            velocity.x = -Config::Player::TURN_SPEED_1;
+            velocity.x = -velocity.y * XY_SPEED_1;
             break;
         case PlayerState::Left2:
-            velocity.x = -Config::Player::TURN_SPEED_2;
+            velocity.x = -velocity.y * XY_SPEED_2;
             break;
         case PlayerState::Right1:
-            velocity.x = Config::Player::TURN_SPEED_1;
+            velocity.x = velocity.y * XY_SPEED_1;
             break;
         case PlayerState::Right2:
-            velocity.x = Config::Player::TURN_SPEED_2;
+            velocity.x = velocity.y * XY_SPEED_2;
             break;
         case PlayerState::Stop:
-            velocity.x *= 0.95f; // 逐渐减速
+            velocity.x = 0.0f;
             break;
     }
     
@@ -127,26 +130,35 @@ void PlayerService::updateXSpeed() {
 }
 
 void PlayerService::updateAnimation(float deltaTime) {
-    m_animationTimer += deltaTime;
-    
-    // 根据状态和时间更新动画帧
-    // 这里可以实现动画逻辑
-    EntityManager::setSprite(
-        EntityType::player, 
-        m_playerModel->getPosition(), 
-        {1.0f, 1.0f}, // 缩放
-        false, // 不水平翻转
-        {0.0f, 0.0f} // 偏移
-    );
-}
+    EntityManager::setSprite(EntityType::player, m_playerModel->getPosition(), Config::Player::PLAYER_SCALE, true);
 
-void PlayerService::updatePosition(float deltaTime) {
-    sf::Vector2f position = m_playerModel->getPosition();
-    const sf::Vector2f velocity = m_playerModel->getVelocity();
-    
-    // 更新位置（注意：在这个游戏中玩家位置相对固定，主要是背景移动）
-    // 但我们仍然可以记录逻辑位置用于碰撞检测等
-    position += velocity * deltaTime;
-    
-    m_playerModel->setPosition(position);
+    const float m_animInterval = 0.1f;  // 动画间隔时间
+    std::vector<Textures> paths;
+    switch (m_playerModel->getState()) {
+        case PlayerState::Center:
+            paths = {Textures::player_center_1, Textures::player_center_2, Textures::player_center_3};
+            break;
+        case PlayerState::Left1:
+            paths = {Textures::player_left_11, Textures::player_left_12, Textures::player_left_13};
+            break;
+        case PlayerState::Left2:
+            paths = {Textures::player_left_21, Textures::player_left_22, Textures::player_left_23};
+            break;
+        case PlayerState::Right1:
+            paths = {Textures::player_right_11, Textures::player_right_12, Textures::player_right_13};
+            break;
+        case PlayerState::Right2:
+            paths = {Textures::player_right_21, Textures::player_right_22, Textures::player_right_23};
+            break;
+        case PlayerState::Stop:
+            paths = {Textures::player_stop_1, Textures::player_stop_2, Textures::player_stop_3};
+            break;
+    }
+
+    m_animTimer += deltaTime;
+    if (m_animTimer >= m_animInterval) {
+        m_animTimer = 0.f;
+        m_currentFrame = (m_currentFrame + 1) % paths.size();
+        EntityManager::setSpriteTexture(EntityType::player, paths[m_currentFrame]);  // 更新玩家精灵纹理
+    }
 }

@@ -23,18 +23,18 @@ private:
     void updateYSpeed(float deltaTime);
     void updateXSpeed();
     void updateAnimation(float deltaTime);
-    void updatePosition(float deltaTime);
 
 private:
     // 角度阈值
-    static constexpr float ANGLE_1 = 15.0f;
-    static constexpr float ANGLE_2 = 45.0f;
+    static constexpr float ANGLE_1 = 20.0f;
+    static constexpr float ANGLE_2 = 40.0f;
     
     // 物理参数
-    static constexpr float GRAVITY = 98.0f;
-    static constexpr float MAX_SPEED = 100.0f;
-    static constexpr float ACCELERATION = 50.0f;
-    static constexpr float DECELERATION = 25.0f;
+    static constexpr float MAX_SPEED = 50.0f;
+    static constexpr float ACCELERATION_1 = 10.0f;
+    static constexpr float ACCELERATION_2 = 50.0f;
+    static constexpr float XY_SPEED_1 = 0.4f;  // Y / X 比例 1
+    static constexpr float XY_SPEED_2 = 0.8f;  // Y / X 比例 2
     
     std::shared_ptr<PlayerModel> m_playerModel;
     
@@ -42,4 +42,8 @@ private:
     float m_powerTimer;
     float m_animationTimer;
     bool m_wasInWater;
+
+    // 动画计时器
+    float m_animTimer;
+    int m_currentFrame;
 };

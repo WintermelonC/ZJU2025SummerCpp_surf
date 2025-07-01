@@ -27,7 +27,7 @@ void MVVMGame::initialize() {
     // 初始化ViewModel
     m_gameViewModel->initialize();
     
-    std::cout << "MVVM Game initialized successfully!" << std::endl;
+    // std::cout << "MVVM Game initialized successfully!" << std::endl;
 }
 
 void MVVMGame::run() {

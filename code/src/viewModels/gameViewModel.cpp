@@ -3,6 +3,7 @@
 #include "infrastructure/config.h"
 #include "views/renderSystem.h"
 #include <iostream>
+#include <cmath>
 
 GameViewModel::GameViewModel(std::shared_ptr<GameModel> gameModel, 
                              std::shared_ptr<PlayerModel> playerModel,
@@ -122,8 +123,16 @@ void GameViewModel::updateGame(float deltaTime) {
 }
 
 void GameViewModel::updateEffects(float deltaTime) {
+    // 计算玩家速度角度
+    const sf::Vector2f velocity = m_playerModel->getVelocity();
+    const sf::Angle angle = m_playerModel->getAngle();
+    
+    // 检查是否应该生成特效
+    const bool shouldRipple = shouldSpawnRipple();
+    const bool shouldTail = shouldSpawnTail();
+    
     // 更新特效（水波、拖尾等）
-    // 这部分逻辑可以保留在RenderSystem中，或者创建专门的EffectManager
+    m_view->updateEffects(deltaTime, velocity, angle, shouldRipple, shouldTail);
 }
 
 bool GameViewModel::shouldSpawnRipple() const {
@@ -175,7 +184,8 @@ void GameViewModel::handleWindowClose() {
 
 void GameViewModel::handleWindowResize(const sf::Vector2u& size) {
     // 处理窗口大小改变
-    // 可能需要更新视图设置
+    auto* sfmlView = dynamic_cast<SFMLGameView*>(m_view.get());
+    sfmlView->setViewSize(sf::Vector2f(size));
 }
 
 void GameViewModel::handleFocusLost() {
