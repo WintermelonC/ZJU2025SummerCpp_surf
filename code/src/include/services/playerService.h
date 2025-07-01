@@ -42,8 +42,4 @@ private:
     float m_powerTimer;
     float m_animationTimer;
     bool m_wasInWater;
-
-    // 动画计时器
-    float m_animTimer;
-    int m_currentFrame;
 };

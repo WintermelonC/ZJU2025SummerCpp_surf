@@ -4,29 +4,29 @@
 #include <SFML/Graphics.hpp>
 #include "infrastructure/assetManager.h"
 
-enum class EntityType {
+enum class SpriteType {
     water,
     player
 };
 
-class EntityManager { 
+class SpriteManager { 
 public:
     static void loadSprites();
     
-    static sf::Sprite& getSprite(const EntityType& type);
+    static sf::Sprite& getSprite(const SpriteType& type);
 
     static void setSprite(
-        const EntityType& type,
+        const SpriteType& type,
         const sf::Vector2f& position,
         const sf::Vector2f& scale = {1.0f, 1.0f},
         const bool& ifCenter = true,
         const sf::Vector2f& origin = {0.0f, 0.0f}
     );
 
-    static void setSpriteTexture(const EntityType& type, const Textures& texture);
+    static void setSpriteTexture(const SpriteType& type, const Textures& texture);
 
 private:
 
 private:
-    static std::map<EntityType, sf::Sprite> m_sprites;  // 存储实体类型与对应的精灵
+    static std::map<SpriteType, sf::Sprite> m_sprites;  // 存储实体类型与对应的精灵
 };

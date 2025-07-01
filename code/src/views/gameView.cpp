@@ -1,5 +1,5 @@
 #include "views/gameView.h"
-#include "views/entityManager.h"
+#include "views/spriteManager.h"
 #include "views/renderSystem.h"
 #include "infrastructure/config.h"
 
@@ -96,14 +96,14 @@ void SFMLGameView::renderPlayer() {
 
 void SFMLGameView::renderWater() {
     // 更新水面精灵位置
-    EntityManager::setSprite(
-        EntityType::water,
+    SpriteManager::setSprite(
+        SpriteType::water,
         m_waterOffset,
         {1.0f, 1.0f},
         false,
         {Config::Texture::WATER_SIZE.x, 0.f}
     );
     
-    sf::Sprite& water = EntityManager::getSprite(EntityType::water);
+    sf::Sprite& water = SpriteManager::getSprite(SpriteType::water);
     m_window.draw(water);
 }

@@ -6,7 +6,7 @@ void RenderSystem::renderBackground(sf::RenderWindow& window) {
     window.clear(sf::Color(0, 192, 222));  // 用纯色清除窗口
 
     // 渲染逻辑
-    sf::Sprite& water = EntityManager::getSprite(EntityType::water);
+    sf::Sprite& water = SpriteManager::getSprite(SpriteType::water);
 
     window.draw(water);  // 绘制水
 }
@@ -18,7 +18,7 @@ void RenderSystem::renderPlayer(
         const float& score
     ) {
     // 绘制玩家
-    sf::Sprite& player = EntityManager::getSprite(EntityType::player);
+    sf::Sprite& player = SpriteManager::getSprite(SpriteType::player);
     window.draw(player);  // 绘制玩家精灵
     
     for (int i = 1; i <= Config::Player::PLAYER_HP; i++) {
@@ -193,7 +193,8 @@ void RenderSystem::spawnTail(const sf::Angle& angle, const bool& ifSpawn) {
                                  Utils::randomFloat(50.f, 60.f)});
         line.setRotation(angle + sf::degrees(Utils::randomFloat(-5.f, 5.f)));
         line.setOrigin({line.getSize().x / 2.f, line.getSize().y});
-        line.setPosition({Config::Player::PLAYER_POS.x + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
+        line.setPosition({Config::Player::PLAYER_POS.x + std::tan(angle.asRadians()) * Config::Player::PLAYER_SIZE.y / 3.f +
+                          Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
                           Config::Player::PLAYER_POS.y});
         line.setFillColor(TAIL_COLOR);
 

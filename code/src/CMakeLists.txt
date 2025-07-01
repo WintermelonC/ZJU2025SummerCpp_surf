@@ -4,14 +4,16 @@ add_executable(surf
     infrastructure/eventBus.cpp
     infrastructure/assetManager.cpp
     infrastructure/utils.cpp
+    infrastructure/animationController.cpp
     # ViewModel层文件
     viewModels/inputManager.cpp
     viewModels/gameViewModel.cpp
     # View层文件
     views/renderSystem.cpp
-    views/entityManager.cpp
+    views/spriteManager.cpp
     views/gameView.cpp
     # Model层文件
+    models/entityModel.cpp
     models/gameModel.cpp
     models/playerModel.cpp
     # Service层文件

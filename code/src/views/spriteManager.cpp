@@ -1,14 +1,14 @@
-#include "views/entityManager.h"
+#include "views/spriteManager.h"
 
-std::map<EntityType, sf::Sprite> EntityManager::m_sprites;
+std::map<SpriteType, sf::Sprite> SpriteManager::m_sprites;
 
-void EntityManager::loadSprites() {
+void SpriteManager::loadSprites() {
     // 预加载所有实体类型的精灵
-    m_sprites.emplace(EntityType::water, sf::Sprite(AssetManager::getTexture(Textures::water)));
-    m_sprites.emplace(EntityType::player, sf::Sprite(AssetManager::getTexture(Textures::player_center_1)));
+    m_sprites.emplace(SpriteType::water, sf::Sprite(AssetManager::getTexture(Textures::water)));
+    m_sprites.emplace(SpriteType::player, sf::Sprite(AssetManager::getTexture(Textures::player_center_1)));
 }
 
-sf::Sprite& EntityManager::getSprite(const EntityType& type) {
+sf::Sprite& SpriteManager::getSprite(const SpriteType& type) {
     auto it = m_sprites.find(type);
     if (it != m_sprites.end()) {
         return it -> second;
@@ -17,8 +17,8 @@ sf::Sprite& EntityManager::getSprite(const EntityType& type) {
     }
 }
 
-void EntityManager::setSprite(
-        const EntityType& type,
+void SpriteManager::setSprite(
+        const SpriteType& type,
         const sf::Vector2f& position,
         const sf::Vector2f& scale,
         const bool& ifCenter,
@@ -34,7 +34,7 @@ void EntityManager::setSprite(
     }
 }
 
-void EntityManager::setSpriteTexture(const EntityType& type, const Textures& texture) {
+void SpriteManager::setSpriteTexture(const SpriteType& type, const Textures& texture) {
     sf::Sprite& sprite = getSprite(type);
     sprite.setTexture(AssetManager::getTexture(texture), true);  // true 表示重置纹理矩形
 }

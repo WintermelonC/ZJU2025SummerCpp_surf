@@ -1,6 +1,6 @@
 #include "mvvmGame.h"
 #include "infrastructure/assetManager.h"
-#include "views/entityManager.h"
+#include "views/spriteManager.h"
 #include <iostream>
 
 MVVMGame::MVVMGame() {
@@ -22,7 +22,7 @@ void MVVMGame::setupDependencies() {
 void MVVMGame::initialize() {
     // 加载资源
     AssetManager::loadAssets();
-    EntityManager::loadSprites();
+    SpriteManager::loadSprites();
     
     // 初始化ViewModel
     m_gameViewModel->initialize();
