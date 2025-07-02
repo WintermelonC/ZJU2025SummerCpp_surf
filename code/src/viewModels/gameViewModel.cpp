@@ -1,7 +1,6 @@
 #include "viewModels/gameViewModel.h"
 #include "infrastructure/utils.h"
 #include "infrastructure/config.h"
-#include "views/renderSystem.h"
 #include <iostream>
 #include <cmath>
 
@@ -79,32 +78,29 @@ void GameViewModel::reset() {
 }
 
 void GameViewModel::handleInput() {
-    // 通过InputManager处理输入事件
-    auto* sfmlView = dynamic_cast<SFMLGameView*>(m_view.get());
-    if (sfmlView) {
-        m_inputManager.processInput(sfmlView->getWindow());
+    // 通过View接口处理输入事件
+    m_view->processInput(m_eventBus);
         
-        // 处理事件队列
-        Event event;
-        while (m_eventBus.poll(event)) {
-            if (std::holds_alternative<WindowCloseEvent>(event)) {
-                handleWindowClose();
-            } else if (std::holds_alternative<WindowResizeEvent>(event)) {
-                const auto& resizeEvent = std::get<WindowResizeEvent>(event);
-                handleWindowResize(resizeEvent.size);
-            } else if (std::holds_alternative<MouseRightClickEvent>(event)) {
-                handleRightClick();
-            } else if (std::holds_alternative<WindowFocusLostEvent>(event)) {
-                handleFocusLost();
-            } else if (std::holds_alternative<WindowFocusGainedEvent>(event)) {
-                handleFocusGained();
-            } else if (std::holds_alternative<MouseLeftClickEvent>(event)) {
-                const auto& clickEvent = std::get<MouseLeftClickEvent>(event);
-                const auto worldPos = m_view->mapPixelToCoords(clickEvent.mousePos);
-                handleMouseClick(worldPos);
-            } else if (std::holds_alternative<SpacePressedEvent>(event)) {
-                handleSpacePressed();
-            }
+    // 处理事件队列
+    Event event;
+    while (m_eventBus.poll(event)) {
+        if (std::holds_alternative<WindowCloseEvent>(event)) {
+            handleWindowClose();
+        } else if (std::holds_alternative<WindowResizeEvent>(event)) {
+            const auto& resizeEvent = std::get<WindowResizeEvent>(event);
+            handleWindowResize(resizeEvent.size);
+        } else if (std::holds_alternative<MouseRightClickEvent>(event)) {
+            handleRightClick();
+        } else if (std::holds_alternative<WindowFocusLostEvent>(event)) {
+            handleFocusLost();
+        } else if (std::holds_alternative<WindowFocusGainedEvent>(event)) {
+            handleFocusGained();
+        } else if (std::holds_alternative<MouseLeftClickEvent>(event)) {
+            const auto& clickEvent = std::get<MouseLeftClickEvent>(event);
+            const auto worldPos = m_view->mapPixelToCoords(clickEvent.mousePos);
+            handleMouseClick(worldPos);
+        } else if (std::holds_alternative<SpacePressedEvent>(event)) {
+            handleSpacePressed();
         }
     }
 }
@@ -204,8 +200,7 @@ void GameViewModel::handleWindowClose() {
 
 void GameViewModel::handleWindowResize(const sf::Vector2u& size) {
     // 处理窗口大小改变
-    auto* sfmlView = dynamic_cast<SFMLGameView*>(m_view.get());
-    sfmlView->setViewSize(sf::Vector2f(size));
+    m_view->setViewSize(sf::Vector2f(size));
 }
 
 void GameViewModel::handleFocusLost() {

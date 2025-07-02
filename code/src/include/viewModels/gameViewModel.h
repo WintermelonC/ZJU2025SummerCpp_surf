@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "models/gameModel.h"
 #include "models/playerModel.h"
-#include "views/gameView.h"
+#include "views/IGameView.h"
 #include "services/playerService.h"
 #include "infrastructure/eventBus.h"
 #include "viewModels/inputManager.h"
