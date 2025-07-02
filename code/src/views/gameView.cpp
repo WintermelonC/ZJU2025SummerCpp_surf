@@ -2,6 +2,7 @@
 #include "views/spriteManager.h"
 #include "views/renderSystem.h"
 #include "infrastructure/config.h"
+#include "infrastructure/eventBus.h"
 
 SFMLGameView::SFMLGameView()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(Config::Window::WINDOW_SIZE)), "Surf Game"),
@@ -120,4 +121,47 @@ void SFMLGameView::renderWater() {
     
     sf::Sprite& water = SpriteManager::getSprite(SpriteType::water);
     m_window.draw(water);
+}
+
+void SFMLGameView::processInput(EventBus& eventBus) {
+    while(const std::optional event = m_window.pollEvent()) {
+        if (event -> is<sf::Event::Closed>()) {
+            // 处理窗口关闭事件
+            eventBus.publish(WindowCloseEvent{});
+        } else if (const auto* resized = event -> getIf<sf::Event::Resized>()) {
+            // 窗口大小调整事件
+            eventBus.publish(WindowResizeEvent{resized -> size});
+        } else if (event -> is<sf::Event::FocusLost>()) {
+            // 窗口失去焦点事件
+            eventBus.publish(WindowFocusLostEvent{});
+        } else if (event -> is<sf::Event::FocusGained>()) {
+            // 窗口获得焦点事件
+            eventBus.publish(WindowFocusGainedEvent{});
+        } else if (const auto* mouseButton = event -> getIf<sf::Event::MouseButtonPressed>()) {
+            // 鼠标按钮按下事件
+            if (mouseButton -> button == sf::Mouse::Button::Left) {
+                // 左键点击事件
+                const auto& mousePos = sf::Mouse::getPosition(m_window);
+                const auto worldPos = m_window.mapPixelToCoords(mousePos);
+                eventBus.publish(MouseLeftClickEvent{
+                    mousePos,
+                    worldPos
+                });
+            } else if (mouseButton -> button == sf::Mouse::Button::Right) {
+                // 右键点击事件
+                eventBus.publish(MouseRightClickEvent{});
+            }
+        } else if (const auto* keyPressed = event -> getIf<sf::Event::KeyPressed>()){
+            // 键盘按下
+            if (keyPressed -> code == sf::Keyboard::Key::Space) {
+                // 空格键按下事件
+                eventBus.publish(SpacePressedEvent{});
+            }
+        }
+    }
+}
+
+void SFMLGameView::setViewSize(const sf::Vector2f& size) {
+    m_view.setSize(size);
+    m_window.setView(m_view);
 }

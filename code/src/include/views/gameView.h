@@ -4,33 +4,7 @@
 #include "models/gameModel.h"
 #include "models/playerModel.h"
 #include "views/renderSystem.h"
-
-// View接口
-class IGameView {
-public:
-    virtual ~IGameView() = default;
-    
-    // 渲染方法
-    virtual void renderStartMenu() = 0;
-    virtual void renderGameplay() = 0;
-    virtual void renderPauseMenu() = 0;
-    virtual void renderGameOver() = 0;
-    virtual void display() = 0;
-    virtual void clear() = 0;
-    virtual void reset() = 0;
-    
-    // 事件处理
-    virtual bool isOpen() const = 0;
-    virtual sf::Vector2i getMousePosition() const = 0;
-    virtual sf::Vector2f mapPixelToCoords(const sf::Vector2i& pixel) const = 0;
-    virtual void close() = 0;
-    
-    // 更新显示数据
-    virtual void updatePlayerData(const PlayerModel& player) = 0;
-    virtual void updateGameData(const GameModel& game) = 0;
-    virtual void updateWaterOffset(const sf::Vector2f& offset) = 0;
-    virtual void updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) = 0;
-};
+#include "views/IGameView.h"
 
 // SFML实现的View
 class SFMLGameView : public IGameView {
@@ -57,13 +31,12 @@ public:
     void updateWaterOffset(const sf::Vector2f& offset) override;
     void updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) override;
     
+    // 输入处理接口实现
+    void processInput(class EventBus& eventBus) override;
+    void setViewSize(const sf::Vector2f& size) override;
+    
     // 获取窗口引用（用于事件处理）
     sf::RenderWindow& getWindow() { return m_window; }
-
-    void setViewSize(const sf::Vector2f& size) {
-        m_view.setSize(size);
-        m_window.setView(m_view);
-    }
 
 private:
     void renderPlayer();
