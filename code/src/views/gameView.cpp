@@ -1,8 +1,8 @@
 #include "views/gameView.h"
 #include "views/spriteManager.h"
 #include "views/renderSystem.h"
-#include "infrastructure/config.h"
-#include "infrastructure/eventBus.h"
+#include "common/config.h"
+#include "common/eventBus.h"
 
 SFMLGameView::SFMLGameView()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(Config::Window::WINDOW_SIZE)), "Surf Game"),

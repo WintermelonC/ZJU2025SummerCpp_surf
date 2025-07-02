@@ -1,4 +1,4 @@
-#include "infrastructure/eventBus.h"
+#include "common/eventBus.h"
 
 void EventBus::publish(const Event& event) {
     m_eventQueue.push_back(event);

@@ -1,4 +1,4 @@
-#include "infrastructure/utils.h"
+#include "common/utils.h"
 
 float Utils::randomFloat(float a, float b) {
     static std::mt19937 rng(std::random_device{}());

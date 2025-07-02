@@ -3,8 +3,8 @@
 #include <deque>
 #include <SFML/Graphics.hpp>
 #include "views/spriteManager.h"
-#include "infrastructure/config.h"
-#include "infrastructure/utils.h"
+#include "common/config.h"
+#include "common/utils.h"
 
 class RenderSystem {
 public:

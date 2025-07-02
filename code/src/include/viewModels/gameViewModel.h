@@ -5,8 +5,8 @@
 #include "models/gameModel.h"
 #include "models/playerModel.h"
 #include "views/IGameView.h"
-#include "services/playerService.h"
-#include "infrastructure/eventBus.h"
+#include "viewModels/PlayerViewModel.h"
+#include "common/eventBus.h"
 #include "viewModels/inputManager.h"
 
 // 游戏ViewModel
@@ -59,7 +59,7 @@ private:
     std::shared_ptr<GameModel> m_gameModel;
     std::shared_ptr<PlayerModel> m_playerModel;
     std::shared_ptr<IGameView> m_view;
-    std::shared_ptr<PlayerService> m_playerService;
+    std::shared_ptr<PlayerViewMoel> m_PlayerViewMoel;
     
     // 输入和事件
     EventBus m_eventBus;

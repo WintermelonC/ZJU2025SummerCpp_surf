@@ -4,9 +4,9 @@
 #include "models/playerModel.h"
 
 // 玩家业务逻辑服务
-class PlayerService {
+class PlayerViewMoel {
 public:
-    PlayerService(std::shared_ptr<PlayerModel> playerModel);
+    PlayerViewMoel(std::shared_ptr<PlayerModel> playerModel);
     
     // 更新玩家状态
     void update(float deltaTime, const sf::Vector2f& mousePos);

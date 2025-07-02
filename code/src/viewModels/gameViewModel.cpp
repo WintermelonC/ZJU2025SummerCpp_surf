@@ -1,6 +1,6 @@
 #include "viewModels/gameViewModel.h"
-#include "infrastructure/utils.h"
-#include "infrastructure/config.h"
+#include "common/utils.h"
+#include "common/config.h"
 #include <iostream>
 #include <cmath>
 
@@ -10,7 +10,7 @@ GameViewModel::GameViewModel(std::shared_ptr<GameModel> gameModel,
     : m_gameModel(gameModel),
       m_playerModel(playerModel),
       m_view(view),
-      m_playerService(std::make_shared<PlayerService>(playerModel)),
+      m_PlayerViewMoel(std::make_shared<PlayerViewMoel>(playerModel)),
       m_inputManager(m_eventBus),
       m_lastMousePos({0.0f, 0.0f}) {
 }
@@ -124,9 +124,9 @@ void GameViewModel::render() {
 }
 
 void GameViewModel::updatePlayer(float deltaTime) {
-    // 使用PlayerService更新玩家状态
+    // 使用PlayerViewMoel更新玩家状态
     const sf::Vector2f mousePos = getMouseWorldPosition();
-    m_playerService->update(deltaTime, mousePos);
+    m_PlayerViewMoel->update(deltaTime, mousePos);
 }
 
 void GameViewModel::updateGame(float deltaTime) {
@@ -190,7 +190,7 @@ void GameViewModel::handleSpacePressed() {
 
 void GameViewModel::handleRightClick() {
     if (m_gameModel->getGameState() == GameState::Playing) {
-        m_playerService->usePower();
+        m_PlayerViewMoel->usePower();
     }
 }
 
