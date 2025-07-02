@@ -4,11 +4,13 @@ std::map<Textures, sf::Texture> AssetManager::m_textures;
 std::map<Fonts, sf::Font> AssetManager::m_fonts;
 
 void AssetManager::loadAssets() {
-    std::string path{"../../assets/images/"};
-    std::string otherPath = path + "other/";
-    std::string playerPath = path + "player/";
+    std::string path{"../../assets/"};
+    std::string imagePath = path + "images/";
+    std::string otherPath = imagePath + "other/";
+    std::string playerPath = imagePath + "player/";
+    std::string obstaclePath = imagePath + "obstacle/";
     std::string fontPath = path + "fonts/";
-    std::string obstaclePath = path + "obstacle/";
+
     // Textures
     loadTexture(Textures::water, otherPath + "water.png");
     loadTexture(Textures::scoreboard, otherPath + "scoreboard.png");
