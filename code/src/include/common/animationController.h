@@ -5,8 +5,8 @@
 #include <map>
 #include <string>
 #include <functional>
-#include "infrastructure/config.h"
-#include "infrastructure/assetManager.h"
+#include "common/config.h"
+#include "common/assetManager.h"
 
 // 动画状态
 enum class AnimationState {

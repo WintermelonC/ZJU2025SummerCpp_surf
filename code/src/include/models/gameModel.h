@@ -2,7 +2,7 @@
 
 #include <functional>
 #include <memory>
-#include "infrastructure/config.h"
+#include "common/config.h"
 
 enum class GameState {
     StartMenu,

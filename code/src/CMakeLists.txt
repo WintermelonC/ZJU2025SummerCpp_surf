@@ -1,13 +1,14 @@
 add_executable(surf
     surf.cpp
     # 基础设施层文件
-    infrastructure/eventBus.cpp
-    infrastructure/assetManager.cpp
-    infrastructure/utils.cpp
-    infrastructure/animationController.cpp
+    common/eventBus.cpp
+    common/assetManager.cpp
+    common/utils.cpp
+    common/animationController.cpp
     # ViewModel层文件
     viewModels/inputManager.cpp
     viewModels/gameViewModel.cpp
+    viewModels/playerViewModel.cpp
     # View层文件
     views/renderSystem.cpp
     views/spriteManager.cpp
@@ -16,8 +17,6 @@ add_executable(surf
     models/entityModel.cpp
     models/gameModel.cpp
     models/playerModel.cpp
-    # Service层文件
-    services/playerService.cpp
     # 应用协调器
     mvvmGame.cpp
 )

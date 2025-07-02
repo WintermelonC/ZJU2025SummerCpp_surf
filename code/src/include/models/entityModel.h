@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include "infrastructure/config.h"
+#include "common/config.h"
 
 // 实体类型枚举
 enum class EntityType {

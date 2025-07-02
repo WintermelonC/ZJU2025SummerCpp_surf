@@ -2,7 +2,7 @@
 
 #include <map>
 #include <SFML/Graphics.hpp>
-#include "infrastructure/assetManager.h"
+#include "common/assetManager.h"
 
 enum class SpriteType {
     water,

@@ -1,5 +1,5 @@
 #include "mvvmGame.h"
-#include "infrastructure/assetManager.h"
+#include "common/assetManager.h"
 #include "views/spriteManager.h"
 #include <iostream>
 

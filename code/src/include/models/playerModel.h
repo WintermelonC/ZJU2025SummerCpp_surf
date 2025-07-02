@@ -2,8 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
-#include "infrastructure/config.h"
-#include "infrastructure/animationController.h"
+#include "common/config.h"
+#include "common/animationController.h"
 #include "models/entityModel.h"
 
 enum class PlayerState {

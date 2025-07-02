@@ -1,4 +1,4 @@
-#include "infrastructure/animationController.h"
+#include "common/animationController.h"
 
 AnimationController::AnimationController()
     : m_state(AnimationState::Stopped),

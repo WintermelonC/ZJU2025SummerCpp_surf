@@ -1,6 +1,6 @@
 #pragma once
 
-#include "infrastructure/eventBus.h"
+#include "common/eventBus.h"
 #include <SFML/Graphics.hpp>
 
 class InputManager {
