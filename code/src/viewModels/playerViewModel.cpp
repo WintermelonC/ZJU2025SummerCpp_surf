@@ -4,14 +4,14 @@
 #include <algorithm>
 #include <cmath>
 
-PlayerViewMoel::PlayerViewMoel(std::shared_ptr<PlayerModel> playerModel)
+PlayerViewModel::PlayerViewModel(std::shared_ptr<PlayerModel> playerModel)
     : m_playerModel(playerModel),
       m_powerTimer(0.0f),
       m_animationTimer(0.0f),
       m_wasInWater(false) {
 }
 
-void PlayerViewMoel::update(float deltaTime, const sf::Vector2f& mousePos) {
+void PlayerViewModel::update(float deltaTime, const sf::Vector2f& mousePos) {
     updateState(mousePos);
     updateTurn();
     updatePower(deltaTime);
@@ -23,23 +23,23 @@ void PlayerViewMoel::update(float deltaTime, const sf::Vector2f& mousePos) {
     m_playerModel->update(deltaTime);
 }
 
-void PlayerViewMoel::usePower() {
+void PlayerViewModel::usePower() {
     m_playerModel->usePower();
     m_powerTimer = 0.0f;
 }
 
-void PlayerViewMoel::takeDamage() {
+void PlayerViewModel::takeDamage() {
     m_playerModel->takeDamage();
 }
 
-void PlayerViewMoel::reset() {
+void PlayerViewModel::reset() {
     m_playerModel->resetPlayer();
     m_powerTimer = 0.0f;
     m_animationTimer = 0.0f;
     m_wasInWater = false;
 }
 
-void PlayerViewMoel::updateState(const sf::Vector2f& mousePos) {
+void PlayerViewModel::updateState(const sf::Vector2f& mousePos) {
     const sf::Vector2f delta = mousePos - m_playerModel->getPosition();
     const sf::Angle angle = sf::radians(std::atan2(delta.x, delta.y));
     
@@ -61,7 +61,7 @@ void PlayerViewMoel::updateState(const sf::Vector2f& mousePos) {
     }
 }
 
-void PlayerViewMoel::updateTurn() {
+void PlayerViewModel::updateTurn() {
     static PlayerState lastState = PlayerState::Center;
     const PlayerState currentState = m_playerModel->getPlayerState();
     
@@ -74,7 +74,7 @@ void PlayerViewMoel::updateTurn() {
     lastState = currentState;
 }
 
-void PlayerViewMoel::updatePower(float deltaTime) {
+void PlayerViewModel::updatePower(float deltaTime) {
     if (m_playerModel->isPower()) {
         m_powerTimer += deltaTime;
         if (m_powerTimer >= Config::Player::POWER_DURATION) {
@@ -84,7 +84,7 @@ void PlayerViewMoel::updatePower(float deltaTime) {
     }
 }
 
-void PlayerViewMoel::updateYSpeed(float deltaTime) {
+void PlayerViewModel::updateYSpeed(float deltaTime) {
     sf::Vector2f velocity = m_playerModel->getVelocity();
     
     if (m_playerModel->getPlayerState() == PlayerState::Stop) {
@@ -105,7 +105,7 @@ void PlayerViewMoel::updateYSpeed(float deltaTime) {
     m_playerModel->setVelocity(velocity);
 }
 
-void PlayerViewMoel::updateXSpeed() {
+void PlayerViewModel::updateXSpeed() {
     sf::Vector2f velocity = m_playerModel->getVelocity();
     
     switch (m_playerModel->getPlayerState()) {
@@ -132,7 +132,7 @@ void PlayerViewMoel::updateXSpeed() {
     m_playerModel->setVelocity(velocity);
 }
 
-void PlayerViewMoel::updateAnimation(float deltaTime) {
+void PlayerViewModel::updateAnimation(float deltaTime) {
     SpriteManager::setSprite(SpriteType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SCALE, true);
     
     // 使用玩家模型的当前动画帧

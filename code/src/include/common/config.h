@@ -14,6 +14,7 @@ namespace Config {
         constexpr sf::Vector2f CONTINUE_BUTTON_SCALE = {1.2f, 1.2f};  // 继续按钮缩放比例
         constexpr sf::Vector2f RETURN_BUTTON_POS = RENDER_CENTER + sf::Vector2f(0.f, 300.f);  // 返回按钮坐标
         constexpr sf::Vector2f RETURN_BUTTON_SCALE = {0.8f, 0.8f};  // 返回按钮缩放比例
+        constexpr sf::Vector2i BUTTON_SIZE = {180, 60};
     }
 
     namespace Texture {
@@ -28,6 +29,9 @@ namespace Config {
         constexpr int PLAYER_POWER = 3;  // 玩家最大能量值
         constexpr float POWER_DURATION = 5.0f;  // 能量持续时间（秒）
         constexpr float POWER_MULTIPLIER = 1.5f;  // 能量加速倍数
+        constexpr float SPEED_THRESHOLD_1 = 20.0f; // 速度阈值常量
+        constexpr float SPEED_THRESHOLD_2 = 40.0f;
+    
     }
 
     namespace Game {
