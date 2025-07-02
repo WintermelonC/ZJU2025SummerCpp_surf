@@ -1,5 +1,5 @@
 #include "viewModels/PlayerViewModel.h"
-#include "views/spriteManager.h"
+#include "common/spriteManager.h"
 #include "common/config.h"
 #include <algorithm>
 #include <cmath>

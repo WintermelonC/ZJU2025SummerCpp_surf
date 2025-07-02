@@ -1,4 +1,4 @@
-#include "views/spriteManager.h"
+#include "common/spriteManager.h"
 
 std::map<SpriteType, sf::Sprite> SpriteManager::m_sprites;
 

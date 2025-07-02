@@ -1,5 +1,5 @@
 #include "views/gameView.h"
-#include "views/spriteManager.h"
+#include "common/spriteManager.h"
 #include "views/renderSystem.h"
 #include "common/config.h"
 #include "common/eventBus.h"

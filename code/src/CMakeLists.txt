@@ -5,20 +5,20 @@ add_executable(surf
     common/assetManager.cpp
     common/utils.cpp
     common/animationController.cpp
+    common/spriteManager.cpp
     # ViewModel层文件
     viewModels/inputManager.cpp
     viewModels/gameViewModel.cpp
     viewModels/playerViewModel.cpp
     # View层文件
     views/renderSystem.cpp
-    views/spriteManager.cpp
     views/gameView.cpp
     # Model层文件
     models/entityModel.cpp
     models/gameModel.cpp
     models/playerModel.cpp
     # 应用协调器
-    mvvmGame.cpp
+    app/mvvmGame.cpp
 )
 
 target_link_libraries(surf PRIVATE SFML::System SFML::Window SFML::Graphics SFML::Audio)

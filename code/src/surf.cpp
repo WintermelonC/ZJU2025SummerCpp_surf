@@ -1,5 +1,5 @@
 #include <iostream>
-#include "mvvmGame.h"
+#include "app/mvvmGame.h"
 
 int main() {
     MVVMGame game;

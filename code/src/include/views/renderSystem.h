@@ -2,7 +2,7 @@
 
 #include <deque>
 #include <SFML/Graphics.hpp>
-#include "views/spriteManager.h"
+#include "common/spriteManager.h"
 #include "common/config.h"
 #include "common/utils.h"
 

@@ -1,6 +1,6 @@
-#include "mvvmGame.h"
+#include "app/mvvmGame.h"
 #include "common/assetManager.h"
-#include "views/spriteManager.h"
+#include "common/spriteManager.h"
 #include <iostream>
 
 MVVMGame::MVVMGame() {
@@ -88,15 +88,16 @@ void MVVMGame::update(const float deltaTime) {
     handleInput();
 
     // 更新游戏状态
-    const sf::Vector2f velocity = m_playerModel->getVelocity();
-    const sf::Angle angle = m_playerModel->getAngle();
-    const bool shouldRipple = shouldSpawnRipple();
-    const bool shouldTail = shouldSpawnTail();
-    const sf::Vector2f& mousePos = m_gameView->mapPixelToCoords(m_gameView->getMousePosition());
-    m_gameViewModel->update(deltaTime, mousePos);
-    // 更新水波拖尾
-    m_gameView->updateEffects(deltaTime, velocity, angle, shouldRipple, shouldTail);
-    
+    if (m_gameModel->getGameState() == GameState::Playing) {
+        const sf::Vector2f velocity = m_playerModel->getVelocity();
+        const sf::Angle angle = m_playerModel->getAngle();
+        const bool shouldRipple = shouldSpawnRipple();
+        const bool shouldTail = shouldSpawnTail();
+        const sf::Vector2f& mousePos = m_gameView->mapPixelToCoords(m_gameView->getMousePosition());
+        m_gameViewModel->update(deltaTime, mousePos);
+        // 更新水波拖尾
+        m_gameView->updateEffects(deltaTime, velocity, angle, shouldRipple, shouldTail);
+    }
 }
 
 void MVVMGame::reset() {
