@@ -6,37 +6,53 @@
 
 SFMLGameView::SFMLGameView()
     : m_window(sf::VideoMode(static_cast<sf::Vector2u>(Config::Window::WINDOW_SIZE)), "Surf Game"),
-      m_view(sf::FloatRect({0, 0}, static_cast<sf::Vector2f>(Config::Window::WINDOW_SIZE))),
-      m_waterOffset({0.0f, 0.0f}) {
+      m_view(sf::FloatRect({0, 0}, static_cast<sf::Vector2f>(Config::Window::WINDOW_SIZE)))
+       {
     
     m_view.setCenter(static_cast<sf::Vector2f>(Config::Window::RENDER_SIZE / 2));
     m_window.setView(m_view);
     m_window.setVerticalSyncEnabled(true);
 }
 
-void SFMLGameView::renderStartMenu() {
+void SFMLGameView::renderStartMenu(const sf::Vector2f& waterOffset) {
     clear();
-    renderWater();
+    renderWater(waterOffset);
     // 渲染开始菜单UI
     m_renderSystem.renderStartMenu(m_window);
 }
 
-void SFMLGameView::renderGameplay() {
+void SFMLGameView::renderGameplay(
+    float deltaTime,
+    const sf::Vector2f& waterOffset, 
+    const int & hp, 
+    const int & power, 
+    const float & score
+) {
     clear();
-    renderWater();
+    renderWater(waterOffset);
     // 渲染水波和拖尾效果
     m_renderSystem.renderRipple(m_window);
     m_renderSystem.renderTail(m_window);
-    renderPlayer();
     
-#ifdef DEBUG
-    m_renderSystem.renderVelocity(m_window, m_playerData.getVelocity());
-#endif
+    // 渲染玩家
+    renderPlayer(hp, power, score);
 }
 
-void SFMLGameView::renderPauseMenu() {
+void SFMLGameView::renderPauseMenu(
+    float deltaTime,
+    const sf::Vector2f& waterOffset,
+    const int & hp,
+    const int & power,
+    const float & score
+) {
     // 先渲染游戏画面作为背景
-    renderGameplay();
+    renderGameplay(
+        deltaTime, 
+        waterOffset, 
+        hp, 
+        power, 
+        score
+    );
     
     // 然后渲染暂停菜单
     m_renderSystem.renderPauseMenu(m_window);
@@ -57,16 +73,9 @@ void SFMLGameView::clear() {
 
 void SFMLGameView::reset() {
     m_window.setView(m_view);
-    m_waterOffset = {0.0f, 0.0f};
     
     // 重置渲染系统状态
     m_renderSystem.reset();
-    
-    // 重置玩家数据
-    m_playerData = PlayerModel();
-    
-    // 重置游戏数据
-    m_gameData = GameModel();
 }
 
 bool SFMLGameView::isOpen() const {
@@ -85,18 +94,6 @@ void SFMLGameView::close() {
     m_window.close();
 }
 
-void SFMLGameView::updatePlayerData(const PlayerModel& player) {
-    m_playerData = player;
-}
-
-void SFMLGameView::updateGameData(const GameModel& game) {
-    m_gameData = game;
-}
-
-void SFMLGameView::updateWaterOffset(const sf::Vector2f& offset) {
-    m_waterOffset = offset;
-}
-
 void SFMLGameView::updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) {
     // 更新水波特效
     m_renderSystem.updateRipple(deltaTime, velocity, angle, shouldSpawnRipple);
@@ -105,15 +102,15 @@ void SFMLGameView::updateEffects(float deltaTime, const sf::Vector2f& velocity, 
     m_renderSystem.updateTail(deltaTime, velocity, angle, shouldSpawnTail);
 }
 
-void SFMLGameView::renderPlayer() {
-    m_renderSystem.renderPlayer(m_window, m_playerData.getHP(), m_playerData.getPower(), m_gameData.getScore());
+void SFMLGameView::renderPlayer(const int & hp, const int & power, const float & score) {
+    m_renderSystem.renderPlayer(m_window, hp, power, score);
 }
 
-void SFMLGameView::renderWater() {
+void SFMLGameView::renderWater(const sf::Vector2f& waterOffset) {
     // 更新水面精灵位置
     SpriteManager::setSprite(
         SpriteType::water,
-        m_waterOffset,
+        waterOffset,
         {1.0f, 1.0f},
         false,
         {Config::Texture::WATER_SIZE.x, 0.f}

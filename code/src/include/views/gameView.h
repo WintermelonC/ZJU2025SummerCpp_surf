@@ -1,46 +1,52 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "models/gameModel.h"
-#include "models/playerModel.h"
 #include "views/renderSystem.h"
-#include "views/IGameView.h"
 
 // SFML实现的View
-class SFMLGameView : public IGameView {
+class SFMLGameView{
 public:
     SFMLGameView();
     
-    // IGameView接口实现
-    void renderStartMenu() override;
-    void renderGameplay() override;
-    void renderPauseMenu() override;
-    void renderGameOver() override;
-    void display() override;
-    void clear() override;
+    // 接口实现
+    void renderStartMenu(const sf::Vector2f& waterOffset);
+    void renderGameplay(
+        float deltaTime,
+        const sf::Vector2f& waterOffset, 
+        const int & hp, 
+        const int & power, 
+        const float & score
+    ) ;
+    void renderPauseMenu(
+        float deltaTime,
+        const sf::Vector2f& waterOffset,
+        const int & hp,
+        const int & power,
+        const float & score
+    );
+    void renderGameOver();
+    void display();
+    void clear();
     void reset();
     
-    bool isOpen() const override;
-    sf::Vector2i getMousePosition() const override;
-    sf::Vector2f mapPixelToCoords(const sf::Vector2i& pixel) const override;
-    void close() override;
+    bool isOpen() const;
+    sf::Vector2i getMousePosition() const;
+    sf::Vector2f mapPixelToCoords(const sf::Vector2i& pixel) const;
+    void close();
     
     // 更新显示数据
-    void updatePlayerData(const PlayerModel& player) override;
-    void updateGameData(const GameModel& game) override;
-    void updateWaterOffset(const sf::Vector2f& offset) override;
-    void updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail) override;
+    void updateEffects(float deltaTime, const sf::Vector2f& velocity, const sf::Angle& angle, bool shouldSpawnRipple, bool shouldSpawnTail);
     
     // 输入处理接口实现
-    void processInput(class EventBus& eventBus) override;
-    void setViewSize(const sf::Vector2f& size) override;
+    void processInput(class EventBus& eventBus);
+    void setViewSize(const sf::Vector2f& size);
     
     // 获取窗口引用（用于事件处理）
     sf::RenderWindow& getWindow() { return m_window; }
 
 private:
-    void renderPlayer();
-    void renderWater();
+    void renderPlayer(const int & hp, const int & power, const float & score);
+    void renderWater(const sf::Vector2f& waterOffset);
     
 private:
     sf::RenderWindow m_window;
@@ -48,9 +54,4 @@ private:
     
     // 渲染系统
     RenderSystem m_renderSystem;
-    
-    // 缓存的渲染数据
-    PlayerModel m_playerData;
-    GameModel m_gameData;
-    sf::Vector2f m_waterOffset;
 };
