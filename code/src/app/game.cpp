@@ -21,6 +21,12 @@ bool Game::initialize() {
     m_gameView.setMap(&m_gameViewModel->getMap());
     m_gameView.setWater(m_spriteViewModel->getSprite(SpriteType::water));
     m_gameView.setPlayer(m_spriteViewModel->getSprite(SpriteType::player));
+    m_gameView.setStartButton(m_spriteViewModel->getSprite(SpriteType::start_button));
+    m_gameView.setStartIcon(m_spriteViewModel->getSprite(SpriteType::start_icon));
+    m_gameView.setContinueButton(m_spriteViewModel->getSprite(SpriteType::continue_button));
+    m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
+    m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
+    // m_gameView.setFont()
 
     return success;
 }
