@@ -1,15 +1,15 @@
-#include "common/animationController.h"
+#include "animationViewModel.h"
 
-AnimationController::AnimationController()
+AnimationViewModel::AnimationViewModel()
     : m_state(AnimationState::Stopped),
       m_currentFrameIndex(0) {
 }
 
-void AnimationController::addAnimation(const std::string& name, const AnimationConfig& config) {
+void AnimationViewModel::addAnimation(const std::string& name, const AnimationConfig& config) {
     m_animations[name] = config;
 }
 
-void AnimationController::play(const std::string& animationName) {
+void AnimationViewModel::play(const std::string& animationName) {
     if (!hasAnimation(animationName)) {
         return;
     }
@@ -24,25 +24,25 @@ void AnimationController::play(const std::string& animationName) {
     m_frameClock.restart();
 }
 
-void AnimationController::pause() {
+void AnimationViewModel::pause() {
     if (m_state == AnimationState::Playing) {
         m_state = AnimationState::Paused;
     }
 }
 
-void AnimationController::resume() {
+void AnimationViewModel::resume() {
     if (m_state == AnimationState::Paused) {
         m_state = AnimationState::Playing;
         m_frameClock.restart();
     }
 }
 
-void AnimationController::stop() {
+void AnimationViewModel::stop() {
     m_state = AnimationState::Stopped;
     reset();
 }
 
-void AnimationController::update(float deltaTime) {
+void AnimationViewModel::update(float deltaTime) {
     if (m_state != AnimationState::Playing || m_currentAnimationName.empty()) {
         return;
     }
@@ -56,9 +56,9 @@ void AnimationController::update(float deltaTime) {
     }
 }
 
-Textures AnimationController::getCurrentFrame() const {
+TextureType AnimationViewModel::getCurrentFrame() const {
     if (m_currentAnimationName.empty()) {
-        return Textures::player_center_1; // 默认纹理
+        return TextureType::player_center_1; // 默认纹理
     }
     
     const auto& currentAnim = m_animations.at(m_currentAnimationName);
@@ -66,19 +66,19 @@ Textures AnimationController::getCurrentFrame() const {
         return currentAnim.frames[m_currentFrameIndex];
     }
     
-    return Textures::player_center_1; // 默认纹理
+    return TextureType::player_center_1; // 默认纹理
 }
 
-bool AnimationController::hasAnimation(const std::string& name) const {
+bool AnimationViewModel::hasAnimation(const std::string& name) const {
     return m_animations.find(name) != m_animations.end();
 }
 
-void AnimationController::reset() {
+void AnimationViewModel::reset() {
     m_currentFrameIndex = 0;
     m_frameClock.restart();
 }
 
-void AnimationController::nextFrame() {
+void AnimationViewModel::nextFrame() {
     if (m_currentAnimationName.empty()) {
         return;
     }

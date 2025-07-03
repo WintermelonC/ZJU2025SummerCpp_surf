@@ -1,12 +1,11 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <map>
 #include <string>
 #include <functional>
-#include "common/config.h"
-#include "common/assetManager.h"
+#include <SFML/Graphics.hpp>
+#include "textureViewModel.h"
 
 // 动画状态
 enum class AnimationState {
@@ -17,23 +16,23 @@ enum class AnimationState {
 
 // 动画配置
 struct AnimationConfig {
-    std::vector<Textures> frames;    // 动画帧
+    std::vector<TextureType> frames;    // 动画帧
     float frameInterval;             // 帧间隔时间（秒）
     bool loop;                       // 是否循环播放
     
     // 默认构造函数
     AnimationConfig() : frameInterval(0.1f), loop(true) {}
     
-    AnimationConfig(const std::vector<Textures>& animFrames, 
-                   float interval = 0.1f, 
-                   bool isLoop = true)
+    AnimationConfig(const std::vector<TextureType>& animFrames, 
+                    float interval = 0.1f, 
+                    bool isLoop = true)
         : frames(animFrames), frameInterval(interval), loop(isLoop) {}
 };
 
 // 动画控制器
-class AnimationController {
+class AnimationViewModel {
 public:
-    AnimationController();
+    AnimationViewModel();
     
     // 添加动画
     void addAnimation(const std::string& name, const AnimationConfig& config);
@@ -48,7 +47,7 @@ public:
     void update(float deltaTime);
     
     // 获取当前帧
-    Textures getCurrentFrame() const;
+    TextureType getCurrentFrame() const;
     
     // 状态查询
     bool isPlaying() const { return m_state == AnimationState::Playing; }
@@ -61,7 +60,7 @@ public:
     void setOnAnimationComplete(std::function<void(const std::string&)> callback) {
         m_onAnimationComplete = callback;
     }
-    void setOnFrameChanged(std::function<void(int, Textures)> callback) {
+    void setOnFrameChanged(std::function<void(int, TextureType)> callback) {
         m_onFrameChanged = callback;
     }
     
@@ -82,5 +81,5 @@ private:
     
     // 事件回调
     std::function<void(const std::string&)> m_onAnimationComplete;
-    std::function<void(int, Textures)> m_onFrameChanged;
+    std::function<void(int, TextureType)> m_onFrameChanged;
 };

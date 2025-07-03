@@ -1,14 +1,12 @@
 #pragma once
 
+#include <iostream>
 #include <string>
+#include <memory>
 #include <map>
 #include <SFML/Graphics.hpp>
 
-enum class Fonts {
-    MSYHBD
-};
-
-enum class Textures {
+enum class TextureType {
     water,
     button,
     start_icon,
@@ -29,17 +27,15 @@ enum class Textures {
     wood_1, wood_2, wood_3, wood_4, wood_5, wood_6
 };
 
-class AssetManager {
+class TextureViewModel {
 public:
-    static void loadAssets();
-    static sf::Texture& getTexture(const Textures& texture);
-    static sf::Font& getFont(const Fonts& font);
+    bool initialize();
+
+    const std::unique_ptr<sf::Texture>& getTexture(const TextureType& type) const { return m_textures.at(type); }
 
 private:
-    static void loadTexture(const Textures& texture, const std::string& filePath);
-    static void loadFont(const Fonts& font, const std::string& filePath);
+    bool loadTexture(const TextureType& type, const std::string& filePath);
 
 private:
-    static std::map<Textures, sf::Texture> m_textures;  // 存储纹理
-    static std::map<Fonts, sf::Font> m_fonts;  // 存储字体
+    std::map<TextureType, std::unique_ptr<sf::Texture>> m_textures;
 };
