@@ -2,11 +2,21 @@
 
 #include <SFML/Graphics.hpp>
 
+enum class EntityModelType {
+    player,
+    obstacle,
+    item
+};
+
 class EntityModel {
 public:
-    EntityModel(const sf::Vector2f& pos = {0, 0}, 
-                const sf::Vector2f& sz = {1, 1})
-        : position(pos), 
+    EntityModel(const EntityModelType& type) : m_type(type) {}
+
+    EntityModel(const EntityModelType& type,
+                const sf::Vector2f& pos,
+                const sf::Vector2f& sz)
+        : m_type(type),
+          position(pos), 
           size(sz) {};
     virtual ~EntityModel() = default;
 
@@ -31,5 +41,5 @@ protected:
     sf::RectangleShape m_collisionBox;  // 碰撞箱
 
 private:
-
+    EntityModelType m_type;
 };

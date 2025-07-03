@@ -25,6 +25,7 @@ void GameViewModel::update(const sf::Vector2f& mousePos) {
     float deltaTime = m_clock.restart().asSeconds();
     m_playerModel.update(deltaTime, mousePos);
     m_animationViewModel.update(deltaTime);
+    // m_ObstacleItemViewModel.update(deltaTime);
     updatePlayerAnimation();
     updateWater();
 }

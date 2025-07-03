@@ -5,6 +5,7 @@
 #include "../models/playerModel.h"
 #include "animationViewModel.h"
 #include "spriteViewModel.h"
+#include "ObstacleItemViewModel.h"
 
 class GameViewModel {
 public:
@@ -31,4 +32,5 @@ private:
     sf::Vector2f m_waterOffset = {0, 0};
     sf::Clock m_playerClock;
     AnimationViewModel m_animationViewModel;
+    ObstacleItemViewModel m_ObstacleItemViewModel;
 };

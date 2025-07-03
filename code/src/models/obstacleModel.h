@@ -25,15 +25,17 @@ enum class Beach {
 
 // 添加障碍物类型枚举
 enum class ObstacleType {
-    Wood,
-    Stone,
-    Boat,
-    Beach,
-    Any  // 表示可以是任意类型
+    wood,
+    stone,
+    boat,
+    beach,
+    any  // 表示可以是任意类型
 };
 
 class ObstacleModel : public EntityModel {
 public:
+    ObstacleModel() : EntityModel(EntityModelType::obstacle) {}
+
     int getWoodCount() const { return static_cast<int>(Wood::count); }
     int getStoneCount() const { return static_cast<int>(Stone::count); }
     int getBoatCount() const { return static_cast<int>(Boat::count); }
