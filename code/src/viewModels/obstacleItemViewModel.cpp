@@ -35,26 +35,26 @@ void ObstacleItemViewModel::initialize() {
 }
 
 void ObstacleItemViewModel::spawnSingle() {
-    std::uniform_int_distribution<> xDist(0, Config::Window::RENDER_SIZE.x);
-    int x = xDist(m_gen);
-    int y = Config::Window::RENDER_SIZE.y;
+    // std::uniform_int_distribution<> xDist(0, Config::Window::RENDER_SIZE.x);
+    // int x = xDist(m_gen);
+    // int y = Config::Window::RENDER_SIZE.y;
     
-    Textures textureType = getRandomObstacleTexture(ObstacleType::Any);
-    EntityType entityType = static_cast<EntityType>(
-        static_cast<int>(EntityType::wood_1) + 
-        (static_cast<int>(textureType) - static_cast<int>(Textures::wood_1))
-    );
+    // Textures textureType = getRandomObstacleTexture(ObstacleType::Any);
+    // EntityType entityType = static_cast<EntityType>(
+    //     static_cast<int>(EntityType::wood_1) + 
+    //     (static_cast<int>(textureType) - static_cast<int>(Textures::wood_1))
+    // );
     
-    sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
-    EntityManager::setSprite(
-        obstacleSprite,
-        sf::Color::White,
-        {static_cast<float>(x), static_cast<float>(y)},
-        Config::Player::PLAYER_SCALE
-    );
+    // sf::Sprite obstacleSprite = EntityManager::getRawSprite(entityType);
+    // EntityManager::setSprite(
+    //     obstacleSprite,
+    //     sf::Color::White,
+    //     {static_cast<float>(x), static_cast<float>(y)},
+    //     Config::Player::PLAYER_SCALE
+    // );
     
-    Obstacle obstacle(obstacleSprite, textureType);
-    EntityManager::pushNewEntity(obstacle);
+    // Obstacle obstacle(obstacleSprite, textureType);
+    // EntityManager::pushNewEntity(obstacle);
 }
 
 void ObstacleItemViewModel::spawnGroup() {

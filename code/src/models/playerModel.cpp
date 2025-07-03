@@ -1,7 +1,7 @@
 #include "playerModel.h"
 
 PlayerModel::PlayerModel()
-    : EntityModel(EntityModelType::player, {1280, 576}, {64, 96}) {
+    : EntityModel(EntityModelType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SIZE) {
     setCollisionBox(
         position,
         size / 2.f,

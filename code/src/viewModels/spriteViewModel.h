@@ -22,6 +22,16 @@ public:
     const std::unique_ptr<sf::Texture>* getTexture(const TextureType& type) const { return &m_textureViewModel->getTexture(type); }
     const sf::Vector2f getSpriteSize(const SpriteType& type) const { return m_sprites.at(type)->getGlobalBounds().size; }
 
+    void setSprite(
+        const SpriteType& spriteType,
+        const sf::Color& color,
+        const sf::Vector2f& position,
+        const sf::Vector2f& scale = {1.0f, 1.0f},
+        const bool& ifCenter = true
+    );
+    void setSpriteTexture(const SpriteType& spriteType, const TextureType& textureType) { m_sprites[spriteType]->setTexture(*m_textureViewModel->getTexture(textureType)); }
+    void setSpritePosition(const SpriteType& spriteType, const sf::Vector2f& position) { m_sprites[spriteType]->setPosition(position); }
+
 private:
     bool loadSprite(const SpriteType& spriteType, const TextureType& textureType);
 

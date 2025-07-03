@@ -6,7 +6,6 @@ bool TextureViewModel::initialize() {
     std::string otherPath = imagePath + "other/";
     std::string playerPath = imagePath + "player/";
     std::string obstaclePath = imagePath + "obstacle/";
-    std::string fontPath = assetsPath + "fonts/";
     bool success = true;
 
     success &= loadTexture(TextureType::water, otherPath + "water.png");
