@@ -10,8 +10,36 @@ bool SpriteViewModel::initialize() {
 
     success &= loadSprite(SpriteType::water, TextureType::water);
     success &= loadSprite(SpriteType::player, TextureType::player_center_1);
+    success &= loadSprite(SpriteType::start_button, TextureType::button);
+    success &= loadSprite(SpriteType::start_icon, TextureType::start_icon);
+    success &= loadSprite(SpriteType::continue_button, TextureType::button);
+    success &= loadSprite(SpriteType::continue_icon, TextureType::start_icon);
+    success &= loadSprite(SpriteType::return_button, TextureType::button);
+
 
     return success;
+}
+
+void SpriteViewModel::setSprite(
+    const SpriteType& spriteType,
+    const sf::Color& color,
+    const sf::Vector2f& position,
+    const sf::Vector2f& scale,
+    const bool& ifCenter
+) {
+    auto sprite = m_sprites.find(spriteType)->second;
+    if (sprite != m_sprites.end()) {
+        sprite->setColor(color);
+        sprite->setPosition(position);
+        sprite->setScale(scale);
+        if (ifCenter) {
+            sprite->second->setOrigin(
+                sprite->getLocalBounds().size / 2.0f
+            );
+        }
+    } else {
+        std::cerr << "Sprite type not found: " << static_cast<int>(spriteType) << std::endl;
+    }
 }
 
 bool SpriteViewModel::loadSprite(const SpriteType& spriteType, const TextureType& textureType) {
