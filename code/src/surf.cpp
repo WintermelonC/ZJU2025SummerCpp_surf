@@ -1,17 +1,13 @@
 #include <iostream>
-#include "app/mvvmGame.h"
+#include "app/game.h"
 
 int main() {
-    MVVMGame game;
-    try {
-        game.initialize();
-        game.run();
-    } catch (const std::exception& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-    } catch (...) {
-        std::cerr << "An unknown error occurred." << std::endl;
-        return 1;
+    Game game;
+
+    if (!game.initialize()) {
+        std::cerr << "Failed to initialize the game." << std::endl;
+        return -1;
     }
-    return 0;
+
+    game.run();
 }

@@ -1,28 +1,16 @@
 add_executable(surf
     surf.cpp
-    # 基础设施层文件
-    common/eventBus.cpp
-    common/assetManager.cpp
-    common/utils.cpp
-    common/animationController.cpp
-    common/spriteManager.cpp
-    # ViewModel层文件
-    viewModels/inputManager.cpp
-    viewModels/gameViewModel.cpp
-    viewModels/playerViewModel.cpp
-    # View层文件
-    views/renderSystem.cpp
-    views/gameView.cpp
-    # Model层文件
-    models/entityModel.cpp
-    models/gameModel.cpp
+    app/game.cpp
     models/playerModel.cpp
-    # 应用协调器
-    app/mvvmGame.cpp
+    viewModels/gameViewModel.cpp
+    viewModels/spriteViewModel.cpp
+    viewModels/textureViewModel.cpp
+    viewModels/animationViewModel.cpp
+    views/gameView.cpp
 )
 
 target_link_libraries(surf PRIVATE SFML::System SFML::Window SFML::Graphics SFML::Audio)
-target_include_directories(surf PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_definitions(surf PRIVATE DEBUG)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
