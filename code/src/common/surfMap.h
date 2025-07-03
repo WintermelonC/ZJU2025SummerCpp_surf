@@ -17,6 +17,7 @@ struct Entity {
     sf::Vector2f position;
     sf::Vector2f origin;
     sf::Vector2f scale;
+    sf::RectangleShape collisionBox;
 };
 
 class SurfMap {
@@ -43,6 +44,14 @@ public:
         for (auto& entity : entities) {
             if (entity.type == type) {
                 entity.texture = *texture->get();
+            }
+        }
+    }
+    void setCollisionBox(const EntityType& type, const sf::RectangleShape& box) {
+        for (auto& entity : entities) {
+            if (entity.type == type) {
+                entity.collisionBox = box;
+                break;
             }
         }
     }

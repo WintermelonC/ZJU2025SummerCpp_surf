@@ -1,7 +1,14 @@
 #include "playerModel.h"
 
 PlayerModel::PlayerModel()
-    : EntityModel({1280, 576}, {64, 96}) {}
+    : EntityModel({1280, 576}, {64, 96}) {
+    setCollisionBox(
+        position,
+        size / 2.f,
+        size,
+        sf::degrees(0.0f)
+    );
+}
 
 void PlayerModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
     updateState(mousePos);

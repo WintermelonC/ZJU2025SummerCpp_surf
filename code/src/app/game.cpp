@@ -22,16 +22,14 @@ bool Game::initialize() {
     m_gameView.setWater(m_spriteViewModel->getSprite(SpriteType::water));
     m_gameView.setPlayer(m_spriteViewModel->getSprite(SpriteType::player));
 
-    // 绑定函数回调
-    m_gameView.setUpdateCallback([this](const sf::Vector2f& mousePos) {
-        // 在这里可以调用 GameViewModel 的更新方法
-        m_gameViewModel->update(mousePos);
-    });
-
     return success;
 }
 
 void Game::run() {
     // 运行游戏视图
-    m_gameView.run();
+    while (m_gameView.getWindow().isOpen()) {
+        m_gameView.handleEvents();
+        m_gameViewModel->update(m_gameView.getMousePos());
+        m_gameView.render();
+    }
 }

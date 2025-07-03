@@ -12,9 +12,10 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
     m_map.addEntity({
         EntityType::player,
         *(m_spriteViewModel->getTexture(TextureType::player_center_1)->get()),
-        {1280, 576},
-        {32, 48},
-        {1.5, 1.5}
+        m_playerModel.getPosition(),
+        m_playerModel.getSize() / 2.f,
+        {1.5, 1.5},
+        m_playerModel.getCollisionBox()
     });
 
     initializeAnimations();

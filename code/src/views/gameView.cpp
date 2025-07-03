@@ -16,17 +16,6 @@ bool GameView::initialize(unsigned int width, unsigned int height, const std::st
     return true;
 }
 
-void GameView::run() {
-    while (m_window.isOpen()) {
-        handleEvents();
-        if (m_updateCallback) {
-            const sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
-            m_updateCallback(mousePos); // 触发回调
-        }
-        render();
-    }
-}
-
 void GameView::handleEvents() {
     while (const std::optional event = m_window.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
@@ -57,6 +46,10 @@ void GameView::render() {
                     m_player->get()->setScale(entity.scale);
                     m_player->get()->setTexture(entity.texture);
                     m_window.draw(*m_player->get());
+
+                #ifdef DEBUG
+                    m_window.draw(entity.collisionBox);
+                #endif // DEBUG
                     break;
                 } default: {
                     std::cerr << "Unknown entity type: " << static_cast<int>(entity.type) << std::endl;

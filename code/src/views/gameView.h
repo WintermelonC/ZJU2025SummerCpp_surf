@@ -12,16 +12,15 @@ public:
     GameView();
 
     bool initialize(unsigned int width, unsigned int height, const std::string& title);
-    void run();
+    void handleEvents();
+    void render();
 
     void setMap(const SurfMap* map) { m_map = map; }
     void setWater(const std::unique_ptr<sf::Sprite>* water) { m_water = water; }
     void setPlayer(const std::unique_ptr<sf::Sprite>* player) { m_player = player; }
-    void setUpdateCallback(std::function<void(const sf::Vector2f&)> callback) { m_updateCallback = std::move(callback); }
 
-private:
-    void handleEvents();
-    void render();
+    const sf::RenderWindow& getWindow() const { return m_window; }
+    const sf::Vector2f getMousePos() const { return m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)); }
 
 private:
     sf::RenderWindow m_window;
@@ -31,6 +30,4 @@ private:
 
     const std::unique_ptr<sf::Sprite>* m_water;
     const std::unique_ptr<sf::Sprite>* m_player;
-
-    std::function<void(const sf::Vector2f&)> m_updateCallback;
 };
