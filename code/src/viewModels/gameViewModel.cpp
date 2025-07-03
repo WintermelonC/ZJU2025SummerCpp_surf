@@ -2,20 +2,19 @@
 
 GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
     : m_spriteViewModel(spriteVM) {
-    m_map.addEntity({
-        EntityType::water,
-        *(m_spriteViewModel->getTexture(TextureType::water)->get()),
+    m_spriteViewModel->setSprite(
+        SpriteType::water,
+        sf::Color::White,
         {0, 0},
-        {0, 0},
-        {1, 1}
-    });
-    m_map.addEntity({
-        EntityType::player,
-        *(m_spriteViewModel->getTexture(TextureType::player_center_1)->get()),
-        {1280, 576},
-        {32, 48},
-        {1.5, 1.5}
-    });
+        {1, 1},
+        false
+    );
+    m_spriteViewModel->setSprite(
+        SpriteType::player,
+        sf::Color::White,
+        m_playerModel.getPosition(),
+        {1.5f, 1.5f}
+    );
 
     initializeAnimations();
 }
@@ -24,6 +23,7 @@ void GameViewModel::update(const sf::Vector2f& mousePos) {
     float deltaTime = m_clock.restart().asSeconds();
     m_playerModel.update(deltaTime, mousePos);
     m_animationViewModel.update(deltaTime);
+    // m_ObstacleItemViewModel.update(deltaTime);
     updatePlayerAnimation();
     updateWater();
 }
@@ -42,7 +42,7 @@ void GameViewModel::updateWater() {
         m_waterOffset.y += m_waterSize;
     }
 
-    m_map.setPosition(EntityType::water, m_waterOffset);
+    m_spriteViewModel->setSpritePosition(SpriteType::water, m_waterOffset);
 }
 
 void GameViewModel::updatePlayerAnimation() {
@@ -75,8 +75,7 @@ void GameViewModel::updatePlayerAnimation() {
         m_animationViewModel.play(targetAnimation);
     }
 
-    m_map.setTexture(EntityType::player, 
-        m_spriteViewModel->getTexture(m_animationViewModel.getCurrentFrame()));
+    m_spriteViewModel->setSpriteTexture(SpriteType::player, m_animationViewModel.getCurrentFrame());
 }
 
 void GameViewModel::initializeAnimations() {

@@ -27,16 +27,15 @@ void SpriteViewModel::setSprite(
     const sf::Vector2f& scale,
     const bool& ifCenter
 ) {
-    auto sprite = m_sprites.find(spriteType)->second;
-    if (sprite != m_sprites.end()) {
-        sprite->setColor(color);
-        sprite->setPosition(position);
-        sprite->setScale(scale);
+    auto it = m_sprites.find(spriteType);
+    if (it != m_sprites.end()) {
+        sf::Sprite& sprite = *it->second;
+        sprite.setColor(color);
         if (ifCenter) {
-            sprite->second->setOrigin(
-                sprite->getLocalBounds().size / 2.0f
-            );
+            sprite.setOrigin(sprite.getLocalBounds().size / 2.f);
         }
+        sprite.setPosition(position);
+        sprite.setScale(scale);
     } else {
         std::cerr << "Sprite type not found: " << static_cast<int>(spriteType) << std::endl;
     }

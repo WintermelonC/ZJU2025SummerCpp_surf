@@ -6,6 +6,8 @@ add_executable(surf
     viewModels/spriteViewModel.cpp
     viewModels/textureViewModel.cpp
     viewModels/animationViewModel.cpp
+    viewModels/ObstacleItemViewModel.cpp
+    viewModels/fontViewModel.cpp
     views/gameView.cpp
 )
 

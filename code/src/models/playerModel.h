@@ -3,6 +3,7 @@
 #include <cmath>
 #include <SFML/Graphics.hpp>
 #include "entityModel.h"
+#include "../common/config.h"
 
 enum class PlayerState {
     left2, left1, center, right1, right2, stop

@@ -23,7 +23,7 @@ namespace Config {
 
     namespace Player {
         constexpr sf::Vector2f PLAYER_POS{Config::Window::RENDER_CENTER.x, Config::Window::RENDER_SIZE.y / 5.0f * 2.0f};
-        constexpr sf::Vector2i PLAYER_SIZE{64, 96};
+        constexpr sf::Vector2f PLAYER_SIZE{64, 96};
         constexpr sf::Vector2f PLAYER_SCALE = {1.5f, 1.5f};  // 玩家缩放比例
         constexpr int PLAYER_HP = 3;  // 玩家最大生命值
         constexpr int PLAYER_POWER = 3;  // 玩家最大能量值

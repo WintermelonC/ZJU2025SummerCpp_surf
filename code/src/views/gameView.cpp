@@ -1,8 +1,14 @@
 #include "gameView.h"
 
 GameView::GameView() 
-    : m_map(nullptr),
-      m_water(nullptr) {}
+    : m_water(nullptr),
+      m_player(nullptr),
+      m_startButton(nullptr),
+      m_startIcon(nullptr),
+      m_continueButton(nullptr),
+      m_continueIcon(nullptr),
+      m_returnButton(nullptr),
+      MSYHBD_font(nullptr) {}
 
 bool GameView::initialize(unsigned int width, unsigned int height, const std::string& title) {
     // 创建 SFML 渲染窗口
@@ -14,17 +20,6 @@ bool GameView::initialize(unsigned int width, unsigned int height, const std::st
     m_window.setVerticalSyncEnabled(true);
 
     return true;
-}
-
-void GameView::run() {
-    while (m_window.isOpen()) {
-        handleEvents();
-        if (m_updateCallback) {
-            const sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
-            m_updateCallback(mousePos); // 触发回调
-        }
-        render();
-    }
 }
 
 void GameView::handleEvents() {
@@ -43,14 +38,14 @@ void GameView::renderBackground() {
     // 清除窗口
     m_window.clear(sf::Color(0, 192, 222));
     // 绘制水波
-    m_window.draw(m_water->get());
+    m_window.draw(*m_water->get());
 }
 
 void GameView::renderGameplay() {
     // 渲染背景
     renderBackground();
     // 绘制玩家
-    m_window.draw(m_player->get());
+    m_window.draw(*m_player->get());
 }
 
 void GameView::renderStartMenu() {
@@ -58,7 +53,7 @@ void GameView::renderStartMenu() {
     renderBackground();
     // 标题
     sf::Text title = renderText(
-        MSYHBD_font->get(),
+        *MSYHBD_font->get(),
         "LET'S SURF",
         50,
         sf::Color::Black,
@@ -66,7 +61,7 @@ void GameView::renderStartMenu() {
     );
     // 开始文字
     sf::Text startText = renderText(
-        MSYHBD_font->get(),
+        *MSYHBD_font->get(),
         "开始游戏",
         35,
         sf::Color::Black,
@@ -74,24 +69,21 @@ void GameView::renderStartMenu() {
         true
     );
     // 开始按钮阴影
-    sf::Sprite startButtonShadow = startButton;
+    sf::Sprite startButtonShadow = *m_startButton->get();
     startButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
     startButtonShadow.move({0.f, 4.f});  // 向下偏移
 
-    // 鼠标悬停按钮变化
-    // 有待实现
-
-    // 绘制玩家
-    m_window.draw(m_player->get());
+    // TODO: 添加鼠标悬停按钮变化效果
+    // TODO: 添加角色动画
 
     // 绘制标题
     m_window.draw(title);
     // 绘制开始按钮阴影
     m_window.draw(startButtonShadow);
     // 绘制开始按钮
-    m_window.draw(m_startButton->get());
+    m_window.draw(*m_startButton->get());
     // 绘制开始图标
-    m_window.draw(m_startIcon->get());
+    m_window.draw(*m_startIcon->get());
     // 绘制开始文字
     m_window.draw(startText);
 }   
@@ -105,7 +97,7 @@ void GameView::renderPauseMenu() {
 
     // 暂停文字
     sf::Text pausedText = renderText(
-        MSYHBD_font->get(),
+        *MSYHBD_font->get(),
         "已暂停",
         75,
         sf::Color::Black,
@@ -114,13 +106,13 @@ void GameView::renderPauseMenu() {
     );
 
     // 继续按钮阴影
-    sf::Sprite continueButtonShadow = continueButton;
+    sf::Sprite continueButtonShadow = *m_continueButton->get();
     continueButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
     continueButtonShadow.move({0.f, 4.f});  // 向下偏移
 
     // 继续游戏文字
     sf::Text continueText = renderText(
-        MSYHBD_font->get(),
+        *MSYHBD_font->get(),
         "继续游戏",
         35,
         sf::Color::Black,
@@ -129,13 +121,13 @@ void GameView::renderPauseMenu() {
     );
 
     // 返回按钮阴影
-    sf::Sprite returnButtonShadow = returnButton;
+    sf::Sprite returnButtonShadow = *m_returnButton->get();
     returnButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
     returnButtonShadow.move({0.f, 4.f});  // 向下偏移
 
     // 返回文字
     sf::Text returnText = renderText(
-        Fonts::MSYHBD,
+        *MSYHBD_font->get(),
         "返回菜单",
         26,
         sf::Color::Black,
@@ -143,18 +135,17 @@ void GameView::renderPauseMenu() {
         true
     );
 
-    // 鼠标悬停按钮变化
-    // 有待实现
+    // TODO: 添加鼠标悬停按钮变化效果
 
     // 绘制暂停菜单
-    window.draw(filter);
-    window.draw(pausedText);  // 绘制暂停文字
-    window.draw(continueButtonShadow);  // 绘制继续按钮阴影
-    m_window.draw(m_continueButton->get()); // 绘制继续按钮
-    m_window.draw(m_continueIcon->get()); // 绘制继续游戏图标
+    m_window.draw(filter);
+    m_window.draw(pausedText);  // 绘制暂停文字
+    m_window.draw(continueButtonShadow);  // 绘制继续按钮阴影
+    m_window.draw(*m_continueButton->get()); // 绘制继续按钮
+    m_window.draw(*m_continueIcon->get()); // 绘制继续游戏图标
     m_window.draw(continueText);  // 绘制继续游戏文字
-    window.draw(returnButtonShadow);  // 绘制返回按钮阴影
-    m_window.draw(m_returnButton->get());   // 绘制返回按钮
+    m_window.draw(returnButtonShadow);  // 绘制返回按钮阴影
+    m_window.draw(*m_returnButton->get());   // 绘制返回按钮
     m_window.draw(returnText);  // 绘制返回文字
 }
 
@@ -172,7 +163,7 @@ void GameView::reset() {
     // 有待实现
 }
 
-void GameView::renderText(
+sf::Text GameView::renderText(
     const sf::Font& font,
     const std::string& content,
     const int size,
