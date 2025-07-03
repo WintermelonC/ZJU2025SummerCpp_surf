@@ -5,7 +5,13 @@
 
 enum class SpriteType {
     water,
-    player
+    player,
+    start_button,
+    start_icon,
+    continue_button,
+    continue_icon,
+    return_button,
+    
 };
 
 class SpriteViewModel {
