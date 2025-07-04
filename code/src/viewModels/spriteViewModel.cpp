@@ -17,6 +17,8 @@ bool SpriteViewModel::initialize() {
     success &= loadSprite(SpriteType::return_button, TextureType::button);
     success &= loadSprite(SpriteType::scoreboard, TextureType::scoreboard);
 
+    initializeButtonIcons();
+
     return success;
 }
 
@@ -67,4 +69,12 @@ void SpriteViewModel::setSprite(
     if( ifCenter) {
         sprite.setOrigin({sprite.getTexture().getSize().x / 2.f, sprite.getTexture().getSize().y / 2.f});
     }
+}
+
+void SpriteViewModel::initializeButtonIcons() {
+    setSprite(SpriteType::start_button, sf::Color::White, Config::Window::START_BUTTON_POS, Config::Window::START_BUTTON_SCALE);
+    setSprite(SpriteType::start_icon, sf::Color::White, Config::Window::START_BUTTON_POS - sf::Vector2f{75.f, 0.f}, {0.9f, 0.9f});
+    setSprite(SpriteType::continue_button, sf::Color::White, Config::Window::CONTINUE_BUTTON_POS, Config::Window::CONTINUE_BUTTON_SCALE);
+    setSprite(SpriteType::continue_icon, sf::Color::White, Config::Window::CONTINUE_BUTTON_POS - sf::Vector2f{75.f, 0.f}, {0.9f, 0.9f});
+    setSprite(SpriteType::return_button, sf::Color::White, Config::Window::RETURN_BUTTON_POS, Config::Window::RETURN_BUTTON_SCALE);
 }

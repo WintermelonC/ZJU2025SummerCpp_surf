@@ -13,9 +13,10 @@ public:
 
     bool initialize();
     void run();
+    void reset();
 
 private:
-    void handleEvents(sf::RenderWindow& window);
+    void setupEventCallbacks();
 
 private:
     GameView m_gameView;

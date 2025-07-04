@@ -3,6 +3,7 @@ add_executable(surf
     app/game.cpp
     models/playerModel.cpp
     viewModels/gameViewModel.cpp
+    viewModels/commands/gameCommands.cpp
     viewModels/spriteViewModel.cpp
     viewModels/textureViewModel.cpp
     viewModels/animationViewModel.cpp
