@@ -12,8 +12,18 @@ PlayerModel::PlayerModel()
 
 void PlayerModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
     updateState(mousePos);
+    updateAngle();
+    updatePower(deltaTime);  // 更新能量状态
     updateYSpeed(deltaTime);
     updateXSpeed(deltaTime);
+}
+
+void PlayerModel::usePower() {
+    if (m_power > 0) {
+        m_power--;
+        m_powerTimer = 0.0f;
+        m_isPower = true;
+    }
 }
 
 void PlayerModel::updateState(const sf::Vector2f& mousePos) {
@@ -24,17 +34,48 @@ void PlayerModel::updateState(const sf::Vector2f& mousePos) {
         const float angleDeg = angle.asDegrees();
         if (angleDeg >= m_angle2 || angleDeg <= -m_angle2) {
             m_state = (angleDeg >= 0.f) ? PlayerState::right2 : PlayerState::left2;
-            m_angle = sf::degrees((angleDeg >= 0.f) ? m_angle2 : -m_angle2);
         } else if (angleDeg >= m_angle1 || angleDeg <= -m_angle1) {
             m_state = (angleDeg >= 0.f) ? PlayerState::right1 : PlayerState::left1;
-            m_angle = sf::degrees((angleDeg >= 0.f) ? m_angle1 : -m_angle1);
         } else {
             m_state = PlayerState::center;
-            m_angle = sf::degrees(0.0f);
         }
     } else {
         m_state = PlayerState::stop;
-        m_angle = sf::degrees(0.0f);
+    }
+}
+
+void PlayerModel::updateAngle() {
+    switch (m_state) {
+        case PlayerState::left2:
+            m_angle = sf::degrees(-m_angle2);
+            break;
+        case PlayerState::left1:
+            m_angle = sf::degrees(-m_angle1);
+            break;
+        case PlayerState::center:
+            m_angle = sf::degrees(0.0f);
+            break;
+        case PlayerState::right1:
+            m_angle = sf::degrees(m_angle1);
+            break;
+        case PlayerState::right2:
+            m_angle = sf::degrees(m_angle2);
+            break;
+        case PlayerState::stop:
+            m_angle = sf::degrees(0.0f);
+            break;
+    }
+}
+
+void PlayerModel::updatePower(const float& dt) {
+    if (m_isPower) {
+        m_powerTimer += dt;
+        if (m_powerTimer >= m_powerTime) {
+            m_isPower = false;  // 能量时间结束
+            m_powerTimer = 0.0f;  // 重置计时器
+        }
+    } else {
+        m_powerTimer = 0.0f;  // 重置能量计时器
     }
 }
 
@@ -47,7 +88,7 @@ void PlayerModel::updateYSpeed(const float deltaTime) {
         float acceleration = m_acceleration1;
         float maxSpeed = m_maxSpeed;
         if (m_isPower) {
-            acceleration = m_acceleration1;
+            acceleration = m_acceleration2;
             maxSpeed = m_maxSpeed * m_powerScale;
         }
         

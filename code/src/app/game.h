@@ -15,6 +15,9 @@ public:
     void run();
 
 private:
+    void handleEvents(sf::RenderWindow& window);
+
+private:
     GameView m_gameView;
     std::shared_ptr<FontViewModel> m_fontViewModel;
     std::shared_ptr<SpriteViewModel> m_spriteViewModel;

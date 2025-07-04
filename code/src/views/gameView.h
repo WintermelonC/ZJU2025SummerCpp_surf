@@ -12,7 +12,7 @@ public:
     GameView();
 
     bool initialize(unsigned int width, unsigned int height, const std::string& title);
-    void handleEvents();
+    void updateWindowSize(const sf::Vector2u& size);
 
     void renderGameplay();
     void renderStartMenu();
@@ -31,7 +31,7 @@ public:
     void setFont(const std::unique_ptr<sf::Font>* font) { MSYHBD_font = font; }
     void setObstacleItemSprites(std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
 
-    const sf::RenderWindow& getWindow() const { return m_window; }
+    sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2f getMousePos() const { return m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)); }
     
 private:

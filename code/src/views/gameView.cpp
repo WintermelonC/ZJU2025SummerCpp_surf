@@ -22,16 +22,10 @@ bool GameView::initialize(unsigned int width, unsigned int height, const std::st
     return true;
 }
 
-void GameView::handleEvents() {
-    while (const std::optional event = m_window.pollEvent()) {
-        if (event->is<sf::Event::Closed>()) {
-            m_window.close();
-        } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-            // 处理窗口大小调整事件
-            m_view.setSize(sf::Vector2f(resized->size));
-            m_window.setView(m_view);
-        }
-    }
+void GameView::updateWindowSize(const sf::Vector2u& size) {
+    // 更新窗口大小
+    m_view.setSize(sf::Vector2f(size));
+    m_window.setView(m_view);
 }
 
 void GameView::renderBackground() {
