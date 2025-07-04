@@ -11,6 +11,7 @@ public:
     GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
     void update(const sf::Vector2f& mousePos);
+    std::vector<sf::Sprite>& getObstacleItemSprites() { return m_ObstacleItemViewModel.getSprites(); }
 
 private:
     void updateWater();

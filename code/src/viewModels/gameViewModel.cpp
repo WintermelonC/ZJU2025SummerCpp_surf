@@ -1,7 +1,8 @@
 #include "gameViewModel.h"
 
 GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
-    : m_spriteViewModel(spriteVM) {
+    : m_spriteViewModel(spriteVM),
+      m_ObstacleItemViewModel(spriteVM) {
     m_spriteViewModel->setSprite(
         SpriteType::water,
         sf::Color::White,
@@ -23,7 +24,7 @@ void GameViewModel::update(const sf::Vector2f& mousePos) {
     float deltaTime = m_clock.restart().asSeconds();
     m_playerModel.update(deltaTime, mousePos);
     m_animationViewModel.update(deltaTime);
-    // m_ObstacleItemViewModel.update(deltaTime);
+    m_ObstacleItemViewModel.update(deltaTime, m_playerModel.getVelocity());
     updatePlayerAnimation();
     updateWater();
 }
