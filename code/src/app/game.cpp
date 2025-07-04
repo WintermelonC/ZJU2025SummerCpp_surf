@@ -53,7 +53,7 @@ void Game::run() {
         } else if (m_gameViewModel->getGameModel().getGameState() == GameState::gameOver) {
             m_gameView.renderGameOver();
         } else {
-            m_gameViewModel->update(m_gameView.getMousePos());
+            m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize(), m_playerViewModel->getPlayerVelocity());
             m_gameView.renderGameplay();
         }
         m_gameView.display();
@@ -68,7 +68,7 @@ void Game::setupEventCallbacks() {
     m_gameView.setOnFocusGained(m_gameViewModel->getFocusGainedCommand());
 
     // 设置鼠标右键点击回调
-    m_gameView.setOnMouseRightClick(m_gameViewModel->getMouseRightClickCommand());
+    m_gameView.setOnMouseRightClick(m_playerViewModel->getMouseRightClickCommand());
 
     // 设置鼠标左键点击回调
     m_gameView.setOnMouseLeftClick(m_gameViewModel->getMouseLeftClickCommand());

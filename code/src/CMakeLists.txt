@@ -10,6 +10,7 @@ add_executable(surf
     viewModels/ObstacleItemViewModel.cpp
     viewModels/fontViewModel.cpp
     viewModels/playerViewModel.cpp
+    viewModels/commands/playerCommands.cpp
     views/gameView.cpp
 )
 

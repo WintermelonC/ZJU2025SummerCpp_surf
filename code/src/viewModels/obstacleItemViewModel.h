@@ -40,8 +40,6 @@ public:
     void onNotification(const NotificationData& data) override;
 
 private:
-    const float m_spawnInterval = 0.5f;  // 生成间隔时间
-
     // 障碍物和道具组合模式结构
     struct Pattern {
         std::vector<SpawnItem> items;  // 包含障碍物和道具的生成项

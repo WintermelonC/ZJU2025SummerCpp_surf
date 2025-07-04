@@ -25,13 +25,10 @@ public:
     
     // 🔔 实现观察者接口
     void onNotification(const NotificationData& data) override;
-
-    std::vector<sf::Sprite>& getObstacleItemSprites() { return m_ObstacleItemViewModel.getSprites(); }
     const GameModel& getGameModel() const { return m_gameModel; }
 
     std::function<void()> getFocusLostCommand();
     std::function<void()> getFocusGainedCommand();
-    std::function<void()> getMouseRightClickCommand();
     std::function<void(const bool& StartButtonPressed, const bool& ContinueButtonPressed,
                        const bool& ReturnButtonPressed)> getMouseLeftClickCommand();
     std::function<void(const sf::Event::KeyPressed&)> getKeyPressCommand();
