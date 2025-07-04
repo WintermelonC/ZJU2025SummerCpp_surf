@@ -29,6 +29,7 @@ public:
     void setContinueButton(const std::unique_ptr<sf::Sprite>* continueButton) { m_continueButton = continueButton; }
     void setReturnButton(const std::unique_ptr<sf::Sprite>* returnButton) { m_returnButton = returnButton; }
     void setFont(const std::unique_ptr<sf::Font>* font) { MSYHBD_font = font; }
+    void setObstacleItemSprites(std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
 
     const sf::RenderWindow& getWindow() const { return m_window; }
     const sf::Vector2f getMousePos() const { return m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)); }
@@ -57,6 +58,5 @@ private:
     
     const std::unique_ptr<sf::Font>* MSYHBD_font;
 
-
-    std::function<void(const sf::Vector2f&)> m_updateCallback;
+    std::vector<sf::Sprite>* m_obstacleItemSprites;
 };

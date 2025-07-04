@@ -46,6 +46,10 @@ void GameView::renderGameplay() {
     renderBackground();
     // 绘制玩家
     m_window.draw(*m_player->get());
+    for (const auto& sprite : *m_obstacleItemSprites) {
+        // 绘制障碍物和道具
+        m_window.draw(sprite);
+    }
 }
 
 void GameView::renderStartMenu() {

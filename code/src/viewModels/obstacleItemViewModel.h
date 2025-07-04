@@ -1,9 +1,13 @@
 #pragma once
 
 #include <random>
+#include <algorithm>
 #include <SFML/Graphics.hpp>
 #include "../models/itemModel.h"
 #include "../models/obstacleModel.h"
+#include "textureViewModel.h"
+#include "spriteViewModel.h"
+#include "../common/config.h"
 
 // 生成项结构，统一管理障碍物和道具
 struct SpawnItem {
@@ -26,18 +30,22 @@ struct SpawnItem {
 
 class ObstacleItemViewModel {
 public:
-    ObstacleItemViewModel();
+    ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
-    void update(const float& dt);
+    void update(const float& dt, const sf::Vector2f& playerVelocity);
+    std::vector<sf::Sprite>& getSprites() { return m_sprites; }
 
 private:
     void initialize();
+    void updatePosition(const sf::Vector2f& playerVelocity);
 
     void spawnSingle();
     void spawnGroup();
 
     void createClusterPattern();     // 聚集模式
-    void spawnPattern(const struct Pattern& pattern);  // 生成指定模式
+
+    // 随机选择障碍物纹理
+    TextureType getRandomObstacleTexture(ObstacleType type);
 
 private:
     const float m_spawnInterval = 0.5f;  // 生成间隔时间
@@ -60,5 +68,8 @@ private:
     // 生成模式权重（单个:小组:大组）
     std::vector<int> m_spawnWeights{1, 2, 3};
 
-    std::vector<sf::Sprite> m_sprites;
+    std::vector<sf::Sprite> m_sprites;  // 存储生成的障碍物和道具精灵
+
+    ObstacleModel m_obstacleModel;
+    std::shared_ptr<SpriteViewModel> m_spriteViewModel;
 };

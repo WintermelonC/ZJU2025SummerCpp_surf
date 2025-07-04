@@ -15,7 +15,22 @@ bool SpriteViewModel::initialize() {
     success &= loadSprite(SpriteType::continue_button, TextureType::button);
     success &= loadSprite(SpriteType::continue_icon, TextureType::start_icon);
     success &= loadSprite(SpriteType::return_button, TextureType::button);
-
+    success &= loadSprite(SpriteType::wood_1, TextureType::wood_1);
+    success &= loadSprite(SpriteType::wood_2, TextureType::wood_2);
+    success &= loadSprite(SpriteType::wood_3, TextureType::wood_3);
+    success &= loadSprite(SpriteType::wood_4, TextureType::wood_4);
+    success &= loadSprite(SpriteType::wood_5, TextureType::wood_5);
+    success &= loadSprite(SpriteType::wood_6, TextureType::wood_6);
+    success &= loadSprite(SpriteType::stone_1, TextureType::stone_1);
+    success &= loadSprite(SpriteType::stone_2, TextureType::stone_2);
+    success &= loadSprite(SpriteType::stone_3, TextureType::stone_3);
+    success &= loadSprite(SpriteType::stone_4, TextureType::stone_4);
+    success &= loadSprite(SpriteType::stone_5, TextureType::stone_5);
+    success &= loadSprite(SpriteType::boat_1, TextureType::boat_1);
+    success &= loadSprite(SpriteType::boat_2, TextureType::boat_2);
+    success &= loadSprite(SpriteType::beach_1, TextureType::beach_1);
+    success &= loadSprite(SpriteType::beach_2, TextureType::beach_2);
+    success &= loadSprite(SpriteType::beach_3, TextureType::beach_3);
 
     return success;
 }
@@ -52,4 +67,19 @@ bool SpriteViewModel::loadSprite(const SpriteType& spriteType, const TextureType
     m_sprites[spriteType] = std::move(sprite);
 
     return true;
+}
+
+void SpriteViewModel::setSprite(
+    sf::Sprite& sprite,
+    const sf::Color color,
+    const sf::Vector2f& position,
+    const sf::Vector2f& scale,
+    const bool& ifCenter
+) {
+    sprite.setColor(color);
+    sprite.setPosition(position);
+    sprite.setScale(scale);
+    if( ifCenter) {
+        sprite.setOrigin({sprite.getTexture().getSize().x / 2.f, sprite.getTexture().getSize().y / 2.f});
+    }
 }

@@ -18,13 +18,10 @@ enum class TextureType {
     player_right_21, player_right_22, player_right_23,
     player_stop_1, player_stop_2, player_stop_3,
     heart_1, heart_2, power_1, power_2,
-    beach_1, beach_2, beach_3,
-    boat_1, boat_2,
-    seaweed_11, seaweed_12, seaweed_13,
-    seaweed_21, seaweed_22, seaweed_23,
-    seaweed_31, seaweed_32, seaweed_33,
+    wood_1, wood_2, wood_3, wood_4, wood_5, wood_6,
     stone_1, stone_2, stone_3, stone_4, stone_5,
-    wood_1, wood_2, wood_3, wood_4, wood_5, wood_6
+    boat_1, boat_2, 
+    beach_1, beach_2, beach_3
 };
 
 class TextureViewModel {
