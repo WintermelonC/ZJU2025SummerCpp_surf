@@ -23,6 +23,8 @@ public:
     const sf::Vector2f& getVelocity() const { return m_velocity; }
     const sf::Angle& getAngle() const { return m_angle; }
     const PlayerState& getState() const { return m_state; }
+    const int& getHp() const { return m_hp; }
+    const int& getPower() const { return m_power; }
 
     void setVelocity(const sf::Vector2f& velocity) { m_velocity = velocity; }
     void setAngle(const sf::Angle& angle) { m_angle = angle; }

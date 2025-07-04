@@ -9,7 +9,6 @@ PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
         m_playerModel.getPosition(),
         Config::Player::PLAYER_SCALE
     );
-
     initializeAnimations();
     
     // 🔔 订阅游戏重置通知

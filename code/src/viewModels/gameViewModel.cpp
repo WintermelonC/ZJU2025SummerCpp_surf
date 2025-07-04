@@ -1,9 +1,7 @@
 #include "gameViewModel.h"
 
 GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
-    : m_spriteViewModel(spriteVM),
-      m_ObstacleItemViewModel(spriteVM),
-      m_playerViewModel(spriteVM) {
+    : m_spriteViewModel(spriteVM) {
     m_spriteViewModel->setSprite(
         SpriteType::water,
         sf::Color::White,
@@ -18,20 +16,21 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
                                 std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
 }
 
-void GameViewModel::update(const sf::Vector2f& mousePos) {
-    float deltaTime = m_clock.restart().asSeconds();
-    m_playerViewModel.update(deltaTime, mousePos);
-    m_ObstacleItemViewModel.update(deltaTime, m_playerViewModel.getPlayerVelocity(), !m_playerViewModel.isPlayerStop());
-    updateWater();
+void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity) {
+    m_spriteViewModel->setSprite(
+        SpriteType::scoreboard,
+        m_buttonColor,
+        {Config::Window::RENDER_CENTER.x,
+         Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
+    );
+
+    m_gameModel.update(playerVelocity);
+    updateWater(playerVelocity);
 }
 
-void GameViewModel::usePower() {
-    m_playerViewModel.usePower();
-}
-
-void GameViewModel::updateWater() {
+void GameViewModel::updateWater(const sf::Vector2f& playerVelocity) {
     // 根据玩家移动方向反向移动水面
-    m_waterOffset -= m_playerViewModel.getPlayerVelocity() * Config::Game::PARALLAX_FACTOR;
+    m_waterOffset -= playerVelocity * Config::Game::PARALLAX_FACTOR;
     
     if (m_waterOffset.x <= 0) {
         m_waterOffset.x += m_waterSize;
@@ -56,16 +55,16 @@ void GameViewModel::onNotification(const NotificationData& data) {
         case NotificationType::GameReset: {
             const auto& resetData = static_cast<const GameResetData&>(data);
             
-            // 🔄 重置游戏模型
+            // 重置游戏模型
             if (resetData.resetScore) {
                 m_gameModel.reset();
             }
             
-            // 🔄 重置水面位置
+            // 重置水面位置
             m_waterOffset = {0, 0};
             m_spriteViewModel->setSpritePosition(SpriteType::water, m_waterOffset);
             
-            // 🔄 重置时钟
+            // 重置时钟
             m_clock.restart();
             
             break;

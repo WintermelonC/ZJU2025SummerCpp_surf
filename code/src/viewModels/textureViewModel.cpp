@@ -31,6 +31,10 @@ bool TextureViewModel::initialize() {
     success &= loadTexture(TextureType::player_stop_1, playerPath + "player_stop_1.png");
     success &= loadTexture(TextureType::player_stop_2, playerPath + "player_stop_2.png");
     success &= loadTexture(TextureType::player_stop_3, playerPath + "player_stop_3.png");
+    success &= loadTexture(TextureType::heart_1, playerPath + "heart_1.png");
+    success &= loadTexture(TextureType::heart_2, playerPath + "heart_2.png");
+    success &= loadTexture(TextureType::power_1, playerPath + "power_1.png");
+    success &= loadTexture(TextureType::power_2, playerPath + "power_2.png");
     success &= loadTexture(TextureType::wood_1, obstaclePath + "wood_1.png");
     success &= loadTexture(TextureType::wood_2, obstaclePath + "wood_2.png");
     success &= loadTexture(TextureType::wood_3, obstaclePath + "wood_3.png");
@@ -47,6 +51,10 @@ bool TextureViewModel::initialize() {
     success &= loadTexture(TextureType::beach_1, obstaclePath + "beach_1.png");
     success &= loadTexture(TextureType::beach_2, obstaclePath + "beach_2.png");
     success &= loadTexture(TextureType::beach_3, obstaclePath + "beach_3.png");
+    success &= loadTexture(TextureType::seaweed_11, obstaclePath + "seaweed_11.png");
+    success &= loadTexture(TextureType::seaweed_21, obstaclePath + "seaweed_21.png");
+    success &= loadTexture(TextureType::seaweed_31, obstaclePath + "seaweed_31.png");
+    success &= loadTexture(TextureType::bridge_1, obstaclePath + "bridge_1.png");
 
     return success;
 }

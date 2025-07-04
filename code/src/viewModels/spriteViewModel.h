@@ -12,10 +12,7 @@ enum class SpriteType {
     continue_button,
     continue_icon,
     return_button,
-    wood_1, wood_2, wood_3, wood_4, wood_5, wood_6,
-    stone_1, stone_2, stone_3, stone_4, stone_5,
-    boat_1, boat_2, 
-    beach_1, beach_2, beach_3
+    scoreboard,
 };
 
 class SpriteViewModel {
@@ -25,7 +22,7 @@ public:
     const std::unique_ptr<sf::Sprite>* getSprite(const SpriteType& type) const { return &m_sprites.at(type); }
     const std::unique_ptr<sf::Texture>* getTexture(const TextureType& type) const { return &m_textureViewModel->getTexture(type); }
     const sf::Vector2f getSpriteSize(const SpriteType& type) const { return m_sprites.at(type)->getGlobalBounds().size; }
-    sf::Sprite getNewSprite(const SpriteType& spriteType, const TextureType& textureType) const { return sf::Sprite(*m_textureViewModel->getTexture(textureType)); }
+    sf::Sprite getNewSprite(const TextureType& textureType) const { return sf::Sprite(*m_textureViewModel->getTexture(textureType)); }
 
     void setSprite(
         const SpriteType& spriteType,

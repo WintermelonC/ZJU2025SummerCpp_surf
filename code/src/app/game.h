@@ -23,4 +23,6 @@ private:
     std::shared_ptr<FontViewModel> m_fontViewModel;
     std::shared_ptr<SpriteViewModel> m_spriteViewModel;
     std::shared_ptr<GameViewModel> m_gameViewModel;
+    std::shared_ptr<ObstacleItemViewModel> m_ObstacleItemViewModel;
+    std::shared_ptr<PlayerViewModel> m_playerViewModel;
 };

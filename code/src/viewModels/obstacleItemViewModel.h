@@ -36,25 +36,10 @@ public:
     void update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn = true);
     std::vector<sf::Sprite>& getSprites() { return m_sprites; }
     
-    // 🔔 实现观察者接口
+    // 实现观察者接口
     void onNotification(const NotificationData& data) override;
 
 private:
-    void initialize();
-    void updatePosition(const sf::Vector2f& playerVelocity);
-    void resetObstacles(); // 🔔 内部重置方法
-
-    void spawnSingle();
-    void spawnGroup();
-
-    void createClusterPattern();     // 聚集模式
-
-    // 随机选择障碍物纹理
-    TextureType getRandomObstacleTexture(ObstacleType type);
-
-private:
-    const float m_spawnInterval = 0.5f;  // 生成间隔时间
-
     // 障碍物和道具组合模式结构
     struct Pattern {
         std::vector<SpawnItem> items;  // 包含障碍物和道具的生成项
@@ -62,6 +47,27 @@ private:
         float width;  // 模式宽度
         float height;  // 模式高度
     };
+
+    void initialize();
+    void resetObstacles(); // 内部重置方法
+    void updatePosition(const sf::Vector2f& playerVelocity);
+
+    bool spawnSingle();
+    bool spawnGroup();
+
+    void createClusterPattern();     // 聚集模式
+    void createTunnelPattern();      // 隧道模式
+
+    // 随机选择障碍物纹理
+    TextureType getRandomObstacleTexture(ObstacleType type);
+
+    bool isPositionValid(const sf::Vector2f& position);
+    bool checkCollision(const sf::FloatRect& newRect);
+    sf::FloatRect getPatternBounds(const Pattern& pattern, const sf::Vector2f& centerPos);
+
+private:
+    const float m_spawnInterval = 1.0f;  // 生成间隔时间
+    std::vector<sf::FloatRect> m_activeBounds;  // 存储已生成的障碍物组边界
     
     std::vector<Pattern> m_patterns;  // 预定义的障碍物和道具组合模式
     sf::Clock m_spawnClock;  // 生成时钟
