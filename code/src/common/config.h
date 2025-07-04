@@ -31,7 +31,6 @@ namespace Config {
         constexpr float POWER_MULTIPLIER = 1.5f;  // 能量加速倍数
         constexpr float SPEED_THRESHOLD_1 = 20.0f; // 速度阈值常量
         constexpr float SPEED_THRESHOLD_2 = 40.0f;
-    
     }
 
     namespace Game {

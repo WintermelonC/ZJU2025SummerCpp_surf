@@ -15,6 +15,7 @@ public:
     ~PlayerModel() = default;
 
     void update(const float deltaTime, const sf::Vector2f& mousePos);
+    void usePower();
 
     const sf::Vector2f& getVelocity() const { return m_velocity; }
     const sf::Angle& getAngle() const { return m_angle; }
@@ -25,8 +26,10 @@ public:
 
 private:
     void updateState(const sf::Vector2f& mousePos);
+    void updateAngle();
     void updateYSpeed(const float deltaTime);
     void updateXSpeed(const float deltaTime);
+    void updatePower(const float& dt);  // 更新能量状态
 
 private:
     const float m_acceleration1 = 10.f;
@@ -37,9 +40,13 @@ private:
     const float m_powerScale = 1.5f;
     const float m_angle1 = 20.f;
     const float m_angle2 = 40.f;
+    const float m_powerTime = 5.f;
 
     sf::Vector2f m_velocity = {0, 0};
     sf::Angle m_angle = sf::degrees(0.0f);
     PlayerState m_state = PlayerState::center;
     bool m_isPower = false;
+    float m_powerTimer = 0.0f;  // 能量计时器
+    int m_hp = Config::Player::PLAYER_HP;  // 玩家生命值
+    int m_power = 0;  // 玩家能量值
 };

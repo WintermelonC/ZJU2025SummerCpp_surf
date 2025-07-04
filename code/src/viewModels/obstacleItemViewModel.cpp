@@ -6,10 +6,10 @@ ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> sp
     initialize();
 }
 
-void ObstacleItemViewModel::update(const float& dt, const sf::Vector2f& playerVelocity) {
+void ObstacleItemViewModel::update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn) {
     updatePosition(playerVelocity);
 
-    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval) {
+    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || !isSpawn) {
         return;
     }
     
@@ -57,7 +57,7 @@ void ObstacleItemViewModel::updatePosition(const sf::Vector2f& playerVelocity) {
 void ObstacleItemViewModel::spawnSingle() {
     std::uniform_int_distribution<> xDist(0, Config::Window::RENDER_SIZE.x);
     int x = xDist(m_gen);
-    int y = Config::Window::RENDER_SIZE.y;
+    int y = Config::Window::RENDER_SIZE.y + 200;
     
     TextureType textureType = getRandomObstacleTexture(ObstacleType::any);
     SpriteType entityType = static_cast<SpriteType>(

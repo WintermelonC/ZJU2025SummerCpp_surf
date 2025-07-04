@@ -36,9 +36,25 @@ void Game::run() {
     // 运行游戏视图
     while (m_gameView.getWindow().isOpen()) {
         // TODO: 根据游戏状态绘制不同界面
-        m_gameView.handleEvents();
+        handleEvents(m_gameView.getWindow());
         m_gameViewModel->update(m_gameView.getMousePos());
         m_gameView.renderGameplay();
         m_gameView.display();
+    }
+}
+
+void Game::handleEvents(sf::RenderWindow& window) {
+    while (const std::optional event = window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+            // 处理窗口关闭事件
+            window.close();
+        } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+            // 处理窗口大小调整事件
+            m_gameView.updateWindowSize(resized->size);
+        } else if (const auto* mouseButton = event -> getIf<sf::Event::MouseButtonPressed>()) {
+            m_gameViewModel->handleMouseEvents(*mouseButton);
+        } else {
+            return;
+        }
     }
 }

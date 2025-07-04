@@ -32,7 +32,7 @@ class ObstacleItemViewModel {
 public:
     ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
-    void update(const float& dt, const sf::Vector2f& playerVelocity);
+    void update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn = true);
     std::vector<sf::Sprite>& getSprites() { return m_sprites; }
 
 private:
