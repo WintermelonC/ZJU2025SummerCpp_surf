@@ -7,6 +7,8 @@ Game::Game() {
     m_gameViewModel = std::make_shared<GameViewModel>(m_spriteViewModel);
     m_fontViewModel = std::make_shared<FontViewModel>();
     m_fontViewModel->initialize();
+    m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_spriteViewModel);
+    m_playerViewModel = std::make_shared<PlayerViewModel>(m_spriteViewModel);
 }
 
 bool Game::initialize() {
@@ -27,7 +29,7 @@ bool Game::initialize() {
     m_gameView.setContinueButton(m_spriteViewModel->getSprite(SpriteType::continue_button));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
-    m_gameView.setObstacleItemSprites(m_gameViewModel->getObstacleItemSprites());
+    m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getSprites());
     m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
     m_gameView.setScore(m_gameViewModel->getScore());
 
@@ -39,7 +41,9 @@ void Game::run() {
     while (m_gameView.getWindow().isOpen()) {
         // TODO: 根据游戏状态绘制不同界面
         handleEvents(m_gameView.getWindow());
-        m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize());
+        m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize(), m_playerViewModel->getPlayerVelocity());
+        m_playerViewModel->update(m_gameViewModel->getDeltaTime(), m_gameView.getMousePos());
+        m_ObstacleItemViewModel->update(m_gameViewModel->getDeltaTime(), m_playerViewModel->getPlayerVelocity(), !m_playerViewModel->isPlayerStop());
         m_gameView.renderGameplay();
         m_gameView.display();
     }
@@ -53,10 +57,6 @@ void Game::handleEvents(sf::RenderWindow& window) {
         } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
             // 处理窗口大小调整事件
             m_gameView.updateWindowSize(resized->size);
-        } else if (const auto* mouseButton = event -> getIf<sf::Event::MouseButtonPressed>()) {
-            m_gameViewModel->handleMouseEvents(*mouseButton);
-        } else {
-            return;
         }
     }
 }

@@ -1,9 +1,7 @@
 #include "gameViewModel.h"
 
 GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
-    : m_spriteViewModel(spriteVM),
-      m_ObstacleItemViewModel(spriteVM),
-      m_playerViewModel(spriteVM) {
+    : m_spriteViewModel(spriteVM) {
     m_spriteViewModel->setSprite(
         SpriteType::water,
         sf::Color::White,
@@ -13,8 +11,7 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
     );
 }
 
-void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize) {
-    float deltaTime = m_clock.restart().asSeconds();
+void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity) {
     m_spriteViewModel->setSprite(
         SpriteType::scoreboard,
         m_buttonColor,
@@ -22,21 +19,13 @@ void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& win
          Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
     );
 
-    m_gameModel.update(m_playerViewModel.getPlayerVelocity());
-    m_playerViewModel.update(deltaTime, mousePos);
-    m_ObstacleItemViewModel.update(deltaTime, m_playerViewModel.getPlayerVelocity(), !m_playerViewModel.isPlayerStop());
-    updateWater();
+    m_gameModel.update(playerVelocity);
+    updateWater(playerVelocity);
 }
 
-void GameViewModel::handleMouseEvents(const sf::Event::MouseButtonPressed& mouseButton) {
-    if (mouseButton.button == sf::Mouse::Button::Right) {
-        m_playerViewModel.usePower();
-    }
-}
-
-void GameViewModel::updateWater() {
+void GameViewModel::updateWater(const sf::Vector2f& playerVelocity) {
     // 根据玩家移动方向反向移动水面
-    m_waterOffset -= m_playerViewModel.getPlayerVelocity() * Config::Game::PARALLAX_FACTOR;
+    m_waterOffset -= playerVelocity * Config::Game::PARALLAX_FACTOR;
     
     if (m_waterOffset.x <= 0) {
         m_waterOffset.x += m_waterSize;

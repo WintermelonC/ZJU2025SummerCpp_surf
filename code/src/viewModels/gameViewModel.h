@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "animationViewModel.h"
 #include "spriteViewModel.h"
 #include "../models/gameModel.h"
 #include "ObstacleItemViewModel.h"
@@ -11,14 +10,13 @@ class GameViewModel {
 public:
     GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
-    void update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize);
-    void handleMouseEvents(const sf::Event::MouseButtonPressed& mouseButton);
+    void update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity);
 
-    std::vector<sf::Sprite>& getObstacleItemSprites() { return m_ObstacleItemViewModel.getSprites(); }
     const float* getScore() const { return &m_gameModel.getScore(); }
+    const float getDeltaTime() const { return m_clock.getElapsedTime().asSeconds(); }
 
 private:
-    void updateWater();
+    void updateWater(const sf::Vector2f& playerVelocity);
 
 private:
     const float m_waterSize = 256.f;
@@ -27,7 +25,5 @@ private:
     std::shared_ptr<SpriteViewModel> m_spriteViewModel;
     sf::Clock m_clock;
     sf::Vector2f m_waterOffset = {0, 0};
-    ObstacleItemViewModel m_ObstacleItemViewModel;
-    PlayerViewModel m_playerViewModel;
     GameModel m_gameModel;
 };
