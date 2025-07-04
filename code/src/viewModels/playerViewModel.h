@@ -15,7 +15,6 @@ public:
     const bool isPlayerStop() const { return m_playerModel.getState() == PlayerState::stop; }
 
 private:
-    void initialize();
     void initializeAnimations();
     void updatePlayerAnimation();
 
