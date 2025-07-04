@@ -11,6 +11,11 @@ PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
     );
 
     initializeAnimations();
+    
+    // 🔔 订阅游戏重置通知
+    auto& notificationCenter = NotificationCenter::getInstance();
+    notificationCenter.subscribe(NotificationType::GameReset, 
+                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
 }
 
 void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
@@ -91,4 +96,29 @@ void PlayerViewModel::initializeAnimations() {
     }, 0.1f, true));
 
     m_animationViewModel.play("center");
+}
+
+void PlayerViewModel::onNotification(const NotificationData& data) {
+    switch (data.type) {
+        case NotificationType::GameReset: {
+            const auto& resetData = static_cast<const GameResetData&>(data);
+            if (resetData.resetPlayerState) {
+                resetPlayerState();
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void PlayerViewModel::resetPlayerState() {
+    // 🔄 重置玩家模型
+    m_playerModel.reset();
+    
+    // 🔄 重置动画到初始状态
+    m_animationViewModel.play("center");
+    
+    // 🔄 重置精灵位置
+    m_spriteViewModel->setSpritePosition(SpriteType::player, m_playerModel.getPosition());
 }

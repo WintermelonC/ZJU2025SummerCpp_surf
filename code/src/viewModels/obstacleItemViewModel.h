@@ -8,6 +8,7 @@
 #include "textureViewModel.h"
 #include "spriteViewModel.h"
 #include "../common/config.h"
+#include "../common/notificationCenter.h"
 
 // 生成项结构，统一管理障碍物和道具
 struct SpawnItem {
@@ -28,16 +29,20 @@ struct SpawnItem {
         : type(Type::Item), itemType(itType) {}
 };
 
-class ObstacleItemViewModel {
+class ObstacleItemViewModel : public INotificationObserver {
 public:
     ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
     void update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn = true);
     std::vector<sf::Sprite>& getSprites() { return m_sprites; }
+    
+    // 🔔 实现观察者接口
+    void onNotification(const NotificationData& data) override;
 
 private:
     void initialize();
     void updatePosition(const sf::Vector2f& playerVelocity);
+    void resetObstacles(); // 🔔 内部重置方法
 
     void spawnSingle();
     void spawnGroup();

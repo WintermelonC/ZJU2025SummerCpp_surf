@@ -28,6 +28,63 @@ void GameView::updateWindowSize(const sf::Vector2u& size) {
     m_window.setView(m_view);
 }
 
+void GameView::handleEvents() {
+    while (const std::optional event = m_window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
+            // 处理窗口关闭事件
+            m_window.close();
+        } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
+            // 处理窗口大小调整事件
+            updateWindowSize(resized->size);
+        } else if (event->is<sf::Event::FocusLost>()) {
+            // 窗口失去焦点事件
+            if (m_onFocusLost) {
+                m_onFocusLost();
+            }
+        } else if (event->is<sf::Event::FocusGained>()) {
+            // 窗口获取焦点事件
+            if (m_onFocusGained) {
+                m_onFocusGained();
+            }
+        } else if (const auto* mouseButton = event->getIf<sf::Event::MouseButtonPressed>()) {
+            // 鼠标按下
+            if (mouseButton->button == sf::Mouse::Button::Right) {
+                // 右键点击事件
+                if (m_onMouseRightClick) {
+                    m_onMouseRightClick();
+                }
+            } else if (mouseButton->button == sf::Mouse::Button::Left) {
+                // 左键点击事件
+                const auto mousePos = sf::Mouse::getPosition(m_window);
+                const auto worldPos = m_window.mapPixelToCoords(mousePos);
+                bool startButtonPressed = Utils::ifMouseOnButton(
+                    worldPos,
+                    Config::Window::START_BUTTON_POS,
+                    {Config::Window::BUTTON_SIZE.x * Config::Window::START_BUTTON_SCALE.x, Config::Window::BUTTON_SIZE.y * Config::Window::START_BUTTON_SCALE.y}
+                );
+                bool continueButtonPressed = Utils::ifMouseOnButton(
+                    worldPos,
+                    Config::Window::CONTINUE_BUTTON_POS,
+                    {Config::Window::BUTTON_SIZE.x * Config::Window::START_BUTTON_SCALE.x, Config::Window::BUTTON_SIZE.y * Config::Window::START_BUTTON_SCALE.y}
+                );
+                bool returnButtonPressed = Utils::ifMouseOnButton(
+                    worldPos,
+                    Config::Window::RETURN_BUTTON_POS,
+                    {Config::Window::BUTTON_SIZE.x * Config::Window::START_BUTTON_SCALE.x, Config::Window::BUTTON_SIZE.y * Config::Window::START_BUTTON_SCALE.y}
+                );
+                if (m_onMouseLeftClick) {
+                    m_onMouseLeftClick(startButtonPressed, continueButtonPressed, returnButtonPressed);
+                }
+            }
+        } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            // 键盘按下
+            if (m_onKeyPress) {
+                m_onKeyPress(*keyPressed);
+            }
+        }
+    }
+}
+
 void GameView::renderBackground() {
     // 清除窗口
     m_window.clear(sf::Color(0, 192, 222));
@@ -73,6 +130,7 @@ void GameView::renderStartMenu() {
 
     // TODO: 添加鼠标悬停按钮变化效果
     // TODO: 添加角色动画
+    
 
     // 绘制标题
     m_window.draw(title);

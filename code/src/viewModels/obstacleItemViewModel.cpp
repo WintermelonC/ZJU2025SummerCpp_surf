@@ -1,9 +1,14 @@
-#include "ObstacleItemViewModel.h"
+#include "obstacleItemViewModel.h"
 
 ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM) 
     : m_gen(m_rd()),
       m_spriteViewModel(spriteVM) {
     initialize();
+    
+    // 🔔 订阅游戏重置通知
+    auto& notificationCenter = NotificationCenter::getInstance();
+    notificationCenter.subscribe(NotificationType::GameReset, 
+                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
 }
 
 void ObstacleItemViewModel::update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn) {
