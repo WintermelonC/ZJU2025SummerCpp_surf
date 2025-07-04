@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "../common/config.h"
 #include "textureViewModel.h"
 
 enum class SpriteType {
@@ -46,6 +47,7 @@ public:
 
 private:
     bool loadSprite(const SpriteType& spriteType, const TextureType& textureType);
+    void initializeButtonIcons();
 
 private:
     std::unique_ptr<TextureViewModel> m_textureViewModel;

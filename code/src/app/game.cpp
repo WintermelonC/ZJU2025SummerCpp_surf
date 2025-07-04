@@ -25,9 +25,13 @@ bool Game::initialize() {
     m_gameView.setStartButton(m_spriteViewModel->getSprite(SpriteType::start_button));
     m_gameView.setStartIcon(m_spriteViewModel->getSprite(SpriteType::start_icon));
     m_gameView.setContinueButton(m_spriteViewModel->getSprite(SpriteType::continue_button));
+    m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
     m_gameView.setObstacleItemSprites(m_gameViewModel->getObstacleItemSprites());
+
+    // 设置事件回调
+    setupEventCallbacks();
 
     return success;
 }
@@ -35,26 +39,42 @@ bool Game::initialize() {
 void Game::run() {
     // 运行游戏视图
     while (m_gameView.getWindow().isOpen()) {
-        // TODO: 根据游戏状态绘制不同界面
-        handleEvents(m_gameView.getWindow());
-        m_gameViewModel->update(m_gameView.getMousePos());
-        m_gameView.renderGameplay();
+        // 由 gameView 处理所有事件
+        m_gameView.handleEvents();
+        
+        if(m_gameViewModel->getGameModel().getGameState() == GameState::startMenu) {
+            m_gameView.renderStartMenu();
+        } else if (m_gameViewModel->getGameModel().getGameState() == GameState::paused) {
+            m_gameView.renderPauseMenu();
+        } else if (m_gameViewModel->getGameModel().getGameState() == GameState::gameOver) {
+            m_gameView.renderGameOver();
+        } else {
+            m_gameViewModel->update(m_gameView.getMousePos());
+            m_gameView.renderGameplay();
+        }
         m_gameView.display();
     }
 }
 
-void Game::handleEvents(sf::RenderWindow& window) {
-    while (const std::optional event = window.pollEvent()) {
-        if (event->is<sf::Event::Closed>()) {
-            // 处理窗口关闭事件
-            window.close();
-        } else if (const auto* resized = event->getIf<sf::Event::Resized>()) {
-            // 处理窗口大小调整事件
-            m_gameView.updateWindowSize(resized->size);
-        } else if (const auto* mouseButton = event -> getIf<sf::Event::MouseButtonPressed>()) {
-            m_gameViewModel->handleMouseEvents(*mouseButton);
-        } else {
-            return;
-        }
-    }
+void Game::setupEventCallbacks() {
+    // 设置焦点丢失回调
+    m_gameView.setOnFocusLost(m_gameViewModel->getFocusLostCommand());
+
+    // 设置焦点获取回调
+    m_gameView.setOnFocusGained(m_gameViewModel->getFocusGainedCommand());
+
+    // 设置鼠标右键点击回调
+    m_gameView.setOnMouseRightClick(m_gameViewModel->getMouseRightClickCommand());
+
+    // 设置鼠标左键点击回调
+    m_gameView.setOnMouseLeftClick(m_gameViewModel->getMouseLeftClickCommand());
+
+    // 设置键盘按下回调
+    m_gameView.setOnKeyPress(m_gameViewModel->getKeyPressCommand());
+}
+
+void Game::reset() {
+    // 重置游戏状态
+    m_gameViewModel->setGameState(GameState::startMenu);
+    // 可以在这里添加其他重置逻辑，比如重置分数等
 }
