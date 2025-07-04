@@ -13,7 +13,7 @@ public:
     void update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity);
 
     const float* getScore() const { return &m_gameModel.getScore(); }
-    const float getDeltaTime() const { return m_clock.getElapsedTime().asSeconds(); }
+    const float getDeltaTime() { return m_clock.restart().asSeconds(); }
 
 private:
     void updateWater(const sf::Vector2f& playerVelocity);

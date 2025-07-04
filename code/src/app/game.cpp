@@ -43,7 +43,7 @@ void Game::run() {
         handleEvents(m_gameView.getWindow());
         m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize(), m_playerViewModel->getPlayerVelocity());
         m_playerViewModel->update(m_gameViewModel->getDeltaTime(), m_gameView.getMousePos());
-        m_ObstacleItemViewModel->update(m_gameViewModel->getDeltaTime(), m_playerViewModel->getPlayerVelocity(), !m_playerViewModel->isPlayerStop());
+        m_ObstacleItemViewModel->update(m_gameViewModel->getDeltaTime(), m_playerViewModel->getPlayerVelocity(), !m_playerViewModel->isPlayerStop() && m_playerViewModel->getPlayerVelocity().y > 20);
         m_gameView.renderGameplay();
         m_gameView.display();
     }

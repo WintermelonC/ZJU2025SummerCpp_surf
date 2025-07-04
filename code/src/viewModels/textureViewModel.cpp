@@ -51,6 +51,10 @@ bool TextureViewModel::initialize() {
     success &= loadTexture(TextureType::beach_1, obstaclePath + "beach_1.png");
     success &= loadTexture(TextureType::beach_2, obstaclePath + "beach_2.png");
     success &= loadTexture(TextureType::beach_3, obstaclePath + "beach_3.png");
+    success &= loadTexture(TextureType::seaweed_11, obstaclePath + "seaweed_11.png");
+    success &= loadTexture(TextureType::seaweed_21, obstaclePath + "seaweed_21.png");
+    success &= loadTexture(TextureType::seaweed_31, obstaclePath + "seaweed_31.png");
+    success &= loadTexture(TextureType::bridge_1, obstaclePath + "bridge_1.png");
 
     return success;
 }
