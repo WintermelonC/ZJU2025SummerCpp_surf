@@ -38,12 +38,29 @@ void GameView::renderBackground() {
 void GameView::renderGameplay() {
     // 渲染背景
     renderBackground();
+    // 分数版阴影
+    sf::Sprite scoreboardShadow = *m_scoreboard->get();
+    scoreboardShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    scoreboardShadow.move({0.f, 4.f});  // 向下偏移
+    // 分数
+    int score = static_cast<int>(*m_score);
+    sf::Text scoreText = renderText(
+        *MSYHBD_font->get(),
+        std::to_string(score),
+        30,
+        sf::Color::Black,
+        m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -6.f},
+        true
+    );
     // 绘制玩家
     m_window.draw(*m_player->get());
     for (const auto& sprite : *m_obstacleItemSprites) {
         // 绘制障碍物和道具
         m_window.draw(sprite);
     }
+    m_window.draw(scoreboardShadow);  // 绘制分数版阴影
+    m_window.draw(*m_scoreboard->get());
+    m_window.draw(scoreText);  // 绘制分数
 }
 
 void GameView::renderStartMenu() {

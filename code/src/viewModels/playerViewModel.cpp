@@ -9,14 +9,32 @@ PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
         m_playerModel.getPosition(),
         Config::Player::PLAYER_SCALE
     );
-
-    initializeAnimations();
+    initialize();
 }
 
 void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
     m_playerModel.update(deltaTime, mousePos);
     m_animationViewModel.update(deltaTime);
     updatePlayerAnimation();
+}
+
+void PlayerViewModel::initialize() {
+    initializeAnimations();
+    const int heartCount = m_playerModel.getHp();
+    const int powerCount = m_playerModel.getPower();
+    
+    for (int i = 1; i <= Config::Player::PLAYER_HP; i++) {
+        TextureType textureType = (i <= heartCount) ? TextureType::heart_1 : TextureType::heart_2;
+        SpriteType SpriteType = (i <= heartCount) ? SpriteType::heart_1 : SpriteType::heart_2;
+        sf::Sprite heartSprite = m_spriteViewModel->getNewSprite(SpriteType, textureType);
+        m_spriteViewModel->setSprite(
+            heartSprite,
+            sf::Color::White,
+            {Config::Window::RENDER_CENTER.x - m_heartXOffset + i * HP_GAP, 
+             Config::Window::RENDER_CENTER.y - window.getSize().y / 2 + 50},
+            {HP_SCALE, HP_SCALE},
+        );
+    }
 }
 
 void PlayerViewModel::updatePlayerAnimation() {

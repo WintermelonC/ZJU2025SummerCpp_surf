@@ -31,6 +31,10 @@ bool TextureViewModel::initialize() {
     success &= loadTexture(TextureType::player_stop_1, playerPath + "player_stop_1.png");
     success &= loadTexture(TextureType::player_stop_2, playerPath + "player_stop_2.png");
     success &= loadTexture(TextureType::player_stop_3, playerPath + "player_stop_3.png");
+    success &= loadTexture(TextureType::heart_1, playerPath + "heart_1.png");
+    success &= loadTexture(TextureType::heart_2, playerPath + "heart_2.png");
+    success &= loadTexture(TextureType::power_1, playerPath + "power_1.png");
+    success &= loadTexture(TextureType::power_2, playerPath + "power_2.png");
     success &= loadTexture(TextureType::wood_1, obstaclePath + "wood_1.png");
     success &= loadTexture(TextureType::wood_2, obstaclePath + "wood_2.png");
     success &= loadTexture(TextureType::wood_3, obstaclePath + "wood_3.png");

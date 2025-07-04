@@ -30,8 +30,11 @@ public:
     void setReturnButton(const std::unique_ptr<sf::Sprite>* returnButton) { m_returnButton = returnButton; }
     void setFont(const std::unique_ptr<sf::Font>* font) { MSYHBD_font = font; }
     void setObstacleItemSprites(std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
+    void setScoreboard(const std::unique_ptr<sf::Sprite>* scoreboard) { m_scoreboard = scoreboard; }
+    void setScore(const float* score) { m_score = score; }
 
     sf::RenderWindow& getWindow() { return m_window; }
+    const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
     const sf::Vector2f getMousePos() const { return m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)); }
     
 private:
@@ -55,8 +58,10 @@ private:
     const std::unique_ptr<sf::Sprite>* m_continueButton;
     const std::unique_ptr<sf::Sprite>* m_continueIcon;
     const std::unique_ptr<sf::Sprite>* m_returnButton;
+    const std::unique_ptr<sf::Sprite>* m_scoreboard;
     
     const std::unique_ptr<sf::Font>* MSYHBD_font;
 
-    std::vector<sf::Sprite>* m_obstacleItemSprites;
+    const std::vector<sf::Sprite>* m_obstacleItemSprites;
+    const float* m_score;
 };

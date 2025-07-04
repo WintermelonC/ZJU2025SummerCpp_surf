@@ -60,12 +60,12 @@ void ObstacleItemViewModel::spawnSingle() {
     int y = Config::Window::RENDER_SIZE.y + 200;
     
     TextureType textureType = getRandomObstacleTexture(ObstacleType::any);
-    SpriteType entityType = static_cast<SpriteType>(
+    SpriteType spriteType = static_cast<SpriteType>(
         static_cast<int>(SpriteType::wood_1) + 
         (static_cast<int>(textureType) - static_cast<int>(TextureType::wood_1))
     );
     
-    sf::Sprite obstacleSprite = m_spriteViewModel->getNewSprite(entityType, textureType);
+    sf::Sprite obstacleSprite = m_spriteViewModel->getNewSprite(spriteType, textureType);
     m_spriteViewModel->setSprite(
         obstacleSprite,
         sf::Color::White,

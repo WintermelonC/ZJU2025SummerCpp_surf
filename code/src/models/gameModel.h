@@ -13,6 +13,7 @@ public:
         m_gameState = GameState::startMenu;
         m_score = 0;
     }
+    void update(const sf::Vector2f& playerVelocity) { m_score += playerVelocity.y * 0.001f; }
 
     const GameState& getGameState() const { return m_gameState; }
     const float& getScore() const { return m_score; }

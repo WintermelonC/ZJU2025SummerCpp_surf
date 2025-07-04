@@ -13,8 +13,16 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
     );
 }
 
-void GameViewModel::update(const sf::Vector2f& mousePos) {
+void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize) {
     float deltaTime = m_clock.restart().asSeconds();
+    m_spriteViewModel->setSprite(
+        SpriteType::scoreboard,
+        m_buttonColor,
+        {Config::Window::RENDER_CENTER.x,
+         Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
+    );
+
+    m_gameModel.update(m_playerViewModel.getPlayerVelocity());
     m_playerViewModel.update(deltaTime, mousePos);
     m_ObstacleItemViewModel.update(deltaTime, m_playerViewModel.getPlayerVelocity(), !m_playerViewModel.isPlayerStop());
     updateWater();

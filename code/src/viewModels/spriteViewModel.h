@@ -11,6 +11,8 @@ enum class SpriteType {
     continue_button,
     continue_icon,
     return_button,
+    scoreboard,
+    heart_1, heart_2, power_1, power_2,
     wood_1, wood_2, wood_3, wood_4, wood_5, wood_6,
     stone_1, stone_2, stone_3, stone_4, stone_5,
     boat_1, boat_2, 

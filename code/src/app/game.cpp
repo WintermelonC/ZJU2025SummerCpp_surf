@@ -28,6 +28,8 @@ bool Game::initialize() {
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
     m_gameView.setObstacleItemSprites(m_gameViewModel->getObstacleItemSprites());
+    m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
+    m_gameView.setScore(m_gameViewModel->getScore());
 
     return success;
 }
@@ -37,7 +39,7 @@ void Game::run() {
     while (m_gameView.getWindow().isOpen()) {
         // TODO: 根据游戏状态绘制不同界面
         handleEvents(m_gameView.getWindow());
-        m_gameViewModel->update(m_gameView.getMousePos());
+        m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize());
         m_gameView.renderGameplay();
         m_gameView.display();
     }
