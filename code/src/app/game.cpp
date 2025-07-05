@@ -9,6 +9,11 @@ Game::Game() {
     m_fontViewModel->initialize();
     m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_spriteViewModel);
     m_playerViewModel = std::make_shared<PlayerViewModel>(m_spriteViewModel);
+
+     // 订阅通知 - 在所有对象创建完成后
+    m_gameViewModel->subscribeToNotifications();
+    m_playerViewModel->subscribeToNotifications();
+    m_ObstacleItemViewModel->subscribeToNotifications();
 }
 
 bool Game::initialize() {
@@ -33,52 +38,34 @@ bool Game::initialize() {
     m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getSprites());
     m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
     m_gameView.setScore(m_gameViewModel->getScore());
+    m_gameView.setGameState(&m_gameViewModel->getGameModel().getGameState());
+    m_gameView.setRipples(&m_playerViewModel->getRipples());
+    m_gameView.setTails(&m_playerViewModel->getTails());
+    m_gameViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
+    m_playerViewModel->setGameState(&m_gameViewModel->getGameModel().getGameState());
+    m_ObstacleItemViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
+    m_ObstacleItemViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
+    m_ObstacleItemViewModel->setGameState(&m_gameViewModel->getGameModel().getGameState());
 
     // 设置事件回调
-    setupEventCallbacks();
+    // 设置焦点丢失回调
+    m_gameView.setOnFocusLost(m_gameViewModel->getFocusLostCommand());
+    // 设置焦点获取回调
+    m_gameView.setOnFocusGained(m_gameViewModel->getFocusGainedCommand());
+    // 设置鼠标右键点击回调
+    m_gameView.setOnMouseRightClick(m_playerViewModel->getMouseRightClickCommand());
+    // 设置鼠标左键点击回调
+    m_gameView.setOnMouseLeftClick(m_gameViewModel->getMouseLeftClickCommand());
+    // 设置键盘按下回调
+    m_gameView.setOnKeyPress(m_gameViewModel->getKeyPressCommand());
+    m_gameView.setUpdateCallback(m_gameViewModel->getUpdateCommand());
+    m_gameView.setPlayerUpdateCallback(m_playerViewModel->getUpdateCommand());
+    m_gameView.setObstacleItemUpdateCallback(m_ObstacleItemViewModel->getUpdateCommand());
 
     return success;
 }
 
 void Game::run() {
     // 运行游戏视图
-    while (m_gameView.getWindow().isOpen()) {
-        // 由 gameView 处理所有事件
-        m_gameView.handleEvents();
-        
-        if(m_gameViewModel->getGameModel().getGameState() == GameState::startMenu) {
-            m_gameView.renderStartMenu();
-        } else if (m_gameViewModel->getGameModel().getGameState() == GameState::paused) {
-            m_gameView.renderPauseMenu();
-        } else if (m_gameViewModel->getGameModel().getGameState() == GameState::gameOver) {
-            m_gameView.renderGameOver();
-        } else {
-            m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize(), m_playerViewModel->getPlayerVelocity());
-            m_gameView.renderGameplay();
-        }
-        m_gameView.display();
-    }
-}
-
-void Game::setupEventCallbacks() {
-    // 设置焦点丢失回调
-    m_gameView.setOnFocusLost(m_gameViewModel->getFocusLostCommand());
-
-    // 设置焦点获取回调
-    m_gameView.setOnFocusGained(m_gameViewModel->getFocusGainedCommand());
-
-    // 设置鼠标右键点击回调
-    m_gameView.setOnMouseRightClick(m_playerViewModel->getMouseRightClickCommand());
-
-    // 设置鼠标左键点击回调
-    m_gameView.setOnMouseLeftClick(m_gameViewModel->getMouseLeftClickCommand());
-
-    // 设置键盘按下回调
-    m_gameView.setOnKeyPress(m_gameViewModel->getKeyPressCommand());
-}
-
-void Game::reset() {
-    // 重置游戏状态
-    m_gameViewModel->setGameState(GameState::startMenu);
-    // 可以在这里添加其他重置逻辑，比如重置分数等
+    m_gameView.run();
 }

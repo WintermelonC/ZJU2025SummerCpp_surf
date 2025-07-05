@@ -3,18 +3,22 @@
 ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM) 
     : m_gen(m_rd()),
       m_spriteViewModel(spriteVM) {
-    initialize();
-    
-    // 🔔 订阅游戏重置通知
-    auto& notificationCenter = NotificationCenter::getInstance();
-    notificationCenter.subscribe(NotificationType::GameReset, 
-                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
+    initialize();   
 }
 
-void ObstacleItemViewModel::update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn) {
-    updatePosition(playerVelocity);
+void ObstacleItemViewModel::subscribeToNotifications() {
+    // 订阅游戏重置通知
+    auto& notificationCenter = NotificationCenter::getInstance();
+    notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
+}
 
-    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || !isSpawn) {
+void ObstacleItemViewModel::update(const float& dt) {
+    if (m_gameState && *m_gameState != Config::GameState::playing) {
+        return; // 如果游戏状态不是正在进行，则不更新障碍物
+    }
+    updatePosition();
+
+    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || *m_playerState == PlayerState::stop || m_playerVelocity->y <= 20) {
         return;
     }
     
@@ -46,10 +50,10 @@ void ObstacleItemViewModel::initialize() {
     createTunnelPattern();
 }
 
-void ObstacleItemViewModel::updatePosition(const sf::Vector2f& playerVelocity) {
+void ObstacleItemViewModel::updatePosition() {
     sf::Vector2f movement = {
-        -playerVelocity.x * Config::Game::PARALLAX_FACTOR,
-        -playerVelocity.y * Config::Game::PARALLAX_FACTOR
+        -m_playerVelocity->x * Config::Game::PARALLAX_FACTOR,
+        -m_playerVelocity->y * Config::Game::PARALLAX_FACTOR
     };
     
     // 更新障碍物位置
@@ -328,4 +332,30 @@ sf::FloatRect ObstacleItemViewModel::getPatternBounds(const Pattern& pattern, co
     maxY += MARGIN;
     
     return sf::FloatRect({minX, minY}, {maxX - minX, maxY - minY});
+}
+
+void ObstacleItemViewModel::onNotification(const NotificationData& data) {
+    switch (data.type) {
+        case NotificationType::GameReset: {
+            const auto& resetData = static_cast<const GameResetData&>(data);
+            resetObstacles();
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void ObstacleItemViewModel::resetObstacles() {
+    // 清空所有障碍物精灵
+    m_sprites.clear();
+    
+    // 重置生成计时器
+    m_spawnClock.restart();
+    
+    // 重置模式相关参数
+    m_patterns.clear();
+    
+    // 重新初始化
+    initialize();
 }

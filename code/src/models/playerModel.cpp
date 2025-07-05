@@ -15,6 +15,7 @@ PlayerModel::PlayerModel()
 
 void PlayerModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
     updateState(mousePos);
+    updateTurn();  // 更新转弯状态
     updateAngle();
     updatePower(deltaTime);  // 更新能量状态
     updateYSpeed(deltaTime);
@@ -142,4 +143,13 @@ void PlayerModel::reset() {
         size,
         sf::degrees(0.0f)
     );
+}
+
+void PlayerModel::updateTurn() {
+    if (m_state != PlayerState::stop && m_lastState != m_state) {
+        m_isTurn = true;
+    } else {
+        m_isTurn = false;
+    }
+    m_lastState = m_state;  // 更新上一个状态
 }

@@ -13,10 +13,6 @@ public:
 
     bool initialize();
     void run();
-    void reset();
-
-private:
-    void setupEventCallbacks();
 
 private:
     GameView m_gameView;

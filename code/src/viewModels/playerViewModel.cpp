@@ -10,17 +10,23 @@ PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
         Config::Player::PLAYER_SCALE
     );
     initializeAnimations();
-    
-    // 🔔 订阅游戏重置通知
+}
+
+void PlayerViewModel::subscribeToNotifications() {
+    //  订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
-    notificationCenter.subscribe(NotificationType::GameReset, 
-                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
+    notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
 }
 
 void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
+    if (m_gameState && *m_gameState != Config::GameState::playing) {
+        return; // 如果游戏状态不是正在进行，则不更新玩家
+    }
     m_playerModel.update(deltaTime, mousePos);
     m_animationViewModel.update(deltaTime);
     updatePlayerAnimation();
+    updateRipple(deltaTime, m_playerModel.getVelocity(), m_playerModel.getAngle(), m_playerModel.isTurn() && m_playerModel.getVelocity().y > Config::Player::SPEED_THRESHOLD_1);
+    updateTail(deltaTime, m_playerModel.getVelocity(), m_playerModel.getAngle(), m_playerModel.isPower() && m_playerModel.getVelocity().y > Config::Player::SPEED_THRESHOLD_2);
 }
 
 void PlayerViewModel::updatePlayerAnimation() {
@@ -112,12 +118,84 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
 }
 
 void PlayerViewModel::resetPlayerState() {
-    // 🔄 重置玩家模型
+    // 重置玩家模型
     m_playerModel.reset();
     
-    // 🔄 重置动画到初始状态
+    // 重置动画到初始状态
     m_animationViewModel.play("center");
     
-    // 🔄 重置精灵位置
+    // 重置精灵位置
     m_spriteViewModel->setSpritePosition(SpriteType::player, m_playerModel.getPosition());
+}
+
+void PlayerViewModel::updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn) {
+    for (auto it = m_ripples.begin(); it != m_ripples.end(); ) {
+        it -> lifetime -= dt;
+        if (it -> lifetime <= 0) {
+            it = m_ripples.erase(it);  // 移除过期的水波
+        } else {
+            it -> trail.move({-velocity.x * Config::Game::PARALLAX_FACTOR, -velocity.y * Config::Game::PARALLAX_FACTOR});  // 更新水波位置
+            it -> trail.setSize({3.f, it -> trail.getSize().y + dt * 100.f});
+            sf::Color color = m_rippleColor;
+            color.a = static_cast<int>(m_rippleAlpha * (it -> lifetime / m_rippleLifetime));  // 渐变透明度
+            it -> trail.setFillColor(color);  // 渐变透明度
+            it++;
+        }
+    }
+
+    spawnRipple(-angle, ifSpawn);  // 生成新的水波
+}
+
+void PlayerViewModel::updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn) {
+    for (auto it = m_tails.begin(); it != m_tails.end(); ) {
+        it -> lifetime -= dt;
+        if (it -> lifetime <= 0) {
+            it = m_tails.erase(it);  // 移除过期的拖尾
+        } else {
+            it -> trail.move({-velocity.x * Config::Game::PARALLAX_FACTOR, -velocity.y * Config::Game::PARALLAX_FACTOR});  // 更新拖尾位置
+            sf::Color color = m_tailColor;
+            color.a = static_cast<int>(m_tailAlpha * (it -> lifetime / m_tailLifetime));  // 渐变透明度
+            it -> trail.setFillColor(color);  // 渐变透明度
+            it++;
+        }
+    }
+
+    spawnTail(-angle, ifSpawn);  // 生成新的拖尾
+}
+
+void PlayerViewModel::spawnRipple(const sf::Angle& angle, const bool& ifSpawn) {
+    if (!ifSpawn) {
+        return;
+    }
+
+    // 产生 m_rippleCount 个线段
+    for (int i = 0; i < m_rippleCount; i++) {
+        sf::RectangleShape line({3.f, 
+                                 Utils::randomFloat(5.f, 10.f)});
+        line.setRotation(angle + sf::degrees(Utils::randomFloat(-5.f, 5.f)));
+        line.setPosition({Config::Player::PLAYER_POS.x + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
+                          Config::Player::PLAYER_POS.y});
+        line.setFillColor(m_rippleColor);
+
+        m_ripples.push_back({line, m_rippleLifetime});
+    }
+}
+
+void PlayerViewModel::spawnTail(const sf::Angle& angle, const bool& ifSpawn) {
+    if (!ifSpawn) {
+        return;
+    }
+
+    // 产生 m_tailCount 个线段
+    for (int i = 0; i < m_tailCount; i++) {
+        sf::RectangleShape line({3.f, 
+                                 Utils::randomFloat(50.f, 60.f)});
+        line.setRotation(angle + sf::degrees(Utils::randomFloat(-5.f, 5.f)));
+        line.setOrigin({line.getSize().x / 2.f, line.getSize().y});
+        line.setPosition({Config::Player::PLAYER_POS.x + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
+                          Config::Player::PLAYER_POS.y});
+        line.setFillColor(m_tailColor);
+
+        m_tails.push_back({line, m_tailLifetime});
+    }
 }

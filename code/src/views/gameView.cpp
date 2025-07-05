@@ -10,6 +10,46 @@ GameView::GameView()
       m_returnButton(nullptr),
       MSYHBD_font(nullptr) {}
 
+void GameView::run() {
+    while (m_window.isOpen()) {
+        float deltaTime = m_clock.restart().asSeconds();
+        sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+        
+        handleEvents();
+        
+        // 触发 GameViewModel 的 update
+        if (m_GameViewModelUpdateCallback) {
+            m_GameViewModelUpdateCallback(m_window.getSize());
+        }
+        // 触发 PlayerViewModel 的 update
+        if (m_playerUpdateCallback) {
+            m_playerUpdateCallback(deltaTime, mousePos);
+        }
+        // 触发 ObstacleItemViewModel 的 update
+        if (m_obstacleItemUpdateCallback) {
+            m_obstacleItemUpdateCallback(deltaTime);
+        }
+        if (m_gameState) {
+            switch (*m_gameState) {
+                case Config::GameState::startMenu:
+                    renderStartMenu();
+                    break;
+                case Config::GameState::playing:
+                    renderGameplay();
+                    break;
+                case Config::GameState::paused:
+                    renderPauseMenu();
+                    break;
+                case Config::GameState::gameOver:
+                    renderGameOver();
+                    break;
+            }
+        }
+        
+        m_window.display();
+    }
+}
+
 bool GameView::initialize(unsigned int width, unsigned int height, const std::string& title) {
     // 创建 SFML 渲染窗口
     m_window = sf::RenderWindow(sf::VideoMode({width, height}), title);
@@ -109,6 +149,14 @@ void GameView::renderGameplay() {
         m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -6.f},
         true
     );
+    for (const auto& ripple : *m_ripples) {
+        // 绘制水波纹
+        m_window.draw(ripple.trail);
+    }
+    for (const auto& tail : *m_tails) {
+        // 绘制尾迹
+        m_window.draw(tail.trail);
+    }
     // 绘制玩家
     m_window.draw(*m_player->get());
     for (const auto& sprite : *m_obstacleItemSprites) {

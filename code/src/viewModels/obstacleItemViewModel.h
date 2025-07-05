@@ -7,6 +7,7 @@
 #include "../models/obstacleModel.h"
 #include "textureViewModel.h"
 #include "spriteViewModel.h"
+#include "playerViewModel.h"
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
 
@@ -29,15 +30,24 @@ struct SpawnItem {
         : type(Type::Item), itemType(itType) {}
 };
 
-class ObstacleItemViewModel : public INotificationObserver {
+class ObstacleItemViewModel : public INotificationObserver, public std::enable_shared_from_this<ObstacleItemViewModel> {
 public:
     ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
-    void update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn = true);
+    void update(const float& dt);
     std::vector<sf::Sprite>& getSprites() { return m_sprites; }
     
     // 实现观察者接口
     void onNotification(const NotificationData& data) override;
+
+    //  在初始化完成后调用，用于订阅通知
+    void subscribeToNotifications();
+
+    void setPlayerVelocity(const sf::Vector2f* playerVelocity) { m_playerVelocity = playerVelocity; }
+    void setPlayerState(const PlayerState* playerState) { m_playerState = playerState; }
+    void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
+
+    std::function<void(const float&)> getUpdateCommand();
 
 private:
     // 障碍物和道具组合模式结构
@@ -50,7 +60,7 @@ private:
 
     void initialize();
     void resetObstacles(); // 内部重置方法
-    void updatePosition(const sf::Vector2f& playerVelocity);
+    void updatePosition();
 
     bool spawnSingle();
     bool spawnGroup();
@@ -83,4 +93,8 @@ private:
 
     ObstacleModel m_obstacleModel;
     std::shared_ptr<SpriteViewModel> m_spriteViewModel;
+
+    const sf::Vector2f* m_playerVelocity;
+    const PlayerState* m_playerState;
+    const Config::GameState* m_gameState;
 };

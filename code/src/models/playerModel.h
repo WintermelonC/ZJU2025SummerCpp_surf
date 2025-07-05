@@ -25,12 +25,15 @@ public:
     const PlayerState& getState() const { return m_state; }
     const int& getHp() const { return m_hp; }
     const int& getPower() const { return m_power; }
+    const bool& isPower() const { return m_isPower; }
+    const bool& isTurn() const { return m_isTurn; }
 
     void setVelocity(const sf::Vector2f& velocity) { m_velocity = velocity; }
     void setAngle(const sf::Angle& angle) { m_angle = angle; }
 
 private:
     void updateState(const sf::Vector2f& mousePos);
+    void updateTurn();
     void updateAngle();
     void updateYSpeed(const float deltaTime);
     void updateXSpeed(const float deltaTime);
@@ -50,6 +53,8 @@ private:
     sf::Vector2f m_velocity = {0, 0};
     sf::Angle m_angle = sf::degrees(0.0f);
     PlayerState m_state = PlayerState::center;
+    PlayerState m_lastState;  // 上一个状态
+    bool m_isTurn = false;  // 是否转弯
     bool m_isPower = false;
     float m_powerTimer = 0.0f;  // 能量计时器
     int m_hp = Config::Player::PLAYER_HP;  // 玩家生命值
