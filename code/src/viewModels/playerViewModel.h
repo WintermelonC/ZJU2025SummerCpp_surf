@@ -5,12 +5,13 @@
 #include "../common/utils.h"
 #include "../models/playerModel.h"
 #include "../models/gameModel.h"
+#include "textureViewModel.h"
 
 class PlayerViewModel : public INotificationObserver, public std::enable_shared_from_this<PlayerViewModel> {
 public:
-    PlayerViewModel();
+    PlayerViewModel(std::shared_ptr<TextureViewModel> textureVM);
 
-    void update(const float deltaTime, const sf::Vector2f& mousePos);
+    void update(const float deltaTime, const sf::Vector2f& mousePos, const sf::Vector2u& windowSize);
     void usePower() { m_playerModel.usePower(); }
 
     //  在初始化完成后调用，用于订阅通知
@@ -28,6 +29,8 @@ public:
     Config::MouseRightClickCallback getMouseRightClickCommand();
     std::deque<Config::Trail>& getRipples() { return m_ripples; }
     std::deque<Config::Trail>& getTails() { return m_tails; }
+    std::vector<sf::Sprite>& getHeartSprites() { return m_heartSprites; }
+    std::vector<sf::Sprite>& getPowerSprites() { return m_powerSprites; }
 
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
 
@@ -37,6 +40,8 @@ private:
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
     void spawnRipple(const sf::Angle& angle, const bool& ifSpawn = false);
     void spawnTail(const sf::Angle& angle, const bool& ifSpawn = false);
+    void updateHeart(const sf::Vector2u& windowSize);
+    void updatePower(const sf::Vector2u& windowSize);
 
 private:
     const int m_heartXOffset = 260;
@@ -56,6 +61,7 @@ private:
     const sf::Color m_tailColor = sf::Color(141, 249, 196, m_tailAlpha);
 
     PlayerModel m_playerModel;
+    std::shared_ptr<TextureViewModel> m_textureViewModel;
 
     std::vector<sf::Sprite> m_heartSprites;  // 玩家生命值图标
     std::vector<sf::Sprite> m_powerSprites;  // 玩家能量值

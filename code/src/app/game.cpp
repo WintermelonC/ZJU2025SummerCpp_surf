@@ -7,7 +7,7 @@ Game::Game() {
     m_gameViewModel = std::make_shared<GameViewModel>();
     m_fontViewModel = std::make_shared<FontViewModel>();
     m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_textureViewModel);
-    m_playerViewModel = std::make_shared<PlayerViewModel>();
+    m_playerViewModel = std::make_shared<PlayerViewModel>(m_textureViewModel);
     m_animationViewModel = std::make_shared<AnimationViewModel>();
 
      // 订阅通知 - 在所有对象创建完成后
@@ -44,6 +44,8 @@ bool Game::initialize() {
     m_gameView.setRipples(&m_playerViewModel->getRipples());
     m_gameView.setTails(&m_playerViewModel->getTails());
     m_gameView.setPlayerStartMenu(m_spriteViewModel->getPlayerStartMenu());
+    m_gameView.setHeartSprites(&m_playerViewModel->getHeartSprites());
+    m_gameView.setPowerSprites(&m_playerViewModel->getPowerSprites());
     m_gameViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
     m_playerViewModel->setGameState(&m_gameViewModel->getGameState());
     m_ObstacleItemViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());

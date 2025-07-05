@@ -19,7 +19,7 @@ enum class SpriteType {
 
 class SpriteViewModel : public INotificationObserver, public std::enable_shared_from_this<SpriteViewModel> {
 public:
-    SpriteViewModel(std::shared_ptr<TextureViewModel> textureViewModel);
+    SpriteViewModel(std::shared_ptr<TextureViewModel> textureVM);
 
     bool initialize();
     void update(const sf::Vector2u& windowSize);

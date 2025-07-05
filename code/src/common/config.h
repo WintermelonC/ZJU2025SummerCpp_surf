@@ -12,7 +12,7 @@ namespace Config {
                                                     const bool&,
                                                     const bool&)>;
     using KeyPressCallback = std::function<void(const sf::Event::KeyPressed&)>;
-    using PlayerUpdateCallback = std::function<void(const float&, const sf::Vector2f&)>;
+    using PlayerUpdateCallback = std::function<void(const float&, const sf::Vector2f&, const sf::Vector2u&)>;
     using AnimationUpdateCallback = std::function<void(const float&)>;
     using GameUpdateCallback = std::function<void(const sf::Vector2u&)>;
     using ObstacleItemUpdateCallback = std::function<void(const float&)>;

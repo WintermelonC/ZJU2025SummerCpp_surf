@@ -54,6 +54,8 @@ public:
     void setRipples(const std::deque<Config::Trail>* ripples) { m_ripples = ripples; }
     void setTails(const std::deque<Config::Trail>* tails) { m_tails = tails; }
     void setPlayerStartMenu(const std::unique_ptr<sf::Sprite>* playerStartMenu) { m_playerStartMenu = playerStartMenu; }
+    void setHeartSprites(const std::vector<sf::Sprite>* heartSprites) { m_heartSprites = heartSprites; }
+    void setPowerSprites(const std::vector<sf::Sprite>* powerSprites) { m_powerSprites = powerSprites; }
 
     sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
@@ -90,6 +92,8 @@ private:
     const std::deque<Config::Trail>* m_ripples;
     const std::deque<Config::Trail>* m_tails;
     const std::unique_ptr<sf::Sprite>* m_playerStartMenu;
+    const std::vector<sf::Sprite>* m_heartSprites;
+    const std::vector<sf::Sprite>* m_powerSprites;
     
     // 回调函数
     Config::FocusLostCallback m_onFocusLost;

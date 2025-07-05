@@ -7,7 +7,7 @@ Config::MouseRightClickCallback PlayerViewModel::getMouseRightClickCommand() {
 }
 
 Config::PlayerUpdateCallback PlayerViewModel::getUpdateCommand() {
-    return [this](const float& deltaTime, const sf::Vector2f& mousePos) {
-        update(deltaTime, mousePos);
+    return [this](const float& deltaTime, const sf::Vector2f& mousePos, const sf::Vector2u& windowSize) {
+        update(deltaTime, mousePos, windowSize);
     };
 }

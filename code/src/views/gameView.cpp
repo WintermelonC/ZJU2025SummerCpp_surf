@@ -24,7 +24,7 @@ void GameView::run() {
         }
         // 触发 PlayerViewModel 的 update
         if (m_playerUpdateCallback) {
-            m_playerUpdateCallback(deltaTime, mousePos);
+            m_playerUpdateCallback(deltaTime, mousePos, windowSize);
         }
         // 触发 ObstacleItemViewModel 的 update
         if (m_obstacleItemUpdateCallback) {
@@ -175,6 +175,14 @@ void GameView::renderGameplay() {
     m_window.draw(scoreboardShadow);  // 绘制分数版阴影
     m_window.draw(*m_scoreboard->get());
     m_window.draw(scoreText);  // 绘制分数
+    for (const auto& heart : *m_heartSprites) {
+        // 绘制心形图标
+        m_window.draw(heart);
+    }
+    for (const auto& power : *m_powerSprites) {
+        // 绘制能量图标
+        m_window.draw(power);
+    }
 }
 
 void GameView::renderStartMenu() {

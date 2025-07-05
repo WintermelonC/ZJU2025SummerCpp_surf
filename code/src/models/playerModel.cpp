@@ -124,19 +124,22 @@ void PlayerModel::updateXSpeed(const float deltaTime) {
 }
 
 void PlayerModel::reset() {
-    // 🔄 重置玩家状态
+    // 重置玩家状态
     m_velocity = {0, 0};
     m_angle = sf::degrees(0.0f);
     m_state = Config::PlayerState::center;
     m_isPower = false;
     m_powerTimer = 0.0f;
-    m_power = Config::Player::PLAYER_POWER;
     m_hp = Config::Player::PLAYER_HP;
+    m_power = 0;
+#ifdef DEBUG
+    m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
+#endif
     
-    // 🔄 重置位置到初始位置
+    // 重置位置到初始位置
     position = Config::Player::PLAYER_POS;
     
-    // 🔄 重置碰撞盒
+    // 重置碰撞盒
     setCollisionBox(
         position,
         size / 2.f,

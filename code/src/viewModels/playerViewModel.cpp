@@ -1,6 +1,7 @@
 #include "playerViewModel.h"
 
-PlayerViewModel::PlayerViewModel() {}
+PlayerViewModel::PlayerViewModel(std::shared_ptr<TextureViewModel> textureVM) 
+    : m_textureViewModel(textureVM) {}
 
 void PlayerViewModel::subscribeToNotifications() {
     //  订阅游戏重置通知
@@ -8,11 +9,13 @@ void PlayerViewModel::subscribeToNotifications() {
     notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
 }
 
-void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
+void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos, const sf::Vector2u& windowSize) {
     if (m_gameState && *m_gameState != Config::GameState::playing) {
         return; // 如果游戏状态不是正在进行，则不更新玩家
     }
     m_playerModel.update(deltaTime, mousePos);
+    updateHeart(windowSize);
+    updatePower(windowSize);
     updateRipple(deltaTime, m_playerModel.getVelocity(), m_playerModel.getAngle(), m_playerModel.isTurn() && m_playerModel.getVelocity().y > Config::Player::SPEED_THRESHOLD_1);
     updateTail(deltaTime, m_playerModel.getVelocity(), m_playerModel.getAngle(), m_playerModel.isPower() && m_playerModel.getVelocity().y > Config::Player::SPEED_THRESHOLD_2);
 }
@@ -71,6 +74,38 @@ void PlayerViewModel::updateTail(const float& dt, const sf::Vector2f& velocity, 
     }
 
     spawnTail(-angle, ifSpawn);  // 生成新的拖尾
+}
+
+void PlayerViewModel::updateHeart(const sf::Vector2u& windowSize) {
+    m_heartSprites.clear();
+    int HP = m_playerModel.getHp();
+    for (int i = 1; i <= Config::Player::PLAYER_HP; i++) {
+        sf::Sprite heart = (i <= HP) ? m_textureViewModel->getNewSprite(TextureType::heart_1) : m_textureViewModel->getNewSprite(TextureType::heart_2);
+        Utils::setSprite(
+            heart,
+            sf::Color::White,
+            {Config::Window::RENDER_CENTER.x - m_heartXOffset + i * m_hpGap, 
+             Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50},
+            m_hpScale
+        );
+        m_heartSprites.push_back(heart);
+    }
+}
+
+void PlayerViewModel::updatePower(const sf::Vector2u& windowSize) {
+    m_powerSprites.clear();
+    int powerCount = m_playerModel.getPower();
+    for (int i = 1; i <= Config::Player::PLAYER_POWER; i++) {
+        sf::Sprite power = (i <= powerCount) ? m_textureViewModel->getNewSprite(TextureType::power_1) : m_textureViewModel->getNewSprite(TextureType::power_2);
+        Utils::setSprite(
+            power,
+            sf::Color::White,
+            {Config::Window::RENDER_CENTER.x + m_powerXOffset + i * m_powerGap, 
+             Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50},
+            m_powerScale
+        );
+        m_powerSprites.push_back(power);
+    }
 }
 
 void PlayerViewModel::spawnRipple(const sf::Angle& angle, const bool& ifSpawn) {
