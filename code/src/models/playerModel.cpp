@@ -8,6 +8,9 @@ PlayerModel::PlayerModel()
         size,
         sf::degrees(0.0f)
     );
+#ifdef DEBUG
+    m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
+#endif
 }
 
 void PlayerModel::update(const float deltaTime, const sf::Vector2f& mousePos) {

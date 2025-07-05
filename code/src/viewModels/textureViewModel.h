@@ -21,7 +21,9 @@ enum class TextureType {
     wood_1, wood_2, wood_3, wood_4, wood_5, wood_6,
     stone_1, stone_2, stone_3, stone_4, stone_5,
     boat_1, boat_2, 
-    beach_1, beach_2, beach_3
+    beach_1, beach_2, beach_3,
+    seaweed_11, seaweed_21, seaweed_31,
+    bridge_1,
 };
 
 class TextureViewModel {

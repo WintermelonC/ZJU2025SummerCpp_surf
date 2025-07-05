@@ -7,6 +7,8 @@ Game::Game() {
     m_gameViewModel = std::make_shared<GameViewModel>(m_spriteViewModel);
     m_fontViewModel = std::make_shared<FontViewModel>();
     m_fontViewModel->initialize();
+    m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_spriteViewModel);
+    m_playerViewModel = std::make_shared<PlayerViewModel>(m_spriteViewModel);
 }
 
 bool Game::initialize() {
@@ -28,7 +30,9 @@ bool Game::initialize() {
     m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
-    m_gameView.setObstacleItemSprites(m_gameViewModel->getObstacleItemSprites());
+    m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getSprites());
+    m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
+    m_gameView.setScore(m_gameViewModel->getScore());
 
     // 设置事件回调
     setupEventCallbacks();
@@ -49,7 +53,7 @@ void Game::run() {
         } else if (m_gameViewModel->getGameModel().getGameState() == GameState::gameOver) {
             m_gameView.renderGameOver();
         } else {
-            m_gameViewModel->update(m_gameView.getMousePos());
+            m_gameViewModel->update(m_gameView.getMousePos(), m_gameView.getWindowSize(), m_playerViewModel->getPlayerVelocity());
             m_gameView.renderGameplay();
         }
         m_gameView.display();
@@ -64,7 +68,7 @@ void Game::setupEventCallbacks() {
     m_gameView.setOnFocusGained(m_gameViewModel->getFocusGainedCommand());
 
     // 设置鼠标右键点击回调
-    m_gameView.setOnMouseRightClick(m_gameViewModel->getMouseRightClickCommand());
+    m_gameView.setOnMouseRightClick(m_playerViewModel->getMouseRightClickCommand());
 
     // 设置鼠标左键点击回调
     m_gameView.setOnMouseLeftClick(m_gameViewModel->getMouseLeftClickCommand());

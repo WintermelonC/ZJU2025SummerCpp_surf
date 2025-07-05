@@ -23,12 +23,24 @@ enum class Beach {
     count
 };
 
+enum class Seaweed {
+    seaweed_11, seaweed_21, seaweed_31,
+    count
+};
+
+enum class Bridge {
+    bridge_1,
+    count
+};
+
 // 添加障碍物类型枚举
 enum class ObstacleType {
     wood,
     stone,
     boat,
     beach,
+    seaweed,
+    bridge,
     any  // 表示可以是任意类型
 };
 
@@ -40,7 +52,9 @@ public:
     int getStoneCount() const { return static_cast<int>(Stone::count); }
     int getBoatCount() const { return static_cast<int>(Boat::count); }
     int getBeachCount() const { return static_cast<int>(Beach::count); }
-    int getObstacleCount() const { return getWoodCount() + getStoneCount() + getBoatCount() + getBeachCount(); }
-
+    int getSeaweedCount() const { return static_cast<int>(Seaweed::count); }
+    int getBridgeCount() const { return static_cast<int>(Bridge::count); }
+    int getObstacleCount() const { return getWoodCount() + getStoneCount() + getBoatCount() + getBeachCount() + getSeaweedCount() + getBridgeCount(); }
+    
 private:
 };

@@ -16,12 +16,6 @@ std::function<void()> GameViewModel::getFocusGainedCommand() {
     };
 }
 
-std::function<void()> GameViewModel::getMouseRightClickCommand() {
-    return [this]() {
-        usePower();
-    };
-}
-
 std::function<void(const bool&, const bool&,
                    const bool&)> GameViewModel::getMouseLeftClickCommand() {
     return [this](const bool& StartButtonPressed, 
