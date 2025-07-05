@@ -2,16 +2,16 @@
 
 std::function<void()> GameViewModel::getFocusLostCommand() {
     return [this]() {
-        if( m_gameModel.getGameState() == GameState::playing) {
-            m_gameModel.setGameState(GameState::paused);
+        if( m_gameModel.getGameState() == Config::GameState::playing) {
+            m_gameModel.setGameState(Config::GameState::paused);
         }
     };
 }
 
 std::function<void()> GameViewModel::getFocusGainedCommand() {
     return [this]() {
-        if( m_gameModel.getGameState() == GameState::paused) {
-            m_gameModel.setGameState(GameState::playing);
+        if( m_gameModel.getGameState() == Config::GameState::paused) {
+            m_gameModel.setGameState(Config::GameState::playing);
         }
     };
 }
@@ -21,17 +21,17 @@ std::function<void(const bool&, const bool&,
     return [this](const bool& StartButtonPressed, 
                   const bool& ContinueButtonPressed,
                   const bool& ReturnButtonPressed) {
-        GameState currentState = m_gameModel.getGameState();
-        if (currentState == GameState::startMenu) {
+        Config::GameState currentState = m_gameModel.getGameState();
+        if (currentState == Config::GameState::startMenu) {
             if (StartButtonPressed) {
-                m_gameModel.setGameState(GameState::playing);
+                m_gameModel.setGameState(Config::GameState::playing);
             }
-        } else if (currentState == GameState::paused) {
+        } else if (currentState == Config::GameState::paused) {
             if (ContinueButtonPressed) {
-                m_gameModel.setGameState(GameState::playing);
+                m_gameModel.setGameState(Config::GameState::playing);
             } else if (ReturnButtonPressed) {
                 resetGame();
-                m_gameModel.setGameState(GameState::startMenu);
+                m_gameModel.setGameState(Config::GameState::startMenu);
             }
         }
     };
@@ -40,12 +40,18 @@ std::function<void(const bool&, const bool&,
 std::function<void(const sf::Event::KeyPressed&)> GameViewModel::getKeyPressCommand() {
     return [this](const sf::Event::KeyPressed& keyPressed) {
         if (keyPressed.code == sf::Keyboard::Key::Space) {
-            GameState currentState = m_gameModel.getGameState();
-            if (currentState == GameState::playing) {
-                m_gameModel.setGameState(GameState::paused); 
-            } else if (currentState == GameState::paused) {
-                m_gameModel.setGameState(GameState::playing);
+            Config::GameState currentState = m_gameModel.getGameState();
+            if (currentState == Config::GameState::playing) {
+                m_gameModel.setGameState(Config::GameState::paused); 
+            } else if (currentState == Config::GameState::paused) {
+                m_gameModel.setGameState(Config::GameState::playing);
             }
         }
+    };
+}
+
+std::function<void(const sf::Vector2u&)> GameViewModel::getUpdateCommand() {
+    return [this](const sf::Vector2u& windowSize) {
+        update(windowSize);
     };
 }

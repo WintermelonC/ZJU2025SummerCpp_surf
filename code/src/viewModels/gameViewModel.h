@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "spriteViewModel.h"
 #include "../models/gameModel.h"
-#include "obstacleItemViewModel.h"
+#include "ObstacleItemViewModel.h"
 #include "playerViewModel.h"
 #include "../models/gameModel.h"
 #include "../common/config.h"
@@ -13,17 +13,17 @@ class GameViewModel : public INotificationObserver, public std::enable_shared_fr
 public:
     GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
-    void update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity);
+    void update(const sf::Vector2u& windowSize);
 
     const float* getScore() const { return &m_gameModel.getScore(); }
-    const float getDeltaTime() { return m_clock.restart().asSeconds(); }
     void usePower();
-    void setGameState(GameState state) { m_gameModel.setGameState(state); }
+    void setGameState(Config::GameState state) { m_gameModel.setGameState(state); }
+    void setPlayerVelocity(const sf::Vector2f* velocity) { m_playerVelocity = velocity; }
     
-    //  重置游戏 - 通过通知系统
+    // 重置游戏 - 通过通知系统
     void resetGame();
     
-    //  实现观察者接口
+    // 实现观察者接口
     void onNotification(const NotificationData& data) override;
     const GameModel& getGameModel() const { return m_gameModel; }
 
@@ -35,6 +35,7 @@ public:
     std::function<void(const bool& StartButtonPressed, const bool& ContinueButtonPressed,
                        const bool& ReturnButtonPressed)> getMouseLeftClickCommand();
     std::function<void(const sf::Event::KeyPressed&)> getKeyPressCommand();
+    std::function<void(const sf::Vector2u&)> getUpdateCommand();
 
 private:
     void updateWater(const sf::Vector2f& playerVelocity);
@@ -44,7 +45,7 @@ private:
     const sf::Color m_buttonColor = sf::Color(195, 240, 247);
     
     std::shared_ptr<SpriteViewModel> m_spriteViewModel;
-    sf::Clock m_clock;
     sf::Vector2f m_waterOffset = {0, 0};
     GameModel m_gameModel;
+    const sf::Vector2f* m_playerVelocity;
 };

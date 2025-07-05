@@ -5,7 +5,6 @@
 #include "../viewModels/spriteViewModel.h"
 #include "../viewModels/gameViewModel.h"
 #include "../viewModels/fontViewModel.h"
-#include "../viewModels/obstacleItemViewModel.h"
 #include "../common/config.h"
 
 class Game {
@@ -14,10 +13,6 @@ public:
 
     bool initialize();
     void run();
-    void reset();
-
-private:
-    void setupEventCallbacks();
 
 private:
     GameView m_gameView;

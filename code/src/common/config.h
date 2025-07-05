@@ -3,6 +3,13 @@
 #include <SFML/Graphics.hpp>
 
 namespace Config {
+    enum class GameState {
+        startMenu,
+        playing,
+        paused,
+        gameOver
+    };
+
     namespace Window {
         constexpr sf::Vector2i RENDER_SIZE{2560, 1440};
         constexpr sf::Vector2f RENDER_CENTER{RENDER_SIZE.x / 2.0f, RENDER_SIZE.y / 2.0f};
@@ -19,6 +26,7 @@ namespace Config {
 
     namespace Texture {
         constexpr sf::Vector2i WATER_SIZE{256, 256};
+        constexpr sf::Color BUTTON_COLOR = sf::Color(195, 240, 247);
     }
 
     namespace Player {

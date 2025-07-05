@@ -17,7 +17,7 @@ public:
     void update(const float deltaTime, const sf::Vector2f& mousePos);
     void usePower();
     
-    //  重置功能
+    // 🔄 重置功能
     void reset();
 
     const sf::Vector2f& getVelocity() const { return m_velocity; }

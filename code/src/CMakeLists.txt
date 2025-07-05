@@ -11,6 +11,7 @@ add_executable(surf
     viewModels/fontViewModel.cpp
     viewModels/playerViewModel.cpp
     viewModels/commands/playerCommands.cpp
+    viewModels/commands/obstacleCommands.cpp
     views/gameView.cpp
 )
 

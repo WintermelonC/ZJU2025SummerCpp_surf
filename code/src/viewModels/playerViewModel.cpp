@@ -19,6 +19,9 @@ void PlayerViewModel::subscribeToNotifications() {
 }
 
 void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
+    if (m_gameState && *m_gameState != Config::GameState::playing) {
+        return; // 如果游戏状态不是正在进行，则不更新玩家
+    }
     m_playerModel.update(deltaTime, mousePos);
     m_animationViewModel.update(deltaTime);
     updatePlayerAnimation();
@@ -113,14 +116,12 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
 }
 
 void PlayerViewModel::resetPlayerState() {
-    std::cout << "Resetting player state..." << std::endl;
-
-    //  重置玩家模型
+    // 🔄 重置玩家模型
     m_playerModel.reset();
     
-    //  重置动画到初始状态
+    // 🔄 重置动画到初始状态
     m_animationViewModel.play("center");
     
-    //  重置精灵位置
+    // 🔄 重置精灵位置
     m_spriteViewModel->setSpritePosition(SpriteType::player, m_playerModel.getPosition());
 }
