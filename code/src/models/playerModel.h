@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <iostream>
 #include <SFML/Graphics.hpp>
 #include "entityModel.h"
 #include "../common/config.h"
@@ -29,12 +30,25 @@ public:
     void setVelocity(const sf::Vector2f& velocity) { m_velocity = velocity; }
     void setAngle(const sf::Angle& angle) { m_angle = angle; }
 
+    // 碰撞效果处理方法
+    void takeDamage(int damage);
+    void applySlowEffect();
+    void restoreHealth(int healthAmount);
+    void restorePower(int powerAmount);
+    
+    // 无敌与减速
+    bool isInvincible() const { return m_isInvincible; }
+    void setInvincible();
+    bool isSlowed() const { return m_isSlowed; }
+
 private:
     void updateState(const sf::Vector2f& mousePos);
     void updateAngle();
     void updateYSpeed(const float deltaTime);
     void updateXSpeed(const float deltaTime);
     void updatePower(const float& dt);  // 更新能量状态
+    void updateSlow(const float& dt);  // 更新减速状态
+    void updateInvincible(const float& dt);  // 更新无敌状态
 
 private:
     const float m_acceleration1 = 10.f;
@@ -54,4 +68,15 @@ private:
     float m_powerTimer = 0.0f;  // 能量计时器
     int m_hp = Config::Player::PLAYER_HP;  // 玩家生命值
     int m_power = 0;  // 玩家能量值
+    
+    // 状态效果相关
+    bool m_isSlowed = false;
+    float m_slowFactor = 0.5f;
+    float m_slowTimer = 0.0f;
+    const float m_slowDuration = 2.0f;  // 默认减速时间2秒
+    
+    // 无敌时间相关
+    bool m_isInvincible = false;
+    float m_invincibleTimer = 0.0f;
+    const float m_invincibleDuration = 5.0f;  // 默认无敌时间5秒
 };

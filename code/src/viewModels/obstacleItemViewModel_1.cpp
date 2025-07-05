@@ -45,9 +45,14 @@ void ObstacleItemViewModel::update(const float& dt) {
 void ObstacleItemViewModel::initialize() {
     // 初始化障碍物组模式
     m_patterns.clear();
+    m_spriteEntityPairs.clear();
+    m_obstacleItemSprites.clear();
 
     createClusterPattern();
     createTunnelPattern();
+    
+    // 确保精灵列表是最新的
+    updateObstacleItemSprites();
 }
 
 void ObstacleItemViewModel::updatePosition() {
@@ -57,8 +62,9 @@ void ObstacleItemViewModel::updatePosition() {
     };
     
     // 更新障碍物位置
-    for (auto& sprite : m_sprites) {
-        sprite.move(movement);
+    for (auto& pair : m_spriteEntityPairs) {
+        pair.first.move(movement);
+        // EntityModel在这里不需要更新，只用于类型信息
     }
 
     // 更新碰撞盒位置
@@ -68,12 +74,15 @@ void ObstacleItemViewModel::updatePosition() {
     }
 
     // 移除超出屏幕的障碍物
-    auto it = std::remove_if(m_sprites.begin(), m_sprites.end(),
-        [](const sf::Sprite& sprite) {
-            return sprite.getPosition().y < -sprite.getGlobalBounds().size.y;
+    auto it = std::remove_if(m_spriteEntityPairs.begin(), m_spriteEntityPairs.end(),
+        [](const std::pair<sf::Sprite, std::shared_ptr<EntityModel>>& pair) {
+            return pair.first.getPosition().y < -pair.first.getGlobalBounds().size.y;
         }
     );
-    m_sprites.erase(it, m_sprites.end());
+    m_spriteEntityPairs.erase(it, m_spriteEntityPairs.end());
+    
+    // 更新独立的精灵列表
+    updateObstacleItemSprites();
 }
 
 bool ObstacleItemViewModel::spawnSingle() {
@@ -84,19 +93,15 @@ bool ObstacleItemViewModel::spawnSingle() {
         int x = xDist(m_gen);
         int y = Config::Window::RENDER_SIZE.y * 1.5f;
         
-        TextureType textureType = getRandomObstacleTexture(ObstacleType::any);
+        // 随机选择障碍物类型
+        ObstacleType obstacleType = ObstacleType::any;
+        SpawnItem item(obstacleType);
         
         // 创建临时精灵以获取边界
-        sf::Sprite tempSprite = m_spriteViewModel->getNewSprite(textureType);
-        m_spriteViewModel->setSprite(
-            tempSprite,
-            sf::Color::White,
-            {static_cast<float>(x), static_cast<float>(y)},
-            Config::Player::PLAYER_SCALE
-        );
+        auto spriteEntityPair = createSpriteEntityPair(item, {static_cast<float>(x), static_cast<float>(y)});
         
         // 添加边距以避免紧挨着
-        sf::FloatRect bounds = tempSprite.getGlobalBounds();
+        sf::FloatRect bounds = spriteEntityPair.first.getGlobalBounds();
         bounds.position.x -= 10;
         bounds.position.y -= 10;
         bounds.size.x += 20;
@@ -104,7 +109,8 @@ bool ObstacleItemViewModel::spawnSingle() {
         
         if (!checkCollision(bounds)) {
             m_activeBounds.push_back(bounds);
-            m_sprites.push_back(tempSprite);
+            m_spriteEntityPairs.push_back(spriteEntityPair);
+            updateObstacleItemSprites(); // 更新独立的精灵列表
             return true;
         }
     }
@@ -149,24 +155,12 @@ bool ObstacleItemViewModel::spawnGroup() {
                 };
                 
                 if (isPositionValid(worldPos)) {
-                    // 根据指定类型随机选择纹理
-                    switch (pattern.items[i].type) {
-                        case SpawnItem::Type::Obstacle: {
-                            TextureType textureType = getRandomObstacleTexture(pattern.items[i].obstacleType);
-                            
-                            sf::Sprite obstacleSprite = m_spriteViewModel->getNewSprite(textureType);
-                            m_spriteViewModel->setSprite(
-                                obstacleSprite,
-                                sf::Color::White,
-                                worldPos,
-                                Config::Player::PLAYER_SCALE
-                            );
-                            m_sprites.push_back(obstacleSprite);
-                            break;
-                        }
-                    }
+                    // 创建 sprite 和 EntityModel 配对
+                    auto spriteEntityPair = createSpriteEntityPair(pattern.items[i], worldPos);
+                    m_spriteEntityPairs.push_back(spriteEntityPair);
                 }
             }
+            updateObstacleItemSprites(); // 更新独立的精灵列表
             return true;
         }
     }
@@ -181,7 +175,8 @@ void ObstacleItemViewModel::createClusterPattern() {
         {0, 0}, {12, 64}, {96, 32}, {196, -12}, {160, 96}
     };
     pattern.items = {
-        ObstacleType::stone, ObstacleType::stone, ObstacleType::wood, ObstacleType::stone, ObstacleType::stone
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::wood), 
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone)
     };
     pattern.width = 0;
     pattern.height = 0;
@@ -195,7 +190,8 @@ void ObstacleItemViewModel::createClusterPattern() {
         {0, 0}, {96, -128}, {96, 0}, {192, 0}, {128, -48}
     };
     pattern.items = {
-        ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::bridge
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::bridge)
     };
     pattern.width = 0;
     pattern.height = 0;
@@ -209,7 +205,8 @@ void ObstacleItemViewModel::createClusterPattern() {
         {0, 0}, {64, 64}, {96, -48}, {128, 128}, {196, 0}
     };
     pattern.items = {
-        ObstacleType::stone, ObstacleType::stone, ObstacleType::seaweed, ObstacleType::wood, ObstacleType::stone
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone)
     };
     pattern.width = 0;
     pattern.height = 0;
@@ -231,12 +228,17 @@ void ObstacleItemViewModel::createTunnelPattern() {
         {832, -32}, {928, 32}
     };
     pattern.items = {
-        ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::seaweed,
-        ObstacleType::stone, ObstacleType::wood, ObstacleType::stone, ObstacleType::wood, ObstacleType::stone, ObstacleType::stone,
-        ObstacleType::stone, ObstacleType::wood, ObstacleType::seaweed, ObstacleType::stone, ObstacleType::boat,
-        ObstacleType::stone, ObstacleType::seaweed, ObstacleType::seaweed, ObstacleType::stone, ObstacleType::wood,
-        ObstacleType::stone, ObstacleType::wood, ObstacleType::stone, ObstacleType::seaweed, ObstacleType::seaweed,
-        ObstacleType::stone, ObstacleType::stone
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone), 
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::boat),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::wood),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone), 
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone)
     };
     pattern.width = 0;
     pattern.height = 0;
@@ -250,39 +252,39 @@ void ObstacleItemViewModel::createTunnelPattern() {
 TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
     switch (type) {
         case ObstacleType::wood: {
-            std::uniform_int_distribution<> woodDist(0, m_obstacleModel.getWoodCount() - 1);
+            std::uniform_int_distribution<> woodDist(0, ObstacleModel::getWoodCount() - 1);
             int randomWood = woodDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::wood_1) + randomWood);
         }
         case ObstacleType::stone: {
-            std::uniform_int_distribution<> stoneDist(0, m_obstacleModel.getStoneCount() - 1);
+            std::uniform_int_distribution<> stoneDist(0, ObstacleModel::getStoneCount() - 1);
             int randomStone = stoneDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::stone_1) + randomStone);
         }
         case ObstacleType::boat: {
-            std::uniform_int_distribution<> boatDist(0, m_obstacleModel.getBoatCount() - 1);
+            std::uniform_int_distribution<> boatDist(0, ObstacleModel::getBoatCount() - 1);
             int randomBoat = boatDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::boat_1) + randomBoat);
         }
         case ObstacleType::beach: {
-            std::uniform_int_distribution<> beachDist(0, m_obstacleModel.getBeachCount() - 1);
+            std::uniform_int_distribution<> beachDist(0, ObstacleModel::getBeachCount() - 1);
             int randomBeach = beachDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::beach_1) + randomBeach);
         }
         case ObstacleType::seaweed: {
-            std::uniform_int_distribution<> seaweedDist(0, m_obstacleModel.getSeaweedCount() - 1);
+            std::uniform_int_distribution<> seaweedDist(0, ObstacleModel::getSeaweedCount() - 1);
             int randomSeaweed = seaweedDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::seaweed_11) + randomSeaweed);
         }
         case ObstacleType::bridge: {
-            std::uniform_int_distribution<> bridgeDist(0, m_obstacleModel.getBridgeCount() - 1);
+            std::uniform_int_distribution<> bridgeDist(0, ObstacleModel::getBridgeCount() - 1);
             int randomBridge = bridgeDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::bridge_1) + randomBridge);
         }
         case ObstacleType::any:
         default: {
             // 从所有类型中随机选择
-            std::uniform_int_distribution<> typeDist(0, m_obstacleModel.getObstacleCount() - 1);
+            std::uniform_int_distribution<> typeDist(0, ObstacleModel::getObstacleCount() - 1);
             int randomType = typeDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::wood_1) + randomType);
         }
@@ -347,8 +349,14 @@ void ObstacleItemViewModel::onNotification(const NotificationData& data) {
 }
 
 void ObstacleItemViewModel::resetObstacles() {
-    // 清空所有障碍物精灵
-    m_sprites.clear();
+    // 清空所有障碍物精灵和EntityModel对
+    m_spriteEntityPairs.clear();
+    
+    // 清空独立的精灵列表
+    m_obstacleItemSprites.clear();
+    
+    // 清空活动边界
+    m_activeBounds.clear();
     
     // 重置生成计时器
     m_spawnClock.restart();
@@ -358,4 +366,129 @@ void ObstacleItemViewModel::resetObstacles() {
     
     // 重新初始化
     initialize();
+}
+
+std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::createSpriteEntityPair(const SpawnItem& item, const sf::Vector2f& position) {
+    std::shared_ptr<EntityModel> entityModel;
+    
+    switch (item.type) {
+        case SpawnItem::Type::Obstacle: {
+            TextureType textureType = getRandomObstacleTexture(item.obstacleType);
+            sf::Sprite sprite = m_spriteViewModel->getNewSprite(textureType);
+            m_spriteViewModel->setSprite(
+                sprite,
+                sf::Color::White,
+                position,
+                Config::Player::PLAYER_SCALE
+            );
+            entityModel = createEntityModel(item.obstacleType);
+            return std::make_pair(sprite, entityModel);
+        }
+        case SpawnItem::Type::Item: {
+            // TODO: 实现道具的纹理选择逻辑
+            // 暂时使用默认纹理
+            sf::Sprite sprite = m_spriteViewModel->getNewSprite(TextureType::heart_1);
+            m_spriteViewModel->setSprite(
+                sprite,
+                sf::Color::White,
+                position,
+                Config::Player::PLAYER_SCALE
+            );
+            entityModel = createEntityModel(item.itemType);
+            return std::make_pair(sprite, entityModel);
+        }
+    }
+    
+    // 默认情况，不应该到达这里
+    sf::Sprite defaultSprite = m_spriteViewModel->getNewSprite(TextureType::stone_1);
+    entityModel = createEntityModel(ObstacleType::stone);
+    return std::make_pair(defaultSprite, entityModel);
+}
+
+std::shared_ptr<EntityModel> ObstacleItemViewModel::createEntityModel(ObstacleType obstacleType) {
+    return std::make_shared<ObstacleModel>(obstacleType);
+}
+
+std::shared_ptr<EntityModel> ObstacleItemViewModel::createEntityModel(ItemType itemType) {
+    return std::make_shared<ItemModel>(itemType);
+}
+
+bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSprite) {
+    sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
+
+    sf::Vector2f center = {
+        playerBounds.position.x + playerBounds.size.x / 2,
+        playerBounds.position.y + playerBounds.size.y / 2
+    };
+
+    sf::Vector2f newSize = playerBounds.size * 0.66f;
+    sf::Vector2f newPosition = {
+        center.x - newSize.x / 2,
+        center.y - newSize.y / 2
+    };
+
+    playerBounds = sf::FloatRect(newPosition, newSize);
+
+    auto& notificationCenter = NotificationCenter::getInstance();
+    
+    for (auto it = m_spriteEntityPairs.begin(); it != m_spriteEntityPairs.end(); it++) {
+        sf::FloatRect spriteBounds = it->first.getGlobalBounds();
+        
+        // 使用findIntersection进行精确碰撞检测
+        if (playerBounds.findIntersection(spriteBounds)) {
+            if (it->second->isObstacle()) {
+                // 障碍物碰撞处理
+                ObstacleType obstacleType = it->second->getObstacleType();
+                
+                if (obstacleType == ObstacleType::seaweed) {
+                    // 海草减速效果
+                    SlowCollisionData slowData;
+                    notificationCenter.postNotification(slowData);
+                } else {
+                    // 其他障碍物造成伤害
+                    DamageCollisionData damageData;
+                    notificationCenter.postNotification(damageData);
+                }
+                return true;
+            }
+            else if (it->second->isItem()) {
+                // 道具碰撞处理 - 无论是否无敌都可以收集道具
+                ItemType itemType = it->second->getItemType();
+                
+                switch (itemType) {
+                    case ItemType::power: {
+                        PowerCollisionData speedData;
+                        notificationCenter.postNotification(speedData);
+                        break;
+                    }
+                    case ItemType::heart: {
+                        HealthCollisionData healthData;
+                        notificationCenter.postNotification(healthData);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                
+                // 移除已收集的道具
+                it = m_spriteEntityPairs.erase(it);
+                updateObstacleItemSprites();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+void ObstacleItemViewModel::updateObstacleItemSprites() {
+    // 清空当前的精灵列表
+    m_obstacleItemSprites.clear();
+    
+    // 预分配空间以提高性能
+    m_obstacleItemSprites.reserve(m_spriteEntityPairs.size());
+    
+    // 从配对中提取所有精灵
+    for (const auto& pair : m_spriteEntityPairs) {
+        m_obstacleItemSprites.push_back(pair.first);
+    }
 }

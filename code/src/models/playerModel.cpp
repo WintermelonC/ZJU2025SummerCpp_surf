@@ -17,6 +17,8 @@ void PlayerModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
     updateState(mousePos);
     updateAngle();
     updatePower(deltaTime);  // 更新能量状态
+    updateSlow(deltaTime);  // 更新减速状态
+    updateInvincible(deltaTime);  // 更新无敌状态
     updateYSpeed(deltaTime);
     updateXSpeed(deltaTime);
 }
@@ -82,6 +84,31 @@ void PlayerModel::updatePower(const float& dt) {
     }
 }
 
+void PlayerModel::updateSlow(const float& dt) {
+    if (m_isSlowed) {
+        m_slowTimer += dt;
+        if (m_slowTimer >= m_slowDuration) {
+            m_isSlowed = false;  // 减速时间结束
+            m_slowTimer = 0.0f;  // 重置计时器
+            m_slowFactor = 1.0f;  // 恢复正常速度
+        }
+    } else {
+        m_slowTimer = 0.0f;  // 重置减速计时器
+    }
+}
+
+void PlayerModel::updateInvincible(const float& dt) {
+    if (m_isInvincible) {
+        m_invincibleTimer += dt;
+        if (m_invincibleTimer >= m_invincibleDuration) {
+            m_isInvincible = false;  // 无敌时间结束
+            m_invincibleTimer = 0.0f;  // 重置计时器
+        }
+    } else {
+        m_invincibleTimer = 0.0f;  // 重置无敌计时器
+    }
+}
+
 void PlayerModel::updateYSpeed(const float deltaTime) {
     if (m_state == PlayerState::stop) {
         // 减速
@@ -90,31 +117,47 @@ void PlayerModel::updateYSpeed(const float deltaTime) {
         // 加速
         float acceleration = m_acceleration1;
         float maxSpeed = m_maxSpeed;
+
+        // 应用状态效果
+        if (m_isSlowed) {
+            acceleration = m_acceleration1 * m_slowFactor;
+            maxSpeed = m_maxSpeed* m_slowFactor;
+        }
+
         if (m_isPower) {
             acceleration = m_acceleration2;
             maxSpeed = m_maxSpeed * m_powerScale;
         }
+        
+        
         
         m_velocity.y = std::min(maxSpeed, m_velocity.y + acceleration * deltaTime);
     }
 }
 
 void PlayerModel::updateXSpeed(const float deltaTime) {
+    float speedModifier = 1.0f;
+    
+    // 应用状态效果
+    if (m_isSlowed) {
+        speedModifier *= m_slowFactor;
+    }
+    
     switch (m_state) {
         case PlayerState::center:
             m_velocity.x = 0.0f;
             break;
         case PlayerState::left1:
-            m_velocity.x = -m_velocity.y * m_XYScale1;
+            m_velocity.x = -m_velocity.y * m_XYScale1 * speedModifier;
             break;
         case PlayerState::left2:
-            m_velocity.x = -m_velocity.y * m_XYScale2;
+            m_velocity.x = -m_velocity.y * m_XYScale2 * speedModifier;
             break;
         case PlayerState::right1:
-            m_velocity.x = m_velocity.y * m_XYScale1;
+            m_velocity.x = m_velocity.y * m_XYScale1 * speedModifier;
             break;
         case PlayerState::right2:
-            m_velocity.x = m_velocity.y * m_XYScale2;
+            m_velocity.x = m_velocity.y * m_XYScale2 * speedModifier;
             break;
         case PlayerState::stop:
             m_velocity.x = 0.0f;
@@ -142,4 +185,47 @@ void PlayerModel::reset() {
         size,
         sf::degrees(0.0f)
     );
+    
+    // 🔄 重置状态效果
+    m_isSlowed = false;
+    m_slowFactor = 1.0f;
+    m_slowTimer = 0.0f;
+    
+    // 🔄 重置无敌状态
+    m_isInvincible = false;
+    m_invincibleTimer = 0.0f;
+}
+
+void PlayerModel::takeDamage(int damage) {
+    if (!m_isInvincible) {  // 只有在非无敌状态下才能受到伤害
+        std::cout << "Player takes damage: " << std::endl;
+        m_hp = std::max(0, m_hp - damage);
+        // 受到伤害后停下来
+        m_velocity = {0, 0};  // 停止移动
+        // 受到伤害后进入无敌状态
+        setInvincible();
+    }
+}
+
+void PlayerModel::applySlowEffect() {
+    if(m_isSlowed) {
+        // 如果已经处于减速状态，则不重复应用
+        return;
+    }
+    std::cout << "Player is slowed down!" << std::endl;
+    m_isSlowed = true;  // 应用减速效果
+    m_slowTimer = 0.0f;  // 重置减速计时器
+}
+
+void PlayerModel::restoreHealth(int healthAmount) {
+    m_hp = std::min(Config::Player::PLAYER_HP, m_hp + healthAmount);
+}
+
+void PlayerModel::restorePower(int powerAmount) {
+    m_power = std::min(Config::Player::PLAYER_POWER, m_power + powerAmount);
+}
+
+void PlayerModel::setInvincible() {
+    m_isInvincible = true;
+    m_invincibleTimer = 0.0f;  // 重置无敌计时器
 }

@@ -12,9 +12,13 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
 }
 
 void GameViewModel::subscribeToNotifications() {
-    // 订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
+    // 订阅游戏重置通知
     notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
+    // 订阅碰撞通知以更新游戏状态
+    notificationCenter.subscribe(NotificationType::DamageCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::PowerCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::HealthCollision, shared_from_this());
 }
 
 void GameViewModel::update(const sf::Vector2u& windowSize) {
@@ -68,6 +72,18 @@ void GameViewModel::onNotification(const NotificationData& data) {
             m_waterOffset = {0, 0};
             m_spriteViewModel->setSpritePosition(SpriteType::water, m_waterOffset);
             
+            break;
+        }
+        case NotificationType::DamageCollision: {
+            // 可以在这里增加分数扣除或其他游戏逻辑
+            break;
+        }
+        case NotificationType::PowerCollision: {
+            // 可以在这里增加分数奖励
+            break;
+        }
+        case NotificationType::HealthCollision: {
+            // 可以在这里增加分数奖励
             break;
         }
         default:

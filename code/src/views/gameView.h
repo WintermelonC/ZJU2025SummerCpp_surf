@@ -54,12 +54,12 @@ public:
     void setContinueIcon(const std::unique_ptr<sf::Sprite>* continueIcon) { m_continueIcon = continueIcon; }
     void setReturnButton(const std::unique_ptr<sf::Sprite>* returnButton) { m_returnButton = returnButton; }
     void setFont(const std::unique_ptr<sf::Font>* font) { MSYHBD_font = font; }
-    void setObstacleItemSprites(std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
+    void setObstacleItemSprites(const std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
     void setScoreboard(const std::unique_ptr<sf::Sprite>* scoreboard) { m_scoreboard = scoreboard; }
     void setScore(const float* score) { m_score = score; }
     void setUpdateCallback(std::function<void(const sf::Vector2u&)> callback) { m_GameViewModelUpdateCallback = std::move(callback); }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
-    void setObstacleItemUpdateCallback(std::function<void(const float&)> callback) { m_obstacleItemUpdateCallback = std::move(callback); }
+    void setObstacleItemUpdateCallback(std::function<void(const float&, const sf::Sprite&)> callback) { m_obstacleItemUpdateCallback = std::move(callback); }
 
     sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
@@ -102,5 +102,5 @@ private:
     KeyPressCallback m_onKeyPress;
     std::function<void(const sf::Vector2u&)> m_GameViewModelUpdateCallback;
     PlayerUpdateCallback m_playerUpdateCallback;
-    std::function<void(const float&)> m_obstacleItemUpdateCallback;
+    std::function<void(const float&, const sf::Sprite&)> m_obstacleItemUpdateCallback;
 };

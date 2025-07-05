@@ -35,6 +35,7 @@ enum class Bridge {
 
 // 添加障碍物类型枚举
 enum class ObstacleType {
+    none,
     wood,
     stone,
     boat,
@@ -46,15 +47,19 @@ enum class ObstacleType {
 
 class ObstacleModel : public EntityModel {
 public:
-    ObstacleModel() : EntityModel(EntityModelType::obstacle) {}
+    ObstacleModel(ObstacleType obstacleType) : EntityModel(EntityModelType::obstacle), m_obstacleType(obstacleType) {}
 
-    int getWoodCount() const { return static_cast<int>(Wood::count); }
-    int getStoneCount() const { return static_cast<int>(Stone::count); }
-    int getBoatCount() const { return static_cast<int>(Boat::count); }
-    int getBeachCount() const { return static_cast<int>(Beach::count); }
-    int getSeaweedCount() const { return static_cast<int>(Seaweed::count); }
-    int getBridgeCount() const { return static_cast<int>(Bridge::count); }
-    int getObstacleCount() const { return getWoodCount() + getStoneCount() + getBoatCount() + getBeachCount() + getSeaweedCount() + getBridgeCount(); }
-    
+    static int getWoodCount() { return static_cast<int>(Wood::count); }
+    static int getStoneCount() { return static_cast<int>(Stone::count); }
+    static int getBoatCount() { return static_cast<int>(Boat::count); }
+    static int getBeachCount() { return static_cast<int>(Beach::count); }
+    static int getSeaweedCount() { return static_cast<int>(Seaweed::count); }
+    static int getBridgeCount() { return static_cast<int>(Bridge::count); }
+    static int getObstacleCount() { return getWoodCount() + getStoneCount() + getBoatCount() + getBeachCount() + getSeaweedCount() + getBridgeCount(); }
+
+    ObstacleType getObstacleType() const override { return m_obstacleType; }
+
 private:
+    ObstacleType m_obstacleType;  // 障碍物类型
+
 };

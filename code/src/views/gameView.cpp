@@ -27,7 +27,7 @@ void GameView::run() {
         }
         // 触发 ObstacleItemViewModel 的 update
         if (m_obstacleItemUpdateCallback) {
-            m_obstacleItemUpdateCallback(deltaTime);
+            m_obstacleItemUpdateCallback(deltaTime, *m_player->get());
         }
         if (m_gameState) {
             switch (*m_gameState) {
@@ -151,10 +151,49 @@ void GameView::renderGameplay() {
     );
     // 绘制玩家
     m_window.draw(*m_player->get());
+    // 绘制障碍物和道具
     for (const auto& sprite : *m_obstacleItemSprites) {
-        // 绘制障碍物和道具
         m_window.draw(sprite);
     }
+        
+    #ifdef DEBUG
+    // 绘制障碍物道具碰撞箱
+    for (const auto& sprite : *m_obstacleItemSprites) {
+        sf::FloatRect bounds = sprite.getGlobalBounds();
+        sf::RectangleShape collisionBox;
+        collisionBox.setSize(bounds.size);
+        collisionBox.setPosition(bounds.position);
+        collisionBox.setFillColor(sf::Color(255, 0, 0, 100));  // 半透明红色
+        collisionBox.setOutlineColor(sf::Color(255, 0, 0, 255));  // 红色边框
+        collisionBox.setOutlineThickness(1.0f);
+        m_window.draw(collisionBox);
+    }
+    
+    // 绘制玩家碰撞箱
+    sf::FloatRect playerBounds = m_player->get()->getGlobalBounds();
+
+    sf::Vector2f center = {
+        playerBounds.position.x + playerBounds.size.x / 2,
+        playerBounds.position.y + playerBounds.size.y / 2
+    };
+
+    sf::Vector2f newSize = playerBounds.size * 0.66f;
+    sf::Vector2f newPosition = {
+        center.x - newSize.x / 2,
+        center.y - newSize.y / 2
+    };
+
+    playerBounds = sf::FloatRect(newPosition, newSize);
+
+    sf::RectangleShape playerCollisionBox;
+    playerCollisionBox.setSize(playerBounds.size);
+    playerCollisionBox.setPosition(playerBounds.position);
+    playerCollisionBox.setFillColor(sf::Color(0, 255, 0, 100));  // 半透明绿色
+    playerCollisionBox.setOutlineColor(sf::Color(0, 255, 0, 255));  // 绿色边框
+    playerCollisionBox.setOutlineThickness(1.0f);
+    m_window.draw(playerCollisionBox);
+    #endif
+
     m_window.draw(scoreboardShadow);  // 绘制分数版阴影
     m_window.draw(*m_scoreboard->get());
     m_window.draw(scoreText);  // 绘制分数
