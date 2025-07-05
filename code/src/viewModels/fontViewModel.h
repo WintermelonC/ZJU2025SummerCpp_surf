@@ -10,6 +10,8 @@ enum class Fonts {
 
 class FontViewModel {
 public:
+    FontViewModel();
+
     bool initialize();
 
     const std::unique_ptr<sf::Font>* getFont(const Fonts& fontType) const { return &m_fonts.at(fontType); }

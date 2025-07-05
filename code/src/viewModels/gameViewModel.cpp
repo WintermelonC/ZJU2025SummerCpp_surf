@@ -1,15 +1,6 @@
 #include "gameViewModel.h"
 
-GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
-    : m_spriteViewModel(spriteVM) {
-    m_spriteViewModel->setSprite(
-        SpriteType::water,
-        sf::Color::White,
-        {0, 0},
-        {1, 1},
-        false
-    );
-}
+GameViewModel::GameViewModel() {}
 
 void GameViewModel::subscribeToNotifications() {
     // 订阅游戏重置通知
@@ -21,13 +12,6 @@ void GameViewModel::update(const sf::Vector2u& windowSize) {
     if (m_gameModel.getGameState() != Config::GameState::playing) {
         return;
     }
-    m_spriteViewModel->setSprite(
-        SpriteType::scoreboard,
-        m_buttonColor,
-        {Config::Window::RENDER_CENTER.x,
-         Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
-    );
-
     m_gameModel.update(*m_playerVelocity);
     updateWater(*m_playerVelocity);
 }
@@ -45,8 +29,6 @@ void GameViewModel::updateWater(const sf::Vector2f& playerVelocity) {
     if (m_waterOffset.y <= -m_waterSize) {
         m_waterOffset.y += m_waterSize;
     }
-
-    m_spriteViewModel->setSpritePosition(SpriteType::water, m_waterOffset);
 }
 
 void GameViewModel::resetGame() {
@@ -66,8 +48,6 @@ void GameViewModel::onNotification(const NotificationData& data) {
             
             // 重置水面位置
             m_waterOffset = {0, 0};
-            m_spriteViewModel->setSpritePosition(SpriteType::water, m_waterOffset);
-            
             break;
         }
         default:

@@ -2,12 +2,8 @@
 
 #include <cmath>
 #include <SFML/Graphics.hpp>
-#include "entityModel.h"
 #include "../common/config.h"
-
-enum class PlayerState {
-    left2, left1, center, right1, right2, stop
-};
+#include "entityModel.h"
 
 class PlayerModel : public EntityModel {
 public:
@@ -22,7 +18,7 @@ public:
 
     const sf::Vector2f& getVelocity() const { return m_velocity; }
     const sf::Angle& getAngle() const { return m_angle; }
-    const PlayerState& getState() const { return m_state; }
+    const Config::PlayerState& getState() const { return m_state; }
     const int& getHp() const { return m_hp; }
     const int& getPower() const { return m_power; }
     const bool& isPower() const { return m_isPower; }
@@ -52,8 +48,8 @@ private:
 
     sf::Vector2f m_velocity = {0, 0};
     sf::Angle m_angle = sf::degrees(0.0f);
-    PlayerState m_state = PlayerState::center;
-    PlayerState m_lastState;  // 上一个状态
+    Config::PlayerState m_state = Config::PlayerState::center;
+    Config::PlayerState m_lastState;  // 上一个状态
     bool m_isTurn = false;  // 是否转弯
     bool m_isPower = false;
     float m_powerTimer = 0.0f;  // 能量计时器

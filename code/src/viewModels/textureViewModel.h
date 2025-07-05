@@ -28,9 +28,13 @@ enum class TextureType {
 
 class TextureViewModel {
 public:
+    TextureViewModel();
+
     bool initialize();
 
     const std::unique_ptr<sf::Texture>& getTexture(const TextureType& type) const { return m_textures.at(type); }
+    sf::Sprite getNewSprite(const TextureType& textureType) const { return sf::Sprite(*getTexture(textureType)); }
+    void setSpriteTexture(sf::Sprite& sprite, const TextureType& textureType) { sprite.setTexture(*getTexture(textureType)); }
 
 private:
     bool loadTexture(const TextureType& type, const std::string& filePath);

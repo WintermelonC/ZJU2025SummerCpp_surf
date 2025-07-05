@@ -37,35 +37,35 @@ void PlayerModel::updateState(const sf::Vector2f& mousePos) {
     if (delta.y >= 0.0f) {
         const float angleDeg = angle.asDegrees();
         if (angleDeg >= m_angle2 || angleDeg <= -m_angle2) {
-            m_state = (angleDeg >= 0.f) ? PlayerState::right2 : PlayerState::left2;
+            m_state = (angleDeg >= 0.f) ? Config::PlayerState::right2 : Config::PlayerState::left2;
         } else if (angleDeg >= m_angle1 || angleDeg <= -m_angle1) {
-            m_state = (angleDeg >= 0.f) ? PlayerState::right1 : PlayerState::left1;
+            m_state = (angleDeg >= 0.f) ? Config::PlayerState::right1 : Config::PlayerState::left1;
         } else {
-            m_state = PlayerState::center;
+            m_state = Config::PlayerState::center;
         }
     } else {
-        m_state = PlayerState::stop;
+        m_state = Config::PlayerState::stop;
     }
 }
 
 void PlayerModel::updateAngle() {
     switch (m_state) {
-        case PlayerState::left2:
+        case Config::PlayerState::left2:
             m_angle = sf::degrees(-m_angle2);
             break;
-        case PlayerState::left1:
+        case Config::PlayerState::left1:
             m_angle = sf::degrees(-m_angle1);
             break;
-        case PlayerState::center:
+        case Config::PlayerState::center:
             m_angle = sf::degrees(0.0f);
             break;
-        case PlayerState::right1:
+        case Config::PlayerState::right1:
             m_angle = sf::degrees(m_angle1);
             break;
-        case PlayerState::right2:
+        case Config::PlayerState::right2:
             m_angle = sf::degrees(m_angle2);
             break;
-        case PlayerState::stop:
+        case Config::PlayerState::stop:
             m_angle = sf::degrees(0.0f);
             break;
     }
@@ -84,7 +84,7 @@ void PlayerModel::updatePower(const float& dt) {
 }
 
 void PlayerModel::updateYSpeed(const float deltaTime) {
-    if (m_state == PlayerState::stop) {
+    if (m_state == Config::PlayerState::stop) {
         // 减速
         m_velocity.y = std::max(0.0f, m_velocity.y - m_acceleration2 * deltaTime);
     } else {
@@ -102,22 +102,22 @@ void PlayerModel::updateYSpeed(const float deltaTime) {
 
 void PlayerModel::updateXSpeed(const float deltaTime) {
     switch (m_state) {
-        case PlayerState::center:
+        case Config::PlayerState::center:
             m_velocity.x = 0.0f;
             break;
-        case PlayerState::left1:
+        case Config::PlayerState::left1:
             m_velocity.x = -m_velocity.y * m_XYScale1;
             break;
-        case PlayerState::left2:
+        case Config::PlayerState::left2:
             m_velocity.x = -m_velocity.y * m_XYScale2;
             break;
-        case PlayerState::right1:
+        case Config::PlayerState::right1:
             m_velocity.x = m_velocity.y * m_XYScale1;
             break;
-        case PlayerState::right2:
+        case Config::PlayerState::right2:
             m_velocity.x = m_velocity.y * m_XYScale2;
             break;
-        case PlayerState::stop:
+        case Config::PlayerState::stop:
             m_velocity.x = 0.0f;
             break;
     }
@@ -127,7 +127,7 @@ void PlayerModel::reset() {
     // 🔄 重置玩家状态
     m_velocity = {0, 0};
     m_angle = sf::degrees(0.0f);
-    m_state = PlayerState::center;
+    m_state = Config::PlayerState::center;
     m_isPower = false;
     m_powerTimer = 0.0f;
     m_power = Config::Player::PLAYER_POWER;
@@ -146,7 +146,7 @@ void PlayerModel::reset() {
 }
 
 void PlayerModel::updateTurn() {
-    if (m_state != PlayerState::stop && m_lastState != m_state) {
+    if (m_state != Config::PlayerState::stop && m_lastState != m_state) {
         m_isTurn = true;
     } else {
         m_isTurn = false;

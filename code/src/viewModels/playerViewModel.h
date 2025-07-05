@@ -1,16 +1,15 @@
 #pragma once
 
 #include <deque>
-#include "../models/playerModel.h"
-#include "../models/gameModel.h"
-#include "spriteViewModel.h"
-#include "animationViewModel.h"
 #include "../common/notificationCenter.h"
 #include "../common/utils.h"
+#include "../models/playerModel.h"
+#include "../models/gameModel.h"
+#include "animationViewModel.h"
 
 class PlayerViewModel : public INotificationObserver, public std::enable_shared_from_this<PlayerViewModel> {
 public:
-    PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
+    PlayerViewModel();
 
     void update(const float deltaTime, const sf::Vector2f& mousePos);
     void usePower() { m_playerModel.usePower(); }
@@ -22,9 +21,11 @@ public:
     void onNotification(const NotificationData& data) override;
 
     const sf::Vector2f& getPlayerVelocity() const { return m_playerModel.getVelocity(); }
-    const PlayerState& getPlayerState() const { return m_playerModel.getState(); }
+    const Config::PlayerState& getPlayerState() const { return m_playerModel.getState(); }
+    const sf::Vector2f& getPlayerPosition() const { return m_playerModel.getPosition(); }
+    const TextureType& getPlayerTexture() const { return m_playerTexture; }
     std::function<void(const float&, const sf::Vector2f&)> getUpdateCommand();
-    const bool isPlayerStop() const { return m_playerModel.getState() == PlayerState::stop; }
+    const bool isPlayerStop() const { return m_playerModel.getState() == Config::PlayerState::stop; }
 
     std::function<void()> getMouseRightClickCommand();
     std::deque<Config::Trail>& getRipples() { return m_ripples; }
@@ -59,8 +60,8 @@ private:
     const sf::Color m_tailColor = sf::Color(141, 249, 196, m_tailAlpha);
 
     PlayerModel m_playerModel;
-    std::shared_ptr<SpriteViewModel> m_spriteViewModel;
     AnimationViewModel m_animationViewModel;
+    TextureType m_playerTexture;
 
     std::vector<sf::Sprite> m_heartSprites;  // 玩家生命值图标
     std::vector<sf::Sprite> m_powerSprites;  // 玩家能量值

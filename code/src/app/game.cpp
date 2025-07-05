@@ -2,18 +2,18 @@
 
 Game::Game() {
     // 初始化精灵
-    m_spriteViewModel = std::make_shared<SpriteViewModel>();
-    m_spriteViewModel->initialize();
-    m_gameViewModel = std::make_shared<GameViewModel>(m_spriteViewModel);
+    m_textureViewModel = std::make_shared<TextureViewModel>();
+    m_spriteViewModel = std::make_shared<SpriteViewModel>(m_textureViewModel);
+    m_gameViewModel = std::make_shared<GameViewModel>();
     m_fontViewModel = std::make_shared<FontViewModel>();
-    m_fontViewModel->initialize();
-    m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_spriteViewModel);
-    m_playerViewModel = std::make_shared<PlayerViewModel>(m_spriteViewModel);
+    m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_textureViewModel);
+    m_playerViewModel = std::make_shared<PlayerViewModel>();
 
      // 订阅通知 - 在所有对象创建完成后
     m_gameViewModel->subscribeToNotifications();
     m_playerViewModel->subscribeToNotifications();
     m_ObstacleItemViewModel->subscribeToNotifications();
+    m_spriteViewModel->subscribeToNotifications();
 }
 
 bool Game::initialize() {
@@ -41,11 +41,16 @@ bool Game::initialize() {
     m_gameView.setGameState(&m_gameViewModel->getGameModel().getGameState());
     m_gameView.setRipples(&m_playerViewModel->getRipples());
     m_gameView.setTails(&m_playerViewModel->getTails());
+    m_gameView.setPlayerStartMenu(m_spriteViewModel->getPlayerStartMenu());
     m_gameViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
-    m_playerViewModel->setGameState(&m_gameViewModel->getGameModel().getGameState());
+    m_playerViewModel->setGameState(&m_gameViewModel->getGameState());
     m_ObstacleItemViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
     m_ObstacleItemViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
-    m_ObstacleItemViewModel->setGameState(&m_gameViewModel->getGameModel().getGameState());
+    m_ObstacleItemViewModel->setGameState(&m_gameViewModel->getGameState());
+    m_spriteViewModel->setGameState(&m_gameViewModel->getGameState());
+    m_spriteViewModel->setPlayerPosition(&m_playerViewModel->getPlayerPosition());
+    m_spriteViewModel->setPlayerTexture(&m_playerViewModel->getPlayerTexture());
+    m_spriteViewModel->setWaterOffset(&m_gameViewModel->getWaterOffset());
 
     // 设置事件回调
     // 设置焦点丢失回调
@@ -61,6 +66,7 @@ bool Game::initialize() {
     m_gameView.setUpdateCallback(m_gameViewModel->getUpdateCommand());
     m_gameView.setPlayerUpdateCallback(m_playerViewModel->getUpdateCommand());
     m_gameView.setObstacleItemUpdateCallback(m_ObstacleItemViewModel->getUpdateCommand());
+    m_gameView.setSpriteUpdateCallback(m_spriteViewModel->getUpdateCommand());
 
     return success;
 }

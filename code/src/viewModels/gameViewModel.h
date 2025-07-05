@@ -1,17 +1,13 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "spriteViewModel.h"
-#include "../models/gameModel.h"
-#include "ObstacleItemViewModel.h"
-#include "playerViewModel.h"
-#include "../models/gameModel.h"
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
+#include "../models/gameModel.h"
 
 class GameViewModel : public INotificationObserver, public std::enable_shared_from_this<GameViewModel> {
 public:
-    GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
+    GameViewModel();
 
     void update(const sf::Vector2u& windowSize);
 
@@ -26,6 +22,8 @@ public:
     // 实现观察者接口
     void onNotification(const NotificationData& data) override;
     const GameModel& getGameModel() const { return m_gameModel; }
+    const Config::GameState& getGameState() const { return m_gameModel.getGameState(); }
+    const sf::Vector2f& getWaterOffset() const { return m_waterOffset; }
 
     //  在初始化完成后调用，用于订阅通知
     void subscribeToNotifications();
@@ -44,7 +42,6 @@ private:
     const float m_waterSize = 256.f;
     const sf::Color m_buttonColor = sf::Color(195, 240, 247);
     
-    std::shared_ptr<SpriteViewModel> m_spriteViewModel;
     sf::Vector2f m_waterOffset = {0, 0};
     GameModel m_gameModel;
     const sf::Vector2f* m_playerVelocity;

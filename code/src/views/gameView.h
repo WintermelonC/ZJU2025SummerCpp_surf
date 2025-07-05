@@ -7,7 +7,6 @@
 #include <deque>
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
-#include "../models/gameModel.h"
 #include "../common/utils.h"
 
 // 回调函数类型定义
@@ -63,6 +62,8 @@ public:
     void setObstacleItemUpdateCallback(std::function<void(const float&)> callback) { m_obstacleItemUpdateCallback = std::move(callback); }
     void setRipples(const std::deque<Config::Trail>* ripples) { m_ripples = ripples; }
     void setTails(const std::deque<Config::Trail>* tails) { m_tails = tails; }
+    void setPlayerStartMenu(const std::unique_ptr<sf::Sprite>* playerStartMenu) { m_playerStartMenu = playerStartMenu; }
+    void setSpriteUpdateCallback(std::function<void(const sf::Vector2u&)> callback) { m_spriteUpdateCallback = std::move(callback); }
 
     sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
@@ -98,6 +99,7 @@ private:
     const Config::GameState* m_gameState;
     const std::deque<Config::Trail>* m_ripples;
     const std::deque<Config::Trail>* m_tails;
+    const std::unique_ptr<sf::Sprite>* m_playerStartMenu;
     
     // 回调函数
     FocusLostCallback m_onFocusLost;
@@ -108,4 +110,5 @@ private:
     std::function<void(const sf::Vector2u&)> m_GameViewModelUpdateCallback;
     PlayerUpdateCallback m_playerUpdateCallback;
     std::function<void(const float&)> m_obstacleItemUpdateCallback;
+    std::function<void(const sf::Vector2u&)> m_spriteUpdateCallback;
 };

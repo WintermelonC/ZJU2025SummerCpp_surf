@@ -3,13 +3,12 @@
 #include <random>
 #include <algorithm>
 #include <SFML/Graphics.hpp>
-#include "../models/itemModel.h"
-#include "../models/obstacleModel.h"
-#include "textureViewModel.h"
-#include "spriteViewModel.h"
-#include "playerViewModel.h"
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
+#include "../common/utils.h"
+#include "textureViewModel.h"
+#include "../models/itemModel.h"
+#include "../models/obstacleModel.h"
 
 // 生成项结构，统一管理障碍物和道具
 struct SpawnItem {
@@ -32,7 +31,7 @@ struct SpawnItem {
 
 class ObstacleItemViewModel : public INotificationObserver, public std::enable_shared_from_this<ObstacleItemViewModel> {
 public:
-    ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
+    ObstacleItemViewModel(std::shared_ptr<TextureViewModel> textureVM);
 
     void update(const float& dt);
     std::vector<sf::Sprite>& getSprites() { return m_sprites; }
@@ -44,7 +43,7 @@ public:
     void subscribeToNotifications();
 
     void setPlayerVelocity(const sf::Vector2f* playerVelocity) { m_playerVelocity = playerVelocity; }
-    void setPlayerState(const PlayerState* playerState) { m_playerState = playerState; }
+    void setPlayerState(const Config::PlayerState* playerState) { m_playerState = playerState; }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
 
     std::function<void(const float&)> getUpdateCommand();
@@ -92,9 +91,9 @@ private:
     std::vector<sf::Sprite> m_sprites;  // 存储生成的障碍物和道具精灵
 
     ObstacleModel m_obstacleModel;
-    std::shared_ptr<SpriteViewModel> m_spriteViewModel;
+    std::shared_ptr<TextureViewModel> m_textureViewModel;
 
     const sf::Vector2f* m_playerVelocity;
-    const PlayerState* m_playerState;
+    const Config::PlayerState* m_playerState;
     const Config::GameState* m_gameState;
 };

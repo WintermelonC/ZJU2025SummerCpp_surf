@@ -21,11 +21,25 @@ public:
         const sf::Vector2f& buttonSize
     ) {
         return (
-        mousePos.x >= buttonPos.x - buttonSize.x / 2 && 
-        mousePos.x <= buttonPos.x + buttonSize.x / 2 &&
-        mousePos.y >= buttonPos.y - buttonSize.y / 2 && 
-        mousePos.y <= buttonPos.y + buttonSize.y / 2
-    );
+            mousePos.x >= buttonPos.x - buttonSize.x / 2 && 
+            mousePos.x <= buttonPos.x + buttonSize.x / 2 &&
+            mousePos.y >= buttonPos.y - buttonSize.y / 2 && 
+            mousePos.y <= buttonPos.y + buttonSize.y / 2
+        );
+    }
+    static void setSprite(
+        sf::Sprite& sprite,
+        const sf::Color color,
+        const sf::Vector2f& position,
+        const sf::Vector2f& scale = {1.0f, 1.0f},
+        const bool& ifCenter = true
+    ) {
+        sprite.setColor(color);
+        sprite.setPosition(position);
+        sprite.setScale(scale);
+        if( ifCenter) {
+            sprite.setOrigin({sprite.getTexture().getSize().x / 2.f, sprite.getTexture().getSize().y / 2.f});
+        }
     }
 
 private:

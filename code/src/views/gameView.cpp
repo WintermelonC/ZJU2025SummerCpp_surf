@@ -29,6 +29,10 @@ void GameView::run() {
         if (m_obstacleItemUpdateCallback) {
             m_obstacleItemUpdateCallback(deltaTime);
         }
+        // 触发 SpriteViewModel 的 update
+        if (m_spriteUpdateCallback) {
+            m_spriteUpdateCallback(m_window.getSize());
+        }
         if (m_gameState) {
             switch (*m_gameState) {
                 case Config::GameState::startMenu:
@@ -207,6 +211,7 @@ void GameView::renderStartMenu() {
     m_window.draw(*m_startIcon->get());
     // 绘制开始文字
     m_window.draw(startText);
+    m_window.draw(*m_playerStartMenu->get()); // 绘制玩家开始菜单图标
 }   
 
 void GameView::renderPauseMenu() {

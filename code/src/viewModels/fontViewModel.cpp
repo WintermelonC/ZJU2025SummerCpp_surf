@@ -1,5 +1,9 @@
 #include "fontViewModel.h"
 
+FontViewModel::FontViewModel() {
+    initialize();
+}
+
 bool FontViewModel::initialize() {
     std::string assetsPath = "../../assets/";
     std::string fontPath = assetsPath + "fonts/";

@@ -1,5 +1,9 @@
 #include "textureViewModel.h"
 
+TextureViewModel::TextureViewModel() {
+    initialize();
+}
+
 bool TextureViewModel::initialize() {
     std::string assetsPath = "../../assets/";
     std::string imagePath = assetsPath + "images/";

@@ -10,6 +10,10 @@ namespace Config {
         gameOver
     };
 
+    enum class PlayerState {
+        left2, left1, center, right1, right2, stop
+    };
+
     struct Trail {
         sf::RectangleShape trail;
         float lifetime;  // 剩余存活时间

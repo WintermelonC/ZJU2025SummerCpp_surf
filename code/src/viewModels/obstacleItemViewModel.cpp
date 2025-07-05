@@ -1,8 +1,8 @@
 #include "obstacleItemViewModel.h"
 
-ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM) 
+ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<TextureViewModel> textureVM) 
     : m_gen(m_rd()),
-      m_spriteViewModel(spriteVM) {
+      m_textureViewModel(textureVM) {
     initialize();   
 }
 
@@ -18,7 +18,7 @@ void ObstacleItemViewModel::update(const float& dt) {
     }
     updatePosition();
 
-    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || *m_playerState == PlayerState::stop || m_playerVelocity->y <= 20) {
+    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || *m_playerState == Config::PlayerState::stop || m_playerVelocity->y <= 20) {
         return;
     }
     
@@ -87,8 +87,8 @@ bool ObstacleItemViewModel::spawnSingle() {
         TextureType textureType = getRandomObstacleTexture(ObstacleType::any);
         
         // 创建临时精灵以获取边界
-        sf::Sprite tempSprite = m_spriteViewModel->getNewSprite(textureType);
-        m_spriteViewModel->setSprite(
+        sf::Sprite tempSprite = m_textureViewModel->getNewSprite(textureType);
+        Utils::setSprite(
             tempSprite,
             sf::Color::White,
             {static_cast<float>(x), static_cast<float>(y)},
@@ -154,8 +154,8 @@ bool ObstacleItemViewModel::spawnGroup() {
                         case SpawnItem::Type::Obstacle: {
                             TextureType textureType = getRandomObstacleTexture(pattern.items[i].obstacleType);
                             
-                            sf::Sprite obstacleSprite = m_spriteViewModel->getNewSprite(textureType);
-                            m_spriteViewModel->setSprite(
+                            sf::Sprite obstacleSprite = m_textureViewModel->getNewSprite(textureType);
+                            Utils::setSprite(
                                 obstacleSprite,
                                 sf::Color::White,
                                 worldPos,

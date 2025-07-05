@@ -1,14 +1,6 @@
 #include "playerViewModel.h"
 
-PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
-    : m_spriteViewModel(spriteVM) {
-    // 设置玩家精灵
-    m_spriteViewModel->setSprite(
-        SpriteType::player,
-        sf::Color::White,
-        m_playerModel.getPosition(),
-        Config::Player::PLAYER_SCALE
-    );
+PlayerViewModel::PlayerViewModel() {
     initializeAnimations();
 }
 
@@ -34,22 +26,22 @@ void PlayerViewModel::updatePlayerAnimation() {
     std::string targetAnimation;
     
     switch (m_playerModel.getState()) {
-        case PlayerState::center:
+        case Config::PlayerState::center:
             targetAnimation = "center";
             break;
-        case PlayerState::left1:
+        case Config::PlayerState::left1:
             targetAnimation = "left1";
             break;
-        case PlayerState::left2:
+        case Config::PlayerState::left2:
             targetAnimation = "left2";
             break;
-        case PlayerState::right1:
+        case Config::PlayerState::right1:
             targetAnimation = "right1";
             break;
-        case PlayerState::right2:
+        case Config::PlayerState::right2:
             targetAnimation = "right2";
             break;
-        case PlayerState::stop:
+        case Config::PlayerState::stop:
             targetAnimation = "stop";
             break;
     }
@@ -59,7 +51,7 @@ void PlayerViewModel::updatePlayerAnimation() {
         m_animationViewModel.play(targetAnimation);
     }
 
-    m_spriteViewModel->setSpriteTexture(SpriteType::player, m_animationViewModel.getCurrentFrame());
+    m_playerTexture = m_animationViewModel.getCurrentFrame();
 }
 
 void PlayerViewModel::initializeAnimations() {
@@ -123,9 +115,6 @@ void PlayerViewModel::resetPlayerState() {
     
     // 重置动画到初始状态
     m_animationViewModel.play("center");
-    
-    // 重置精灵位置
-    m_spriteViewModel->setSpritePosition(SpriteType::player, m_playerModel.getPosition());
 }
 
 void PlayerViewModel::updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn) {
