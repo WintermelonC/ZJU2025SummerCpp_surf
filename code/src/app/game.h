@@ -5,6 +5,7 @@
 #include "../viewModels/spriteViewModel.h"
 #include "../viewModels/gameViewModel.h"
 #include "../viewModels/fontViewModel.h"
+#include "../viewModels/obstacleItemViewModel.h"
 #include "../common/config.h"
 
 class Game {

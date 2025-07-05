@@ -9,6 +9,11 @@ Game::Game() {
     m_fontViewModel->initialize();
     m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_spriteViewModel);
     m_playerViewModel = std::make_shared<PlayerViewModel>(m_spriteViewModel);
+
+    // 订阅通知 - 在所有对象创建完成后
+    m_gameViewModel->subscribeToNotifications();
+    m_playerViewModel->subscribeToNotifications();
+    m_ObstacleItemViewModel->subscribeToNotifications();
 }
 
 bool Game::initialize() {

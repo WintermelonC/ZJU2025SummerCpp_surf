@@ -5,14 +5,17 @@
 #include "animationViewModel.h"
 #include "../common/notificationCenter.h"
 
-class PlayerViewModel : public INotificationObserver {
+class PlayerViewModel : public INotificationObserver, public std::enable_shared_from_this<PlayerViewModel> {
 public:
     PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
+
+    //  在初始化完成后调用，用于订阅通知
+    void subscribeToNotifications();
 
     void update(const float deltaTime, const sf::Vector2f& mousePos);
     void usePower() { m_playerModel.usePower(); }
     
-    // 实现观察者接口
+    //  实现观察者接口
     void onNotification(const NotificationData& data) override;
 
     const sf::Vector2f& getPlayerVelocity() const { return m_playerModel.getVelocity(); }
@@ -23,7 +26,7 @@ public:
 private:
     void initializeAnimations();
     void updatePlayerAnimation();
-    void resetPlayerState(); // 内部重置方法
+    void resetPlayerState(); //  内部重置方法
 
 private:
     const int m_heartXOffset = 260;

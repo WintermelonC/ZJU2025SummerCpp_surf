@@ -9,11 +9,12 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
         {1, 1},
         false
     );
-    
-    // 🔔 订阅游戏重置通知
+}
+
+void GameViewModel::subscribeToNotifications() {
+    //  订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
-    notificationCenter.subscribe(NotificationType::GameReset, 
-                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
+    notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
 }
 
 void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity) {
@@ -46,7 +47,8 @@ void GameViewModel::updateWater(const sf::Vector2f& playerVelocity) {
 }
 
 void GameViewModel::resetGame() {
-    // 🔔 发送游戏重置通知
+    std::cout << "Resetting game..." << std::endl;
+    //  发送游戏重置通知
     NotificationCenter::getInstance().postGameReset(true, true, true);
 }
 
@@ -55,16 +57,16 @@ void GameViewModel::onNotification(const NotificationData& data) {
         case NotificationType::GameReset: {
             const auto& resetData = static_cast<const GameResetData&>(data);
             
-            // 重置游戏模型
+            //  重置游戏模型
             if (resetData.resetScore) {
                 m_gameModel.reset();
             }
             
-            // 重置水面位置
+            //  重置水面位置
             m_waterOffset = {0, 0};
             m_spriteViewModel->setSpritePosition(SpriteType::water, m_waterOffset);
             
-            // 重置时钟
+            //  重置时钟
             m_clock.restart();
             
             break;

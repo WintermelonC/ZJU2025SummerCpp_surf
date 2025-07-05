@@ -30,7 +30,8 @@ std::function<void(const bool&, const bool&,
             if (ContinueButtonPressed) {
                 m_gameModel.setGameState(GameState::playing);
             } else if (ReturnButtonPressed) {
-                // reset有待实现
+                resetGame();
+                m_gameModel.setGameState(GameState::startMenu);
             }
         }
     };

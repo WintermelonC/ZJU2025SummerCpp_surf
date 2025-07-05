@@ -29,7 +29,7 @@ struct SpawnItem {
         : type(Type::Item), itemType(itType) {}
 };
 
-class ObstacleItemViewModel : public INotificationObserver {
+class ObstacleItemViewModel : public INotificationObserver, public std::enable_shared_from_this<ObstacleItemViewModel> {
 public:
     ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
@@ -38,6 +38,9 @@ public:
     
     // 实现观察者接口
     void onNotification(const NotificationData& data) override;
+
+    //  在初始化完成后调用，用于订阅通知
+    void subscribeToNotifications();
 
 private:
     // 障碍物和道具组合模式结构

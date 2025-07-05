@@ -3,13 +3,13 @@
 #include <SFML/Graphics.hpp>
 #include "spriteViewModel.h"
 #include "../models/gameModel.h"
-#include "ObstacleItemViewModel.h"
+#include "obstacleItemViewModel.h"
 #include "playerViewModel.h"
 #include "../models/gameModel.h"
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
 
-class GameViewModel : public INotificationObserver {
+class GameViewModel : public INotificationObserver, public std::enable_shared_from_this<GameViewModel> {
 public:
     GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
 
@@ -20,12 +20,15 @@ public:
     void usePower();
     void setGameState(GameState state) { m_gameModel.setGameState(state); }
     
-    // 🔔 重置游戏 - 通过通知系统
+    //  重置游戏 - 通过通知系统
     void resetGame();
     
-    // 🔔 实现观察者接口
+    //  实现观察者接口
     void onNotification(const NotificationData& data) override;
     const GameModel& getGameModel() const { return m_gameModel; }
+
+    //  在初始化完成后调用，用于订阅通知
+    void subscribeToNotifications();
 
     std::function<void()> getFocusLostCommand();
     std::function<void()> getFocusGainedCommand();
