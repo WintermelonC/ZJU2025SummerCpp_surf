@@ -1,12 +1,12 @@
 #include "../playerViewModel.h"
 
-std::function<void()> PlayerViewModel::getMouseRightClickCommand() {
+Config::MouseRightClickCallback PlayerViewModel::getMouseRightClickCommand() {
     return [this]() {
         usePower();
     };
 }
 
-std::function<void(const float&, const sf::Vector2f&)> PlayerViewModel::getUpdateCommand() {
+Config::PlayerUpdateCallback PlayerViewModel::getUpdateCommand() {
     return [this](const float& deltaTime, const sf::Vector2f& mousePos) {
         update(deltaTime, mousePos);
     };

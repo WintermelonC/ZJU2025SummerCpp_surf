@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
@@ -36,7 +35,7 @@ public:
     const sf::Vector2f getSpriteSize(const SpriteType& type) const { return m_sprites.at(type)->getGlobalBounds().size; }
     sf::Sprite getNewSprite(const TextureType& textureType) const { return sf::Sprite(*m_textureViewModel->getTexture(textureType)); }
     const std::unique_ptr<sf::Sprite>* getPlayerStartMenu() const { return &m_playerStartMenu; }
-    std::function<void(const sf::Vector2u&)> getUpdateCommand();
+    Config::SpriteUpdateCallback getUpdateCommand();
 
     void setSprite(
         const SpriteType& spriteType,

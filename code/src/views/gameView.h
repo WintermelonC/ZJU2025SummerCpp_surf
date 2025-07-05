@@ -3,21 +3,10 @@
 #include <memory>
 #include <string>
 #include <iostream>
-#include <functional>
 #include <deque>
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
 #include "../common/utils.h"
-
-// 回调函数类型定义
-using FocusLostCallback = std::function<void()>;
-using FocusGainedCallback = std::function<void()>;
-using MouseRightClickCallback = std::function<void()>;
-using MouseLeftClickCallback = std::function<void(const bool&, 
-                                                  const bool&,
-                                                  const bool&)>;
-using KeyPressCallback = std::function<void(const sf::Event::KeyPressed&)>;
-using PlayerUpdateCallback = std::function<void(const float&, const sf::Vector2f&)>;
 
 class GameView {
 public:
@@ -39,12 +28,16 @@ public:
     void reset();
 
     // 回调函数设置
-    void setOnFocusLost(FocusLostCallback callback) { m_onFocusLost = callback; }
-    void setOnFocusGained(FocusGainedCallback callback) { m_onFocusGained = callback; }
-    void setOnMouseRightClick(MouseRightClickCallback callback) { m_onMouseRightClick = callback; }
-    void setOnMouseLeftClick(MouseLeftClickCallback callback) { m_onMouseLeftClick = callback; }
-    void setOnKeyPress(KeyPressCallback callback) { m_onKeyPress = callback; }
-    void setPlayerUpdateCallback(PlayerUpdateCallback callback) { m_playerUpdateCallback = callback; }
+    void setOnFocusLost(Config::FocusLostCallback callback) { m_onFocusLost = callback; }
+    void setOnFocusGained(Config::FocusGainedCallback callback) { m_onFocusGained = callback; }
+    void setOnMouseRightClick(Config::MouseRightClickCallback callback) { m_onMouseRightClick = callback; }
+    void setOnMouseLeftClick(Config::MouseLeftClickCallback callback) { m_onMouseLeftClick = callback; }
+    void setOnKeyPress(Config::KeyPressCallback callback) { m_onKeyPress = callback; }
+    void setPlayerUpdateCallback(Config::PlayerUpdateCallback callback) { m_playerUpdateCallback = callback; }
+    void setUpdateCallback(Config::GameUpdateCallback callback) { m_GameViewModelUpdateCallback = std::move(callback); }
+    void setObstacleItemUpdateCallback(Config::ObstacleItemUpdateCallback callback) { m_obstacleItemUpdateCallback = std::move(callback); }
+    void setSpriteUpdateCallback(Config::SpriteUpdateCallback callback) { m_spriteUpdateCallback = std::move(callback); }
+    void setAnimationUpdateCallback(Config::AnimationUpdateCallback callback) { m_animationUpdateCallback = std::move(callback); }
 
     void setWater(const std::unique_ptr<sf::Sprite>* water) { m_water = water; }
     void setPlayer(const std::unique_ptr<sf::Sprite>* player) { m_player = player; }
@@ -57,13 +50,10 @@ public:
     void setObstacleItemSprites(std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
     void setScoreboard(const std::unique_ptr<sf::Sprite>* scoreboard) { m_scoreboard = scoreboard; }
     void setScore(const float* score) { m_score = score; }
-    void setUpdateCallback(std::function<void(const sf::Vector2u&)> callback) { m_GameViewModelUpdateCallback = std::move(callback); }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
-    void setObstacleItemUpdateCallback(std::function<void(const float&)> callback) { m_obstacleItemUpdateCallback = std::move(callback); }
     void setRipples(const std::deque<Config::Trail>* ripples) { m_ripples = ripples; }
     void setTails(const std::deque<Config::Trail>* tails) { m_tails = tails; }
     void setPlayerStartMenu(const std::unique_ptr<sf::Sprite>* playerStartMenu) { m_playerStartMenu = playerStartMenu; }
-    void setSpriteUpdateCallback(std::function<void(const sf::Vector2u&)> callback) { m_spriteUpdateCallback = std::move(callback); }
 
     sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
@@ -102,13 +92,14 @@ private:
     const std::unique_ptr<sf::Sprite>* m_playerStartMenu;
     
     // 回调函数
-    FocusLostCallback m_onFocusLost;
-    FocusGainedCallback m_onFocusGained;
-    MouseRightClickCallback m_onMouseRightClick;
-    MouseLeftClickCallback m_onMouseLeftClick;
-    KeyPressCallback m_onKeyPress;
-    std::function<void(const sf::Vector2u&)> m_GameViewModelUpdateCallback;
-    PlayerUpdateCallback m_playerUpdateCallback;
-    std::function<void(const float&)> m_obstacleItemUpdateCallback;
-    std::function<void(const sf::Vector2u&)> m_spriteUpdateCallback;
+    Config::FocusLostCallback m_onFocusLost;
+    Config::FocusGainedCallback m_onFocusGained;
+    Config::MouseRightClickCallback m_onMouseRightClick;
+    Config::MouseLeftClickCallback m_onMouseLeftClick;
+    Config::KeyPressCallback m_onKeyPress;
+    Config::GameUpdateCallback m_GameViewModelUpdateCallback;
+    Config::PlayerUpdateCallback m_playerUpdateCallback;
+    Config::ObstacleItemUpdateCallback m_obstacleItemUpdateCallback;
+    Config::SpriteUpdateCallback m_spriteUpdateCallback;
+    Config::AnimationUpdateCallback m_animationUpdateCallback;
 };

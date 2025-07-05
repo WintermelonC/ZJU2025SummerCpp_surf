@@ -14,12 +14,13 @@ void GameView::run() {
     while (m_window.isOpen()) {
         float deltaTime = m_clock.restart().asSeconds();
         sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+        sf::Vector2u windowSize = m_window.getSize();
         
         handleEvents();
         
         // 触发 GameViewModel 的 update
         if (m_GameViewModelUpdateCallback) {
-            m_GameViewModelUpdateCallback(m_window.getSize());
+            m_GameViewModelUpdateCallback(windowSize);
         }
         // 触发 PlayerViewModel 的 update
         if (m_playerUpdateCallback) {
@@ -29,9 +30,13 @@ void GameView::run() {
         if (m_obstacleItemUpdateCallback) {
             m_obstacleItemUpdateCallback(deltaTime);
         }
+        // 触发 AnimationViewModel 的 update
+        if (m_animationUpdateCallback) {
+            m_animationUpdateCallback(deltaTime);
+        }
         // 触发 SpriteViewModel 的 update
         if (m_spriteUpdateCallback) {
-            m_spriteUpdateCallback(m_window.getSize());
+            m_spriteUpdateCallback(windowSize);
         }
         if (m_gameState) {
             switch (*m_gameState) {

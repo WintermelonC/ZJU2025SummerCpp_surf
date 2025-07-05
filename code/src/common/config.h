@@ -1,8 +1,23 @@
 #pragma once
 
+#include <functional>
 #include <SFML/Graphics.hpp>
 
 namespace Config {
+    // 回调函数类型定义
+    using FocusLostCallback = std::function<void()>;
+    using FocusGainedCallback = std::function<void()>;
+    using MouseRightClickCallback = std::function<void()>;
+    using MouseLeftClickCallback = std::function<void(const bool&, 
+                                                    const bool&,
+                                                    const bool&)>;
+    using KeyPressCallback = std::function<void(const sf::Event::KeyPressed&)>;
+    using PlayerUpdateCallback = std::function<void(const float&, const sf::Vector2f&)>;
+    using AnimationUpdateCallback = std::function<void(const float&)>;
+    using GameUpdateCallback = std::function<void(const sf::Vector2u&)>;
+    using ObstacleItemUpdateCallback = std::function<void(const float&)>;
+    using SpriteUpdateCallback = std::function<void(const sf::Vector2u&)>;
+
     enum class GameState {
         startMenu,
         playing,

@@ -1,6 +1,6 @@
 #include "../gameViewModel.h"
 
-std::function<void()> GameViewModel::getFocusLostCommand() {
+Config::FocusLostCallback GameViewModel::getFocusLostCommand() {
     return [this]() {
         if( m_gameModel.getGameState() == Config::GameState::playing) {
             m_gameModel.setGameState(Config::GameState::paused);
@@ -8,7 +8,7 @@ std::function<void()> GameViewModel::getFocusLostCommand() {
     };
 }
 
-std::function<void()> GameViewModel::getFocusGainedCommand() {
+Config::FocusGainedCallback GameViewModel::getFocusGainedCommand() {
     return [this]() {
         if( m_gameModel.getGameState() == Config::GameState::paused) {
             m_gameModel.setGameState(Config::GameState::playing);
@@ -16,8 +16,7 @@ std::function<void()> GameViewModel::getFocusGainedCommand() {
     };
 }
 
-std::function<void(const bool&, const bool&,
-                   const bool&)> GameViewModel::getMouseLeftClickCommand() {
+Config::MouseLeftClickCallback GameViewModel::getMouseLeftClickCommand() {
     return [this](const bool& StartButtonPressed, 
                   const bool& ContinueButtonPressed,
                   const bool& ReturnButtonPressed) {
@@ -37,7 +36,7 @@ std::function<void(const bool&, const bool&,
     };
 }
 
-std::function<void(const sf::Event::KeyPressed&)> GameViewModel::getKeyPressCommand() {
+Config::KeyPressCallback GameViewModel::getKeyPressCommand() {
     return [this](const sf::Event::KeyPressed& keyPressed) {
         if (keyPressed.code == sf::Keyboard::Key::Space) {
             Config::GameState currentState = m_gameModel.getGameState();
@@ -50,7 +49,7 @@ std::function<void(const sf::Event::KeyPressed&)> GameViewModel::getKeyPressComm
     };
 }
 
-std::function<void(const sf::Vector2u&)> GameViewModel::getUpdateCommand() {
+Config::GameUpdateCallback GameViewModel::getUpdateCommand() {
     return [this](const sf::Vector2u& windowSize) {
         update(windowSize);
     };

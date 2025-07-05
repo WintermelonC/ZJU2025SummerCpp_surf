@@ -28,12 +28,11 @@ public:
     //  在初始化完成后调用，用于订阅通知
     void subscribeToNotifications();
 
-    std::function<void()> getFocusLostCommand();
-    std::function<void()> getFocusGainedCommand();
-    std::function<void(const bool& StartButtonPressed, const bool& ContinueButtonPressed,
-                       const bool& ReturnButtonPressed)> getMouseLeftClickCommand();
-    std::function<void(const sf::Event::KeyPressed&)> getKeyPressCommand();
-    std::function<void(const sf::Vector2u&)> getUpdateCommand();
+    Config::FocusLostCallback getFocusLostCommand();
+    Config::FocusGainedCallback getFocusGainedCommand();
+    Config::MouseLeftClickCallback getMouseLeftClickCommand();
+    Config::KeyPressCallback getKeyPressCommand();
+    Config::GameUpdateCallback getUpdateCommand();
 
 private:
     void updateWater(const sf::Vector2f& playerVelocity);

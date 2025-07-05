@@ -8,12 +8,14 @@ Game::Game() {
     m_fontViewModel = std::make_shared<FontViewModel>();
     m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_textureViewModel);
     m_playerViewModel = std::make_shared<PlayerViewModel>();
+    m_animationViewModel = std::make_shared<AnimationViewModel>();
 
      // 订阅通知 - 在所有对象创建完成后
     m_gameViewModel->subscribeToNotifications();
     m_playerViewModel->subscribeToNotifications();
     m_ObstacleItemViewModel->subscribeToNotifications();
     m_spriteViewModel->subscribeToNotifications();
+    m_animationViewModel->subscribeToNotifications();
 }
 
 bool Game::initialize() {
@@ -49,8 +51,9 @@ bool Game::initialize() {
     m_ObstacleItemViewModel->setGameState(&m_gameViewModel->getGameState());
     m_spriteViewModel->setGameState(&m_gameViewModel->getGameState());
     m_spriteViewModel->setPlayerPosition(&m_playerViewModel->getPlayerPosition());
-    m_spriteViewModel->setPlayerTexture(&m_playerViewModel->getPlayerTexture());
+    m_spriteViewModel->setPlayerTexture(&m_animationViewModel->getPlayerTexture());
     m_spriteViewModel->setWaterOffset(&m_gameViewModel->getWaterOffset());
+    m_animationViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
 
     // 设置事件回调
     // 设置焦点丢失回调
@@ -67,6 +70,7 @@ bool Game::initialize() {
     m_gameView.setPlayerUpdateCallback(m_playerViewModel->getUpdateCommand());
     m_gameView.setObstacleItemUpdateCallback(m_ObstacleItemViewModel->getUpdateCommand());
     m_gameView.setSpriteUpdateCallback(m_spriteViewModel->getUpdateCommand());
+    m_gameView.setAnimationUpdateCallback(m_animationViewModel->getAnimationCommands());
 
     return success;
 }

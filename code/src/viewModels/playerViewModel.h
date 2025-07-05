@@ -5,7 +5,6 @@
 #include "../common/utils.h"
 #include "../models/playerModel.h"
 #include "../models/gameModel.h"
-#include "animationViewModel.h"
 
 class PlayerViewModel : public INotificationObserver, public std::enable_shared_from_this<PlayerViewModel> {
 public:
@@ -23,19 +22,16 @@ public:
     const sf::Vector2f& getPlayerVelocity() const { return m_playerModel.getVelocity(); }
     const Config::PlayerState& getPlayerState() const { return m_playerModel.getState(); }
     const sf::Vector2f& getPlayerPosition() const { return m_playerModel.getPosition(); }
-    const TextureType& getPlayerTexture() const { return m_playerTexture; }
-    std::function<void(const float&, const sf::Vector2f&)> getUpdateCommand();
+    Config::PlayerUpdateCallback getUpdateCommand();
     const bool isPlayerStop() const { return m_playerModel.getState() == Config::PlayerState::stop; }
 
-    std::function<void()> getMouseRightClickCommand();
+    Config::MouseRightClickCallback getMouseRightClickCommand();
     std::deque<Config::Trail>& getRipples() { return m_ripples; }
     std::deque<Config::Trail>& getTails() { return m_tails; }
 
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
 
 private:
-    void initializeAnimations();
-    void updatePlayerAnimation();
     void resetPlayerState(); // 内部重置方法
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
     void updateTail(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);
@@ -60,8 +56,6 @@ private:
     const sf::Color m_tailColor = sf::Color(141, 249, 196, m_tailAlpha);
 
     PlayerModel m_playerModel;
-    AnimationViewModel m_animationViewModel;
-    TextureType m_playerTexture;
 
     std::vector<sf::Sprite> m_heartSprites;  // 玩家生命值图标
     std::vector<sf::Sprite> m_powerSprites;  // 玩家能量值

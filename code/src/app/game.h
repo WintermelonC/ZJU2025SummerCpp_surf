@@ -9,6 +9,7 @@
 #include "../viewModels/textureViewModel.h"
 #include "../viewModels/obstacleItemViewModel.h"
 #include "../viewModels/playerViewModel.h"
+#include "../viewModels/animationViewModel.h"
 
 class Game {
 public:
@@ -25,4 +26,5 @@ private:
     std::shared_ptr<GameViewModel> m_gameViewModel;
     std::shared_ptr<ObstacleItemViewModel> m_ObstacleItemViewModel;
     std::shared_ptr<PlayerViewModel> m_playerViewModel;
+    std::shared_ptr<AnimationViewModel> m_animationViewModel;
 };

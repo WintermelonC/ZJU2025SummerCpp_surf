@@ -46,7 +46,7 @@ public:
     void setPlayerState(const Config::PlayerState* playerState) { m_playerState = playerState; }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
 
-    std::function<void(const float&)> getUpdateCommand();
+    Config::ObstacleItemUpdateCallback getUpdateCommand();
 
 private:
     // 障碍物和道具组合模式结构
