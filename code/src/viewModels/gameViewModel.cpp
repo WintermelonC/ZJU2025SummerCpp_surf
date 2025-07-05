@@ -9,11 +9,12 @@ GameViewModel::GameViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
         {1, 1},
         false
     );
-    
+}
+
+void GameViewModel::subscribeToNotifications() {
     //  订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
-    notificationCenter.subscribe(NotificationType::GameReset, 
-                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
+    notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
 }
 
 void GameViewModel::update(const sf::Vector2f& mousePos, const sf::Vector2u& windowSize, const sf::Vector2f& playerVelocity) {
@@ -46,6 +47,7 @@ void GameViewModel::updateWater(const sf::Vector2f& playerVelocity) {
 }
 
 void GameViewModel::resetGame() {
+    std::cout << "Resetting game..." << std::endl;
     //  发送游戏重置通知
     NotificationCenter::getInstance().postGameReset(true, true, true);
 }

@@ -5,9 +5,12 @@
 #include "animationViewModel.h"
 #include "../common/notificationCenter.h"
 
-class PlayerViewModel : public INotificationObserver {
+class PlayerViewModel : public INotificationObserver, public std::enable_shared_from_this<PlayerViewModel> {
 public:
     PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM);
+
+    //  在初始化完成后调用，用于订阅通知
+    void subscribeToNotifications();
 
     void update(const float deltaTime, const sf::Vector2f& mousePos);
     void usePower() { m_playerModel.usePower(); }

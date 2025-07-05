@@ -10,11 +10,12 @@ PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
         Config::Player::PLAYER_SCALE
     );
     initializeAnimations();
-    
+}
+
+void PlayerViewModel::subscribeToNotifications() {
     //  订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
-    notificationCenter.subscribe(NotificationType::GameReset, 
-                                std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
+    notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
 }
 
 void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
