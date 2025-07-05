@@ -12,7 +12,7 @@ public:
     void update(const float deltaTime, const sf::Vector2f& mousePos);
     void usePower() { m_playerModel.usePower(); }
     
-    // 🔔 实现观察者接口
+    //  实现观察者接口
     void onNotification(const NotificationData& data) override;
 
     const sf::Vector2f& getPlayerVelocity() const { return m_playerModel.getVelocity(); }
@@ -21,7 +21,7 @@ public:
 private:
     void initializeAnimations();
     void updatePlayerAnimation();
-    void resetPlayerState(); // 🔔 内部重置方法
+    void resetPlayerState(); //  内部重置方法
 
 private:
     PlayerModel m_playerModel;

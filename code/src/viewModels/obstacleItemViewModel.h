@@ -36,13 +36,13 @@ public:
     void update(const float& dt, const sf::Vector2f& playerVelocity, const bool isSpawn = true);
     std::vector<sf::Sprite>& getSprites() { return m_sprites; }
     
-    // 🔔 实现观察者接口
+    //  实现观察者接口
     void onNotification(const NotificationData& data) override;
 
 private:
     void initialize();
     void updatePosition(const sf::Vector2f& playerVelocity);
-    void resetObstacles(); // 🔔 内部重置方法
+    void resetObstacles(); //  内部重置方法
 
     void spawnSingle();
     void spawnGroup();

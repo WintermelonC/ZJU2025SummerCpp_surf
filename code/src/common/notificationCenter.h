@@ -8,11 +8,8 @@
 
 // 通知类型枚举
 enum class NotificationType {
-    GameReset,
-    PlayerReset,
-    ObstacleReset,
-    UIReset,
-    AudioReset
+    GameReset,      // 游戏重置
+    AudioReset      // 音频重置
 };
 
 // 通知数据基类

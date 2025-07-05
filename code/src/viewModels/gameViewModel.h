@@ -17,10 +17,10 @@ public:
     void usePower();
     void setGameState(GameState state) { m_gameModel.setGameState(state); }
     
-    // 🔔 重置游戏 - 通过通知系统
+    //  重置游戏 - 通过通知系统
     void resetGame();
     
-    // 🔔 实现观察者接口
+    //  实现观察者接口
     void onNotification(const NotificationData& data) override;
 
     std::vector<sf::Sprite>& getObstacleItemSprites() { return m_ObstacleItemViewModel.getSprites(); }

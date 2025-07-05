@@ -5,7 +5,7 @@ ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> sp
       m_spriteViewModel(spriteVM) {
     initialize();
     
-    // 🔔 订阅游戏重置通知
+    //  订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
     notificationCenter.subscribe(NotificationType::GameReset, 
                                 std::shared_ptr<INotificationObserver>(this, [](INotificationObserver*){}));
@@ -128,4 +128,32 @@ TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
             return static_cast<TextureType>(static_cast<int>(TextureType::wood_1) + randomType);
         }
     }
+}
+
+void ObstacleItemViewModel::onNotification(const NotificationData& data) {
+    switch (data.type) {
+        case NotificationType::GameReset: {
+            const auto& resetData = static_cast<const GameResetData&>(data);
+            resetObstacles();
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+void ObstacleItemViewModel::resetObstacles() {
+    std::cout << "Resetting obstacles..." << std::endl;
+
+    // 清空所有障碍物精灵
+    m_sprites.clear();
+    
+    // 重置生成计时器
+    m_spawnClock.restart();
+    
+    // 重置模式相关参数
+    m_patterns.clear();
+    
+    // 重新初始化
+    initialize();
 }
