@@ -9,10 +9,10 @@
 // 通知类型枚举
 enum class NotificationType {
     GameReset,
-    PlayerReset,
-    ObstacleReset,
-    UIReset,
-    AudioReset
+    DamageCollision,
+    SlowCollision,
+    PowerCollision,
+    HealthCollision
 };
 
 // 通知数据基类
@@ -27,6 +27,26 @@ struct GameResetData : public NotificationData {
     bool resetScore = true;
     bool resetLevel = true;
     bool resetPlayerState = true;
+};
+
+// 伤害碰撞通知数据
+struct DamageCollisionData : public NotificationData {
+    DamageCollisionData() { type = NotificationType::DamageCollision; }
+};
+
+// 减速碰撞通知数据
+struct SlowCollisionData : public NotificationData {
+    SlowCollisionData() { type = NotificationType::SlowCollision; }
+};
+
+// 加速碰撞通知数据
+struct PowerCollisionData : public NotificationData {
+    PowerCollisionData() { type = NotificationType::PowerCollision; }
+};
+
+// 生命恢复碰撞通知数据
+struct HealthCollisionData : public NotificationData {
+    HealthCollisionData() { type = NotificationType::HealthCollision; }
 };
 
 // 通知观察者接口

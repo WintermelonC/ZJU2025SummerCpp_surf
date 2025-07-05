@@ -35,7 +35,7 @@ bool Game::initialize() {
     m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
-    m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getSprites());
+    m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getObstacleItemSprites());
     m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
     m_gameView.setScore(m_gameViewModel->getScore());
     m_gameView.setGameState(&m_gameViewModel->getGameModel().getGameState());
@@ -56,6 +56,8 @@ bool Game::initialize() {
     m_gameView.setOnMouseLeftClick(m_gameViewModel->getMouseLeftClickCommand());
     // 设置键盘按下回调
     m_gameView.setOnKeyPress(m_gameViewModel->getKeyPressCommand());
+
+    // 设置更新回调
     m_gameView.setUpdateCallback(m_gameViewModel->getUpdateCommand());
     m_gameView.setPlayerUpdateCallback(m_playerViewModel->getUpdateCommand());
     m_gameView.setObstacleItemUpdateCallback(m_ObstacleItemViewModel->getUpdateCommand());

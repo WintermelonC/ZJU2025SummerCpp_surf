@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "spriteViewModel.h"
 #include "../models/gameModel.h"
-#include "ObstacleItemViewModel.h"
+#include "obstacleItemViewModel.h"
 #include "playerViewModel.h"
 #include "../models/gameModel.h"
 #include "../common/config.h"

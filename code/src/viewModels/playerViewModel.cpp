@@ -13,9 +13,14 @@ PlayerViewModel::PlayerViewModel(std::shared_ptr<SpriteViewModel> spriteVM)
 }
 
 void PlayerViewModel::subscribeToNotifications() {
-    //  订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
+    // 订阅游戏重置通知
     notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
+    // 订阅碰撞相关通知
+    notificationCenter.subscribe(NotificationType::DamageCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::SlowCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::PowerCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::HealthCollision, shared_from_this());
 }
 
 void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
@@ -108,6 +113,30 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
             if (resetData.resetPlayerState) {
                 resetPlayerState();
             }
+            break;
+        }
+        case NotificationType::DamageCollision: {
+            // 只有在非无敌状态下才处理伤害碰撞
+            if (!m_playerModel.isInvincible()) {
+                m_playerModel.takeDamage(1);
+            }
+            break;
+        }
+        case NotificationType::SlowCollision: {
+            // 处理减速效果 - 应用减速状态
+            if(!m_playerModel.isInvincible() && !m_playerModel.isSlowed()) {
+                m_playerModel.applySlowEffect();
+            }
+            break;
+        }
+        case NotificationType::PowerCollision: {
+            // 处理加速效果 - 增加玩家能量值
+            m_playerModel.restorePower(1);
+            break;
+        }
+        case NotificationType::HealthCollision: {
+            // 处理生命恢复 - 增加玩家生命值
+            m_playerModel.restoreHealth(1);
             break;
         }
         default:
