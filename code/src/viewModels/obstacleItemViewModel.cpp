@@ -675,7 +675,7 @@ void ObstacleItemViewModel::updateEntityBounds() {
                 case ObstacleType::m_bridge:
                 case ObstacleType::mm_bridge:
                 case ObstacleType::mm_beach:
-                case ObstacleType::s_buoy: 
+                case ObstacleType::s_buoy: break;
             }
         }
         else if (entityModel->isItem()) {
