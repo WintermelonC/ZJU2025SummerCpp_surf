@@ -8,12 +8,12 @@ namespace Config {
     using FocusLostCallback = std::function<void()>;
     using FocusGainedCallback = std::function<void()>;
     using MouseRightClickCallback = std::function<void()>;
-    using MouseLeftClickCallback = std::function<void(const bool&, const bool&, const bool&)>;
+    using MouseLeftClickCallback = std::function<void(const bool&, const bool&, const bool&, const bool&)>;
     using KeyPressCallback = std::function<void(const sf::Event::KeyPressed&)>;
     using PlayerUpdateCallback = std::function<void(const float&, const sf::Vector2f&, const sf::Vector2u&)>;
     using AnimationUpdateCallback = std::function<void(const float&)>;
     using GameUpdateCallback = std::function<void(const sf::Vector2u&)>;
-    using ObstacleItemUpdateCallback = std::function<void(const float&)>;
+    using ObstacleItemUpdateCallback = std::function<void(const float&, const sf::Sprite&)>;
     using SpriteUpdateCallback = std::function<void(const sf::Vector2u&)>;
 
     // 枚举类型定义
@@ -52,6 +52,8 @@ namespace Config {
         constexpr sf::Vector2f CONTINUE_BUTTON_SCALE = {1.2f, 1.2f};
         constexpr sf::Vector2f RETURN_BUTTON_POS = RENDER_CENTER + sf::Vector2f(0.f, 300.f);
         constexpr sf::Vector2f RETURN_BUTTON_SCALE = {0.8f, 0.8f};
+        constexpr sf::Vector2f NEWGAME_BUTTON_POS = RENDER_CENTER + sf::Vector2f(0.f, 200.f);
+        constexpr sf::Vector2f NEWGAME_BUTTON_SCALE = {1.2f, 1.2f};
         constexpr sf::Vector2i BUTTON_SIZE = {180, 60};
     }
 
@@ -84,5 +86,12 @@ namespace Config {
     // 游戏配置
     namespace Game {
         constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
+
+        constexpr float PLAYER_CENTER_X_COLLISION_SCALE = 0.5f;
+        constexpr float PLAYER_CENTER_Y_COLLISION_SCALE = 0.63f;
+        constexpr float PLAYER_SIZE_X_COLLISION_SCALE = 0.5f;
+        constexpr float PLAYER_SIZE_Y_COLLISION_SCALE = 0.3f;
+        constexpr float PLAYER_POSITION_X_COLLISION_SCALE = 0.5f;
+        constexpr float PLAYER_POSITION_Y_COLLISION_SCALE = 0.5f;
     }
 }

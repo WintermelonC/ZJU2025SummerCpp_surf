@@ -26,6 +26,7 @@ public:
     const Config::PlayerState& getPlayerState() const { return m_playerModel.getState(); }
     const sf::Vector2f& getPlayerPosition() const { return m_playerModel.getPosition(); }
     const bool isPlayerStop() const { return m_playerModel.getState() == Config::PlayerState::stop; }
+    const int& getPlayerHP() const { return m_playerModel.getHp(); }
     const bool& isPlayerInvincible() const { return m_playerModel.isInvincible();  }
     
     // 获取UI元素

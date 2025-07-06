@@ -10,16 +10,15 @@ Config::FocusLostCallback GameViewModel::getFocusLostCommand() {
 
 Config::FocusGainedCallback GameViewModel::getFocusGainedCommand() {
     return [this]() {
-        if( m_gameModel.getGameState() == Config::GameState::paused) {
-            m_gameModel.setGameState(Config::GameState::playing);
-        }
+        // nothing to do
     };
 }
 
 Config::MouseLeftClickCallback GameViewModel::getMouseLeftClickCommand() {
     return [this](const bool& StartButtonPressed, 
                   const bool& ContinueButtonPressed,
-                  const bool& ReturnButtonPressed) {
+                  const bool& ReturnButtonPressed,
+                  const bool& NewGameButtonPressed) {
         Config::GameState currentState = m_gameModel.getGameState();
         if (currentState == Config::GameState::startMenu) {
             if (StartButtonPressed) {
@@ -27,6 +26,14 @@ Config::MouseLeftClickCallback GameViewModel::getMouseLeftClickCommand() {
             }
         } else if (currentState == Config::GameState::paused) {
             if (ContinueButtonPressed) {
+                m_gameModel.setGameState(Config::GameState::playing);
+            } else if (ReturnButtonPressed) {
+                resetGame();
+                m_gameModel.setGameState(Config::GameState::startMenu);
+            }
+        } else if (currentState == Config::GameState::gameOver) {
+            if (NewGameButtonPressed) {
+                resetGame();
                 m_gameModel.setGameState(Config::GameState::playing);
             } else if (ReturnButtonPressed) {
                 resetGame();

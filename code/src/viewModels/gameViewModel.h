@@ -31,6 +31,7 @@ public:
 
     // Setter 方法
     void setPlayerVelocity(const sf::Vector2f* velocity) { m_playerVelocity = velocity; }
+    void setPlayerHP(const int& playerHP) { m_playerHP = &playerHP; }
 
     // 获取回调方法
     Config::FocusLostCallback getFocusLostCommand();
@@ -50,6 +51,7 @@ private:
     // 游戏状态
     sf::Vector2f m_waterOffset = {0, 0};
     GameModel m_gameModel;
+    const int* m_playerHP;  // 玩家当前生命值
     
     // 外部依赖
     const sf::Vector2f* m_playerVelocity;
