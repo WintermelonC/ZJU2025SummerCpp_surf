@@ -36,7 +36,7 @@ public:
     void restorePower(int powerAmount);
     
     // 状态查询方法
-    bool isInvincible() const { return m_isInvincible; }
+    const bool& isInvincible() const { return m_isInvincible; }
     void setInvincible();
     bool isSlowed() const { return m_isSlowed; }
 

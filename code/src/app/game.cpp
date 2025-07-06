@@ -55,6 +55,7 @@ bool Game::initialize() {
     m_spriteViewModel->setPlayerPosition(&m_playerViewModel->getPlayerPosition());
     m_spriteViewModel->setPlayerTexture(&m_animationViewModel->getPlayerTexture());
     m_spriteViewModel->setWaterOffset(&m_gameViewModel->getWaterOffset());
+    m_spriteViewModel->setPlayerIsInvincible(&m_playerViewModel->isPlayerInvincible());
     m_animationViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
 
     // 设置事件回调
