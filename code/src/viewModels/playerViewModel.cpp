@@ -34,6 +34,7 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
             break;
         }
         case NotificationType::DamageCollision: {
+            std::cout << "PlayerViewModel: Received DamageCollision notification." << std::endl;
             // 只有在非无敌状态下才处理伤害碰撞
             if (!m_playerModel.isInvincible()) {
                 m_playerModel.takeDamage(1);
@@ -41,6 +42,7 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
             break;
         }
         case NotificationType::SlowCollision: {
+            std::cout << "PlayerViewModel: Received SlowCollision notification." << std::endl;
             // 处理减速效果 - 应用减速状态
             if(!m_playerModel.isInvincible() && !m_playerModel.isSlowed()) {
                 m_playerModel.applySlowEffect();

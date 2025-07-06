@@ -36,8 +36,10 @@ bool Game::initialize() {
     m_gameView.setContinueButton(m_spriteViewModel->getSprite(SpriteType::continue_button));
     m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
+    m_gameView.setNewGameButton(m_spriteViewModel->getSprite(SpriteType::newGame_button));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
     m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getObstacleItemSprites());
+    m_gameView.setEntityBounds(m_ObstacleItemViewModel->getEntityBounds());
     m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
     m_gameView.setScore(m_gameViewModel->getScore());
     m_gameView.setGameState(&m_gameViewModel->getGameModel().getGameState());
@@ -47,6 +49,7 @@ bool Game::initialize() {
     m_gameView.setHeartSprites(&m_playerViewModel->getHeartSprites());
     m_gameView.setPowerSprites(&m_playerViewModel->getPowerSprites());
     m_gameViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
+    m_gameViewModel->setPlayerHP(m_playerViewModel->getPlayerHP());
     m_playerViewModel->setGameState(&m_gameViewModel->getGameState());
     m_ObstacleItemViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
     m_ObstacleItemViewModel->setPlayerState(&m_playerViewModel->getPlayerState());

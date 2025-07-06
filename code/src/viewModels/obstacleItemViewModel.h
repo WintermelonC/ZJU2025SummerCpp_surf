@@ -45,6 +45,10 @@ public:
     const std::vector<sf::Sprite>& getObstacleItemSprites() const { 
         return m_obstacleItemSprites; 
     }
+
+    const std::vector<sf::FloatRect>& getEntityBounds() const { 
+        return m_entityBounds; 
+    }
     
     // 碰撞检测相关
     bool checkCollisionWithPlayer(const sf::Sprite& playerSprite);
@@ -93,6 +97,8 @@ private:
 
     // 更新精灵列表
     void updateObstacleItemSprites();
+    // 更新实体边界
+    void updateEntityBounds();
 
     // 模式创建方法
     void createClusterPattern();     // 聚集模式
@@ -132,6 +138,7 @@ private:
     std::vector<sf::FloatRect> m_activeBounds;  // 存储已生成的障碍物组边界
     std::vector<Pattern> m_patterns;  // 预定义的障碍物和道具组合模式
     std::vector<sf::Sprite> m_obstacleItemSprites;  // 存储精灵
+    std::vector<sf::FloatRect> m_entityBounds;  // 存储实体的边界
     std::vector<std::pair<sf::Sprite, std::shared_ptr<EntityModel>>> m_spriteEntityPairs;
     
     // 时钟和随机数

@@ -49,8 +49,10 @@ public:
     void setContinueButton(const std::unique_ptr<sf::Sprite>* continueButton) { m_continueButton = continueButton; }
     void setContinueIcon(const std::unique_ptr<sf::Sprite>* continueIcon) { m_continueIcon = continueIcon; }
     void setReturnButton(const std::unique_ptr<sf::Sprite>* returnButton) { m_returnButton = returnButton; }
+    void setNewGameButton(const std::unique_ptr<sf::Sprite>* newGameButton) { m_newGameButton = newGameButton; }
     void setFont(const std::unique_ptr<sf::Font>* font) { MSYHBD_font = font; }
     void setObstacleItemSprites(const std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
+    void setEntityBounds(const std::vector<sf::FloatRect>& entityBounds) { m_entityBounds = &entityBounds; }
     void setScoreboard(const std::unique_ptr<sf::Sprite>* scoreboard) { m_scoreboard = scoreboard; }
     void setScore(const float* score) { m_score = score; }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
@@ -96,9 +98,11 @@ private:
     const std::unique_ptr<sf::Sprite>* m_continueButton;
     const std::unique_ptr<sf::Sprite>* m_continueIcon;
     const std::unique_ptr<sf::Sprite>* m_returnButton;
+    const std::unique_ptr<sf::Sprite>* m_newGameButton;
     const std::unique_ptr<sf::Sprite>* m_scoreboard;
     const std::unique_ptr<sf::Font>* MSYHBD_font;
     const std::vector<sf::Sprite>* m_obstacleItemSprites;
+    const std::vector<sf::FloatRect>* m_entityBounds;  // 存储已生成的障碍物组边界
     const float* m_score;
     const std::vector<sf::Sprite>* m_startMenuPlayerAnimation;
     const Config::GameState* m_gameState;

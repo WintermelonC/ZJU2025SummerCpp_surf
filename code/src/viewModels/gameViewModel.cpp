@@ -15,6 +15,10 @@ void GameViewModel::update(const sf::Vector2u& windowSize) {
     if (m_gameModel.getGameState() != Config::GameState::playing) {
         return;
     }
+    if (*m_playerHP <= 0 && m_playerHP != nullptr) {
+        m_gameModel.setGameState(Config::GameState::gameOver);
+        return;
+    }
     m_gameModel.update(*m_playerVelocity);
     updateWater(*m_playerVelocity);
 }

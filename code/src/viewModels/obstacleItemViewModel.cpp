@@ -53,6 +53,7 @@ void ObstacleItemViewModel::initialize() {
     
     // 确保精灵列表是最新的
     updateObstacleItemSprites();
+    updateEntityBounds();
 }
 
 void ObstacleItemViewModel::updatePosition() {
@@ -83,6 +84,7 @@ void ObstacleItemViewModel::updatePosition() {
     
     // 更新独立的精灵列表
     updateObstacleItemSprites();
+    updateEntityBounds();
 }
 
 bool ObstacleItemViewModel::spawnSingle() {
@@ -111,6 +113,7 @@ bool ObstacleItemViewModel::spawnSingle() {
             m_activeBounds.push_back(bounds);
             m_spriteEntityPairs.push_back(spriteEntityPair);
             updateObstacleItemSprites(); // 更新独立的精灵列表
+            updateEntityBounds();
             return true;
         }
     }
@@ -161,6 +164,7 @@ bool ObstacleItemViewModel::spawnGroup() {
                 // }
             }
             updateObstacleItemSprites(); // 更新独立的精灵列表
+            updateEntityBounds();
             return true;
         }
     }
@@ -505,14 +509,18 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
     sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
 
     sf::Vector2f center = {
-        playerBounds.position.x + playerBounds.size.x / 2,
-        playerBounds.position.y + playerBounds.size.y / 2
+        playerBounds.position.x + playerBounds.size.x * Config::Game::PLAYER_CENTER_X_COLLISION_SCALE,
+        playerBounds.position.y + playerBounds.size.y * Config::Game::PLAYER_CENTER_Y_COLLISION_SCALE
     };
 
-    sf::Vector2f newSize = playerBounds.size * 0.66f;
+    sf::Vector2f newSize = {
+        playerBounds.size.x * Config::Game::PLAYER_SIZE_X_COLLISION_SCALE,
+        playerBounds.size.y * Config::Game::PLAYER_SIZE_Y_COLLISION_SCALE
+    };
+
     sf::Vector2f newPosition = {
-        center.x - newSize.x / 2,
-        center.y - newSize.y / 2
+        center.x - newSize.x * Config::Game::PLAYER_POSITION_X_COLLISION_SCALE,
+        center.y - newSize.y * Config::Game::PLAYER_POSITION_Y_COLLISION_SCALE
     };
 
     playerBounds = sf::FloatRect(newPosition, newSize);
@@ -520,11 +528,14 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
     auto& notificationCenter = NotificationCenter::getInstance();
     
     for (auto it = m_spriteEntityPairs.begin(); it != m_spriteEntityPairs.end(); it++) {
-        sf::FloatRect spriteBounds = it->first.getGlobalBounds();
+        // 获取当前精灵的边界
+        auto that = m_entityBounds.begin() + (it - m_spriteEntityPairs.begin());
+        sf::FloatRect spriteBounds = *that;
         
         // 使用findIntersection进行精确碰撞检测
         if (playerBounds.findIntersection(spriteBounds)) {
             if (it->second->isObstacle()) {
+                std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
                 // 障碍物碰撞处理
                 ObstacleType obstacleType = it->second->getObstacleType();
                 
@@ -561,6 +572,7 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
                 // 移除已收集的道具
                 it = m_spriteEntityPairs.erase(it);
                 updateObstacleItemSprites();
+                updateEntityBounds();
                 return true;
             }
         }
@@ -578,6 +590,69 @@ void ObstacleItemViewModel::updateObstacleItemSprites() {
     // 从配对中提取所有精灵
     for (const auto& pair : m_spriteEntityPairs) {
         m_obstacleItemSprites.push_back(pair.first);
+    }
+}
+
+void ObstacleItemViewModel::updateEntityBounds() {
+    // 清空当前的entityBounds
+    m_entityBounds.clear();
+
+    // 预分配空间以提高性能
+    m_entityBounds.reserve(m_spriteEntityPairs.size());
+
+    // 从配对中提取所有EntityModel的边界
+    for (const auto& pair : m_spriteEntityPairs) {
+        sf::FloatRect bounds = pair.first.getGlobalBounds();
+        EntityModel *entityModel = pair.second.get();
+        sf::Vector2f center = {
+            bounds.position.x + bounds.size.x * Config::Game::PLAYER_CENTER_X_COLLISION_SCALE,
+            bounds.position.y + bounds.size.y * Config::Game::PLAYER_CENTER_Y_COLLISION_SCALE
+        };
+        sf::Vector2f newSize = {
+            bounds.size.x * Config::Game::PLAYER_SIZE_X_COLLISION_SCALE,
+            bounds.size.y * Config::Game::PLAYER_SIZE_Y_COLLISION_SCALE
+        };
+
+        sf::Vector2f newPosition = {
+            center.x - newSize.x * Config::Game::PLAYER_POSITION_X_COLLISION_SCALE,
+            center.y - newSize.y * Config::Game::PLAYER_POSITION_Y_COLLISION_SCALE
+        };
+        if( entityModel->isObstacle()) {
+            ObstacleType obstacleType = entityModel->getObstacleType();
+            switch(obstacleType) {
+                case ObstacleType::stone:
+                case ObstacleType::wood:
+                case ObstacleType::seaweed:
+                case ObstacleType::boat:
+                case ObstacleType::beach:
+                case ObstacleType::ripple:
+                case ObstacleType::bridge:
+                case ObstacleType::sp_bridge:
+                case ObstacleType::buoy:
+                case ObstacleType::coral:
+                case ObstacleType::l_beach:
+                case ObstacleType::l_bridge:
+                case ObstacleType::m_beach:
+                case ObstacleType::m_boat:
+                case ObstacleType::m_bridge:
+                case ObstacleType::mm_bridge:
+                case ObstacleType::mm_beach:
+                case ObstacleType::s_buoy: 
+            }
+        }
+        else if (entityModel->isItem()) {
+            ItemType itemType = entityModel->getItemType();
+            switch (itemType) {
+                case ItemType::power:
+                case ItemType::heart:
+                    m_entityBounds.push_back(bounds);
+                    break;
+                default:
+                    break;
+            }
+        }
+        bounds = sf::FloatRect(newPosition, newSize);
+        m_entityBounds.push_back(bounds);
     }
 }
 

@@ -14,6 +14,7 @@ enum class SpriteType {
     continue_button,
     continue_icon,
     return_button,
+    newGame_button,
     scoreboard,
 };
 

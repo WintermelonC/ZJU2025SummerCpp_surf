@@ -28,7 +28,7 @@ void GameView::run() {
         }
         // 触发 ObstacleItemViewModel 的 update
         if (m_obstacleItemUpdateCallback) {
-            m_obstacleItemUpdateCallback(deltaTime);
+            m_obstacleItemUpdateCallback(deltaTime, *m_player->get());
         }
         // 触发 AnimationViewModel 的 update
         if (m_animationUpdateCallback) {
@@ -121,8 +121,13 @@ void GameView::handleEvents() {
                     Config::Window::RETURN_BUTTON_POS,
                     {Config::Window::BUTTON_SIZE.x * Config::Window::START_BUTTON_SCALE.x, Config::Window::BUTTON_SIZE.y * Config::Window::START_BUTTON_SCALE.y}
                 );
+                bool newGameButtonPressed = Utils::ifMouseOnButton(
+                    worldPos,
+                    Config::Window::NEWGAME_BUTTON_POS,
+                    {Config::Window::BUTTON_SIZE.x * Config::Window::NEWGAME_BUTTON_SCALE.x, Config::Window::BUTTON_SIZE.y * Config::Window::NEWGAME_BUTTON_SCALE.y}
+                );
                 if (m_onMouseLeftClick) {
-                    m_onMouseLeftClick(startButtonPressed, continueButtonPressed, returnButtonPressed);
+                    m_onMouseLeftClick(startButtonPressed, continueButtonPressed, returnButtonPressed, newGameButtonPressed);
                 }
             }
         } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
@@ -175,8 +180,8 @@ void GameView::renderGameplay() {
         
 #ifdef DEBUG
     // 绘制障碍物道具碰撞箱
-    for (const auto& sprite : *m_obstacleItemSprites) {
-        sf::FloatRect bounds = sprite.getGlobalBounds();
+    for (const auto& bounds : *m_entityBounds) {
+
         sf::RectangleShape collisionBox;
         collisionBox.setSize(bounds.size);
         collisionBox.setPosition(bounds.position);
@@ -190,14 +195,17 @@ void GameView::renderGameplay() {
     sf::FloatRect playerBounds = m_player->get()->getGlobalBounds();
 
     sf::Vector2f center = {
-        playerBounds.position.x + playerBounds.size.x / 2,
-        playerBounds.position.y + playerBounds.size.y / 2
+        playerBounds.position.x + playerBounds.size.x * 0.5f,
+        playerBounds.position.y + playerBounds.size.y * 0.63f
     };
 
-    sf::Vector2f newSize = playerBounds.size * 0.66f;
+    sf::Vector2f newSize = {
+        playerBounds.size.x * 0.5f,
+        playerBounds.size.y * 0.3f
+    };
     sf::Vector2f newPosition = {
-        center.x - newSize.x / 2,
-        center.y - newSize.y / 2
+        center.x - newSize.x * 0.5f,
+        center.y - newSize.y * 0.5f
     };
 
     playerBounds = sf::FloatRect(newPosition, newSize);
@@ -352,9 +360,112 @@ void GameView::renderPauseMenu() {
 }
 
 void GameView::renderGameOver() {
-    renderGameplay(); // 先渲染游戏画面
+    // 绘制游戏结束界面
+    // 渲染背景
+    renderBackground();
+    // 分数版阴影
+    sf::Sprite scoreboardShadow = *m_scoreboard->get();
+    scoreboardShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    scoreboardShadow.move({0.f, 4.f});  // 向下偏移
+    // 分数
+    int score = static_cast<int>(*m_score);
+    sf::Text scoreText = renderText(
+        *MSYHBD_font->get(),
+        std::to_string(score),
+        30,
+        sf::Color::Black,
+        m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -6.f},
+        true
+    );
+    for (const auto& ripple : *m_ripples) {
+        // 绘制水波纹
+        m_window.draw(ripple.trail);
+    }
+    for (const auto& tail : *m_tails) {
+        // 绘制尾迹
+        m_window.draw(tail.trail);
+    }
+    // 绘制障碍物和道具
+    for (const auto& sprite : *m_obstacleItemSprites) {
+        m_window.draw(sprite);
+    }
+    // 绘制玩家
+    m_window.draw(*m_player->get());
+
+    m_window.draw(scoreboardShadow);  // 绘制分数版阴影
+    m_window.draw(*m_scoreboard->get());
+    m_window.draw(scoreText);  // 绘制分数
+
+    // 结束文字
+    sf::Text pausedText = renderText(
+        *MSYHBD_font->get(),
+        "游戏结束",
+        75,
+        sf::Color::Black,
+        static_cast<sf::Vector2f>(Config::Window::RENDER_CENTER) + sf::Vector2f{0.f, -400.f},
+        true
+    );
+
+    // 返回按钮
+    Utils::setSpriteColor(
+        *m_returnButton->get(),
+        Config::Texture::BUTTON_COLOR
+    );
+    // 返回按钮阴影
+    sf::Sprite returnButtonShadow = *m_returnButton->get();
+    returnButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    returnButtonShadow.move({0.f, 4.f});  // 向下偏移
+
+    // 返回文字
+    sf::Text returnText = renderText(
+        *MSYHBD_font->get(),
+        "返回菜单",
+        26,
+        sf::Color::Black,
+        Config::Window::RETURN_BUTTON_POS - sf::Vector2f{0.f, 5.f},
+        true
+    );
+
+    // 新游戏按钮
+    Utils::setSpriteColor(
+        *m_newGameButton->get(),
+        Config::Texture::BUTTON_COLOR
+    );
+    // 新游戏按钮阴影
+    sf::Sprite newGameButtonShadow = *m_newGameButton->get();
+    newGameButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    newGameButtonShadow.move({0.f, 4.f});  // 向下偏移
+
+    // 新游戏文字
+    sf::Text newGameText = renderText(
+        *MSYHBD_font->get(),
+        "新游戏",
+        26,
+        sf::Color::Black,
+        Config::Window::NEWGAME_BUTTON_POS - sf::Vector2f{0.f, 5.f},
+        true
+    );    
+
+    mouseHoverButton(
+        *m_newGameButton->get(), 
+        newGameButtonShadow, 
+        m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window))
+    );
+    mouseHoverButton(
+        *m_returnButton->get(), 
+        returnButtonShadow, 
+        m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window))
+    );
 
     // 绘制游戏结束界面
+    m_window.draw(pausedText);  // 绘制游戏结束文字
+    m_window.draw(newGameButtonShadow);  // 绘制新游戏按钮阴影
+    m_window.draw(*m_newGameButton->get()); // 绘制新游戏按钮
+    m_window.draw(newGameText);  // 绘制新游戏文字
+    m_window.draw(returnButtonShadow);  // 绘制返回按钮阴影
+    m_window.draw(*m_returnButton->get());   // 绘制返回按钮
+    m_window.draw(returnText);  // 绘制返回文字
+    
 }
 
 void GameView::display() {

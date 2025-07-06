@@ -20,6 +20,7 @@ bool SpriteViewModel::initialize() {
     success &= loadSprite(SpriteType::continue_button, TextureType::button);
     success &= loadSprite(SpriteType::continue_icon, TextureType::start_icon);
     success &= loadSprite(SpriteType::return_button, TextureType::button);
+    success &= loadSprite(SpriteType::newGame_button, TextureType::button);
     success &= loadSprite(SpriteType::scoreboard, TextureType::scoreboard);
 
     setSprite(
@@ -143,6 +144,7 @@ void SpriteViewModel::initializeButtonIcons() {
     setSprite(SpriteType::continue_button, Config::Texture::BUTTON_COLOR, Config::Window::CONTINUE_BUTTON_POS, Config::Window::CONTINUE_BUTTON_SCALE);
     setSprite(SpriteType::continue_icon, sf::Color::White, Config::Window::CONTINUE_BUTTON_POS - sf::Vector2f{75.f, 0.f}, {0.9f, 0.9f});
     setSprite(SpriteType::return_button, Config::Texture::BUTTON_COLOR, Config::Window::RETURN_BUTTON_POS, Config::Window::RETURN_BUTTON_SCALE);
+    setSprite(SpriteType::newGame_button, Config::Texture::BUTTON_COLOR, Config::Window::NEWGAME_BUTTON_POS, Config::Window::NEWGAME_BUTTON_SCALE);
 }
 
 void SpriteViewModel::onNotification(const NotificationData& data) {
