@@ -11,3 +11,9 @@ Config::PlayerUpdateCallback PlayerViewModel::getUpdateCommand() {
         update(deltaTime, mousePos, windowSize);
     };
 }
+
+Config::MouseLeftClickPlayerWaitingCallback PlayerViewModel::getMouseLeftClickPlayerWaitingCommand() {
+    return [this]() {
+        updateWaiting();
+    };
+}

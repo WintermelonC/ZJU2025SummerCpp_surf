@@ -24,26 +24,7 @@ void ObstacleItemViewModel::update(const float& dt) {
     
     m_spawnClock.restart();
     
-    // 根据权重随机选择生成模式
-    std::discrete_distribution<> modeDist(m_spawnWeights.begin(), m_spawnWeights.end());
-    int mode = modeDist(m_gen);
-    
-    switch (mode) {
-        case 0: // 单个障碍物
-            spawnSingle();
-            break;
-        default:
-            spawnGroup();
-            break;
-    }
-    
-    // 清理超出屏幕的碰撞盒
-    auto it = std::remove_if(m_activeBounds.begin(), m_activeBounds.end(),
-        [](const sf::FloatRect& rect) {
-            return rect.position.y + rect.size.y < 0; // 如果已经完全超出屏幕顶部
-        }
-    );
-    m_activeBounds.erase(it, m_activeBounds.end());
+    spawnGroup();
 }
 
 void ObstacleItemViewModel::initialize() {
@@ -56,6 +37,7 @@ void ObstacleItemViewModel::initialize() {
     createTunnelPattern();
     createPowerPattern();
     createHeartPattern();
+    createSinglePattern();
     
     // 确保精灵列表是最新的
     updateObstacleItemSprites();
@@ -74,12 +56,6 @@ void ObstacleItemViewModel::updatePosition() {
         // EntityModel在这里不需要更新，只用于类型信息
     }
 
-    // 更新碰撞盒位置
-    for (auto& bounds : m_activeBounds) {
-        bounds.position.x += movement.x;
-        bounds.position.y += movement.y;
-    }
-
     // 移除超出屏幕的障碍物
     auto it = std::remove_if(m_spriteEntityPairs.begin(), m_spriteEntityPairs.end(),
         [](const std::pair<sf::Sprite, std::shared_ptr<EntityModel>>& pair) {
@@ -93,44 +69,9 @@ void ObstacleItemViewModel::updatePosition() {
     updateEntityBounds();
 }
 
-bool ObstacleItemViewModel::spawnSingle() {
-    const int MAX_ATTEMPTS = 5;
-    
-    for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
-        std::uniform_int_distribution<> xDist(0, Config::Window::RENDER_SIZE.x);
-        int x = xDist(m_gen);
-        int y = Config::Window::RENDER_SIZE.y * 1.5f;
-        
-        // 随机选择障碍物类型
-        ObstacleType obstacleType = ObstacleType::any;
-        SpawnItem item(obstacleType);
-        
-        // 创建临时精灵以获取边界
-        auto spriteEntityPair = createSpriteEntityPair(item, {static_cast<float>(x), static_cast<float>(y)});
-        
-        // 添加边距以避免紧挨着
-        sf::FloatRect bounds = spriteEntityPair.first.getGlobalBounds();
-        bounds.position.x -= 10;
-        bounds.position.y -= 10;
-        bounds.size.x += 20;
-        bounds.size.y += 20;
-        
-        if (!checkCollision(bounds)) {
-            m_activeBounds.push_back(bounds);
-            m_spriteEntityPairs.push_back(spriteEntityPair);
-            updateObstacleItemSprites(); // 更新独立的精灵列表
-            updateEntityBounds();
-            return true;
-        }
-    }
-    
-    // 所有尝试都失败
-    return false;
-}
-
 bool ObstacleItemViewModel::spawnGroup() {
     if (m_patterns.empty()) {
-        return spawnSingle();
+        return false;
     }
     
     // 随机选择一个障碍物组模式
@@ -154,8 +95,6 @@ bool ObstacleItemViewModel::spawnGroup() {
         sf::FloatRect patternBounds = getPatternBounds(pattern, centerPos);
         if (!checkCollision(patternBounds)) {
             // 无碰撞，生成障碍物组
-            m_activeBounds.push_back(patternBounds);
-            
             // 生成障碍物组中的每个障碍物
             for (size_t i = 0; i < pattern.positions.size(); i++) {
                 sf::Vector2f worldPos = {
@@ -163,11 +102,8 @@ bool ObstacleItemViewModel::spawnGroup() {
                     centerY + pattern.positions[i].y
                 };
                 
-                // if (isPositionValid(worldPos)) {
-                    // 创建 sprite 和 EntityModel 配对
-                    auto spriteEntityPair = createSpriteEntityPair(pattern.items[i], worldPos);
-                    m_spriteEntityPairs.push_back(spriteEntityPair);
-                // }
+                auto spriteEntityPair = createSpriteEntityPair(pattern.items[i], worldPos);
+                m_spriteEntityPairs.push_back(spriteEntityPair);
             }
             updateObstacleItemSprites(); // 更新独立的精灵列表
             updateEntityBounds();
@@ -305,6 +241,22 @@ void ObstacleItemViewModel::createHeartPattern() {
     m_patterns.push_back(pattern);
 }
 
+void ObstacleItemViewModel::createSinglePattern() {
+    Pattern pattern;
+    // 1
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::mm_beach)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 2
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::boat)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+}
+
 TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
     switch (type) {
         case ObstacleType::wood: {
@@ -399,21 +351,9 @@ TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
         }
         case ObstacleType::any:
         default: {
-            // 从特定类型中随机选择：mm_beach 和 boat
-            std::uniform_int_distribution<> typeDist(0, 1);
-            int randomType = typeDist(m_gen);
-            
-            if (randomType == 0) {
-                // 选择 mm_beach
-                std::uniform_int_distribution<> mmBeachDist(0, ObstacleModel::getMMBeachCount() - 1);
-                int randomMMBeach = mmBeachDist(m_gen);
-                return static_cast<TextureType>(static_cast<int>(TextureType::mm_beach_1) + randomMMBeach);
-            } else {
-                // 选择 boat
-                std::uniform_int_distribution<> boatDist(0, ObstacleModel::getBoatCount() - 1);
-                int randomBoat = boatDist(m_gen);
-                return static_cast<TextureType>(static_cast<int>(TextureType::boat_1) + randomBoat);
-            }
+            std::uniform_int_distribution<> dist(0, static_cast<int>(TextureType::s_buoy_1) - static_cast<int>(TextureType::wood_1));
+            int randomType = dist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::wood_1) + randomType);
         }
     }
 }
@@ -424,7 +364,7 @@ bool ObstacleItemViewModel::isPositionValid(const sf::Vector2f& position) {
 
 bool ObstacleItemViewModel::checkCollision(const sf::FloatRect& newRect) {
     // 检查是否与任何已有的边界碰撞
-    for (const auto& existingBounds : m_activeBounds) {
+    for (const auto& existingBounds : m_entityBounds) {
         if (newRect.findIntersection(existingBounds)) {
             return true; // 检测到碰撞
         }
@@ -483,7 +423,7 @@ void ObstacleItemViewModel::resetObstacles() {
     m_obstacleItemSprites.clear();
     
     // 清空活动边界
-    m_activeBounds.clear();
+    m_entityBounds.clear();
     
     // 重置生成计时器
     m_spawnClock.restart();
@@ -544,12 +484,12 @@ std::shared_ptr<EntityModel> ObstacleItemViewModel::createEntityModel(ItemType i
 }
 
 bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSprite) {
+    if (m_gameState && *m_gameState != Config::GameState::playing) {
+        return false;
+    }
     sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
 
-    sf::Vector2f center = {
-        playerBounds.position.x + playerBounds.size.x * Config::Game::PLAYER_CENTER_X_COLLISION_SCALE,
-        playerBounds.position.y + playerBounds.size.y * Config::Game::PLAYER_CENTER_Y_COLLISION_SCALE
-    };
+    sf::Vector2f center = playerBounds.getCenter();
 
     sf::Vector2f newSize = {
         playerBounds.size.x * Config::Game::PLAYER_SIZE_X_COLLISION_SCALE,
@@ -557,8 +497,8 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
     };
 
     sf::Vector2f newPosition = {
-        center.x - newSize.x * Config::Game::PLAYER_POSITION_X_COLLISION_SCALE,
-        center.y - newSize.y * Config::Game::PLAYER_POSITION_Y_COLLISION_SCALE
+        center.x - newSize.x / 2.f + Config::Game::PLAYER_POSITION_X_OFFSET,
+        center.y - newSize.y / 2.f + Config::Game::PLAYER_POSITION_Y_OFFSET
     };
 
     playerBounds = sf::FloatRect(newPosition, newSize);
@@ -573,7 +513,7 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
         // 使用findIntersection进行精确碰撞检测
         if (playerBounds.findIntersection(spriteBounds)) {
             if (it->second->isObstacle()) {
-                std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
+                // std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
                 // 障碍物碰撞处理
                 ObstacleType obstacleType = it->second->getObstacleType();
                 
@@ -642,51 +582,99 @@ void ObstacleItemViewModel::updateEntityBounds() {
     for (const auto& pair : m_spriteEntityPairs) {
         sf::FloatRect bounds = pair.first.getGlobalBounds();
         EntityModel *entityModel = pair.second.get();
-        sf::Vector2f center = {
-            bounds.position.x + bounds.size.x * Config::Game::PLAYER_CENTER_X_COLLISION_SCALE,
-            bounds.position.y + bounds.size.y * Config::Game::PLAYER_CENTER_Y_COLLISION_SCALE
-        };
+
+        sf::Vector2f center = bounds.getCenter();
+
         sf::Vector2f newSize = {
             bounds.size.x * Config::Game::PLAYER_SIZE_X_COLLISION_SCALE,
             bounds.size.y * Config::Game::PLAYER_SIZE_Y_COLLISION_SCALE
         };
 
         sf::Vector2f newPosition = {
-            center.x - newSize.x * Config::Game::PLAYER_POSITION_X_COLLISION_SCALE,
-            center.y - newSize.y * Config::Game::PLAYER_POSITION_Y_COLLISION_SCALE
+            center.x - newSize.x / 2.f,
+            center.y - newSize.y / 2.f
         };
-        if( entityModel->isObstacle()) {
+
+        if (entityModel->isObstacle()) {
             ObstacleType obstacleType = entityModel->getObstacleType();
             switch(obstacleType) {
-                case ObstacleType::stone:
-                case ObstacleType::wood:
-                case ObstacleType::seaweed:
-                case ObstacleType::boat:
-                case ObstacleType::beach:
-                case ObstacleType::ripple:
-                case ObstacleType::bridge:
-                case ObstacleType::sp_bridge:
-                case ObstacleType::buoy:
-                case ObstacleType::coral:
-                case ObstacleType::l_beach:
-                case ObstacleType::l_bridge:
-                case ObstacleType::m_beach:
-                case ObstacleType::m_boat:
-                case ObstacleType::m_bridge:
-                case ObstacleType::mm_bridge:
-                case ObstacleType::mm_beach:
-                case ObstacleType::s_buoy: 
+                case ObstacleType::stone: {
+                    setRecNewSize(newSize, {1.2f, 1.f});
+                    setRecNewPos(newPosition, center, newSize, {0, 20.f});
+                    break;
+                }
+                case ObstacleType::wood: {
+                    setRecNewSize(newSize, {0.9f, 1.f});
+                    setRecNewPos(newPosition, center, newSize, {0, 20.f});
+                    break;
+                }
+                case ObstacleType::seaweed: {
+                    newSize = bounds.size;
+                    setRecNewSize(newSize, {0.8f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize);
+                    break;
+                }
+                case ObstacleType::boat: {
+                    setRecNewSize(newSize, {1.2f, 1.f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 20.f});
+                    break;
+                }
+                case ObstacleType::beach: {
+                    setRecNewSize(newSize, {1.1f, 1.f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 20.f});
+                    break;
+                }
+                case ObstacleType::ripple: break;
+                case ObstacleType::bridge: {
+                    setRecNewSize(newSize, {2.5f, 2.f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 20.f});
+                    break;
+                }
+                case ObstacleType::sp_bridge: break;
+                case ObstacleType::buoy: break;
+                case ObstacleType::coral: break;
+                case ObstacleType::l_beach: break;
+                case ObstacleType::l_bridge: break;
+                case ObstacleType::m_beach: {
+                    setRecNewSize(newSize, {1.5f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 40.f});
+                    break;
+                }
+                case ObstacleType::m_boat: break;
+                case ObstacleType::m_bridge: {
+                    setRecNewSize(newSize, {1.5f, 1.f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 40.f});
+                    break;
+                }
+                case ObstacleType::mm_bridge: break;
+                case ObstacleType::mm_beach: {
+                    setRecNewSize(newSize, {3.f, 1.5f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 40.f});
+                    break;
+                }
+                case ObstacleType::s_buoy: break;
             }
-        }
-        else if (entityModel->isItem()) {
+        } else if (entityModel->isItem()) {
             ItemType itemType = entityModel->getItemType();
             switch (itemType) {
-                case ItemType::power:
-                case ItemType::heart:
-                    m_entityBounds.push_back(bounds);
+                case ItemType::power: {
+                    newSize = bounds.size;
+                    setRecNewSize(newSize, {0.8f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize);
                     break;
-                default:
+                }
+                case ItemType::heart: {
+                    newSize = bounds.size;
+                    setRecNewSize(newSize, {0.8f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize);
                     break;
+                }
+                default: {
+                    newSize = bounds.size;
+                    setRecNewSize(newSize, {0.8f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize);
+                    break;
+                }
             }
         }
         bounds = sf::FloatRect(newPosition, newSize);
@@ -732,5 +720,17 @@ TextureType ObstacleItemViewModel::getItemTexture(ItemType type) {
             return TextureType::power_item_1;
         case ItemType::heart:
             return TextureType::heart_item_1;
+        default:
+            return TextureType::power_item_1;
     }
+}
+
+void ObstacleItemViewModel::setRecNewPos(sf::Vector2f& Pos, const sf::Vector2f& center, const sf::Vector2f& size, const sf::Vector2f& offset) {
+    Pos.x = center.x - size.x / 2.f + offset.x;
+    Pos.y = center.y - size.y / 2.f + offset.y;
+}
+
+void ObstacleItemViewModel::setRecNewSize(sf::Vector2f& size, const sf::Vector2f& scale) {
+    size.x *= scale.x;
+    size.y *= scale.y;
 }

@@ -36,6 +36,9 @@ bool TextureManager::initialize() {
     success &= loadTexture(TextureType::player_stop_1, playerPath + "player_stop_1.png");
     success &= loadTexture(TextureType::player_stop_2, playerPath + "player_stop_2.png");
     success &= loadTexture(TextureType::player_stop_3, playerPath + "player_stop_3.png");
+    success &= loadTexture(TextureType::player_wait_1, playerPath + "player_wait_1.png");
+    success &= loadTexture(TextureType::player_wait_2, playerPath + "player_wait_2.png");
+    success &= loadTexture(TextureType::player_wait_3, playerPath + "player_wait_3.png");
 
     success &= loadTexture(TextureType::heart_1, playerPath + "heart_1.png");
     success &= loadTexture(TextureType::heart_2, playerPath + "heart_2.png");

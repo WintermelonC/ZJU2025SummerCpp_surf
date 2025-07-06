@@ -15,6 +15,7 @@ namespace Config {
     using GameUpdateCallback = std::function<void(const sf::Vector2u&)>;
     using ObstacleItemUpdateCallback = std::function<void(const float&, const sf::Sprite&)>;
     using SpriteUpdateCallback = std::function<void(const sf::Vector2u&)>;
+    using MouseLeftClickPlayerWaitingCallback = std::function<void()>;
 
     // 枚举类型定义
     enum class GameState {
@@ -87,11 +88,9 @@ namespace Config {
     namespace Game {
         constexpr float PARALLAX_FACTOR = 0.1f;  // 视差因子
 
-        constexpr float PLAYER_CENTER_X_COLLISION_SCALE = 0.5f;
-        constexpr float PLAYER_CENTER_Y_COLLISION_SCALE = 0.63f;
-        constexpr float PLAYER_SIZE_X_COLLISION_SCALE = 0.5f;
-        constexpr float PLAYER_SIZE_Y_COLLISION_SCALE = 0.3f;
-        constexpr float PLAYER_POSITION_X_COLLISION_SCALE = 0.5f;
-        constexpr float PLAYER_POSITION_Y_COLLISION_SCALE = 0.5f;
+        constexpr float PLAYER_SIZE_X_COLLISION_SCALE = 0.3f;
+        constexpr float PLAYER_SIZE_Y_COLLISION_SCALE = 0.2f;
+        constexpr float PLAYER_POSITION_X_OFFSET = 0.f;
+        constexpr float PLAYER_POSITION_Y_OFFSET = 20.f;
     }
 }

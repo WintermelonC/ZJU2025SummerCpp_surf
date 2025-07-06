@@ -24,10 +24,12 @@ public:
     const int& getPower() const { return m_power; }
     const bool& isPower() const { return m_isPower; }
     const bool& isTurn() const { return m_isTurn; }
+    const bool& isWaiting() const { return m_isWaiting; }
 
     // Setter 方法
     void setVelocity(const sf::Vector2f& velocity) { m_velocity = velocity; }
     void setAngle(const sf::Angle& angle) { m_angle = angle; }
+    void setWaiting(const bool& isWaiting) { m_isWaiting = isWaiting; }
 
     // 碰撞效果处理方法
     void takeDamage(int damage);
@@ -83,5 +85,8 @@ private:
     // 无敌时间相关
     bool m_isInvincible = false;
     float m_invincibleTimer = 0.0f;
-    const float m_invincibleDuration = 5.0f;  // 默认无敌时间5秒
+    const float m_invincibleDuration = 3.0f;  // 默认无敌时间5秒
+
+    // 等待状态
+    bool m_isWaiting = false;
 };

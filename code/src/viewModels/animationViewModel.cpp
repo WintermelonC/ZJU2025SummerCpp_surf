@@ -175,6 +175,12 @@ void AnimationViewModel::initialize() {
         TextureType::player_stop_3
     }, 0.1f, true));
 
+    addAnimation("waiting", AnimationConfig({
+        TextureType::player_wait_1,
+        TextureType::player_wait_2,
+        TextureType::player_wait_3
+    }, 0.1f, true));
+
     playAnimation("player", "center");
 }
 
@@ -214,6 +220,11 @@ void AnimationViewModel::updatePlayerAnimation() {
         case Config::PlayerState::stop:
             targetAnimation = "stop";
             break;
+    }
+
+    if (m_isPlayerWaiting && *m_isPlayerWaiting) {
+        // 如果玩家处于等待状态，使用等待动画
+        targetAnimation = "waiting";
     }
     
     // 如果需要切换动画，则切换

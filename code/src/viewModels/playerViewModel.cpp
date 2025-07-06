@@ -34,7 +34,7 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
             break;
         }
         case NotificationType::DamageCollision: {
-            std::cout << "PlayerViewModel: Received DamageCollision notification." << std::endl;
+            // std::cout << "PlayerViewModel: Received DamageCollision notification." << std::endl;
             // 只有在非无敌状态下才处理伤害碰撞
             if (!m_playerModel.isInvincible()) {
                 m_playerModel.takeDamage(1);
@@ -175,4 +175,9 @@ void PlayerViewModel::spawnTail(const sf::Angle& angle, const bool& ifSpawn) {
 
         m_tails.push_back({line, m_tailLifetime});
     }
+}
+
+void PlayerViewModel::updateWaiting() {
+    m_playerModel.setWaiting(false);
+    m_playerModel.setInvincible();
 }

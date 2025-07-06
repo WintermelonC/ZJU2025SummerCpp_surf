@@ -53,6 +53,7 @@ void SpriteViewModel::update(const sf::Vector2u& windowSize) {
     }
     if (*m_gameState == Config::GameState::playing) {
         setSpriteTexture(SpriteType::player, *m_playerTexture);
+        setSpriteAlpha(SpriteType::player, 255);
         setSprite(
             SpriteType::scoreboard,
             Config::Texture::BUTTON_COLOR,
@@ -60,12 +61,12 @@ void SpriteViewModel::update(const sf::Vector2u& windowSize) {
             Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
         );
         setSpritePosition(SpriteType::water, *m_waterOffset);
-        if (m_playerAlphaClock.getElapsedTime().asSeconds() >= 1.0f) {
+        if (m_playerAlphaClock.getElapsedTime().asSeconds() >= 0.24f) {
             m_currentPlayerAlphaFrame = (m_currentPlayerAlphaFrame + 1) % 2;  // 循环动画帧
             m_playerAlphaClock.restart();  // 重置动画时钟
         }
         if (*m_playerIsInvincible) {
-            setSpriteAlpha(SpriteType::player, m_currentAnimFrame == 0 ? 255 : 128);  // 闪烁效果
+            setSpriteAlpha(SpriteType::player, (m_currentPlayerAlphaFrame == 0) ? 200 : 128);  // 闪烁效果
         }
     }
 }

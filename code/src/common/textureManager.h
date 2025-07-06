@@ -20,6 +20,7 @@ enum class TextureType {
     player_right_11, player_right_12, player_right_13,
     player_right_21, player_right_22, player_right_23,
     player_stop_1, player_stop_2, player_stop_3,
+    player_wait_1, player_wait_2, player_wait_3,
     
     // UI纹理
     heart_1, heart_2, power_1, power_2,

@@ -14,6 +14,7 @@ public:
     // 主要更新方法
     void update(const float deltaTime, const sf::Vector2f& mousePos, const sf::Vector2u& windowSize);
     void usePower() { m_playerModel.usePower(); }
+    void updateWaiting();
 
     // 在初始化完成后调用，用于订阅通知
     void subscribeToNotifications();
@@ -28,6 +29,7 @@ public:
     const bool isPlayerStop() const { return m_playerModel.getState() == Config::PlayerState::stop; }
     const int& getPlayerHP() const { return m_playerModel.getHp(); }
     const bool& isPlayerInvincible() const { return m_playerModel.isInvincible();  }
+    const bool& isPlayerWaiting() const { return m_playerModel.isWaiting(); }
     
     // 获取UI元素
     std::deque<Config::Trail>& getRipples() { return m_ripples; }
@@ -38,6 +40,7 @@ public:
     // 获取回调方法
     Config::PlayerUpdateCallback getUpdateCommand();
     Config::MouseRightClickCallback getMouseRightClickCommand();
+    Config::MouseLeftClickPlayerWaitingCallback getMouseLeftClickPlayerWaitingCommand();
 
     // Setter 方法
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
