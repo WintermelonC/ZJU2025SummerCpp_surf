@@ -43,6 +43,10 @@ enum class TextureType {
     mm_bridge_1,
     mm_beach_1, mm_beach_2, mm_beach_3,
     s_buoy_1, s_buoy_2,
+
+    // 道具纹理
+    power_item_1, power_item_2, power_item_3, power_item_4, 
+    heart_item_1, heart_item_2, heart_item_3, heart_item_4
 };
 
 class TextureManager {

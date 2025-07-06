@@ -148,7 +148,8 @@ void PlayerViewModel::spawnRipple(const sf::Angle& angle, const bool& ifSpawn) {
         sf::RectangleShape line({3.f, 
                                  Utils::randomFloat(5.f, 10.f)});
         line.setRotation(angle + sf::degrees(Utils::randomFloat(-5.f, 5.f)));
-        line.setPosition({Config::Player::PLAYER_POS.x + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
+        line.setPosition({Config::Player::PLAYER_POS.x + std::tan(angle.asRadians()) * Config::Player::PLAYER_SIZE.y / 3.f
+                          + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
                           Config::Player::PLAYER_POS.y});
         line.setFillColor(m_rippleColor);
 

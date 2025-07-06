@@ -64,6 +64,20 @@ public:
         const sf::Vector2f& scale = {1.0f, 1.0f},
         const bool& ifCenter = true
     );
+
+    void setSpriteAlpha(
+        const SpriteType& spriteType,
+        const int& alpha
+    ) {
+        m_sprites[spriteType]->setColor(
+            sf::Color(
+                m_sprites[spriteType]->getColor().r,
+                m_sprites[spriteType]->getColor().g,
+                m_sprites[spriteType]->getColor().b,
+                alpha
+            )
+        );
+    }
     
     void setSpriteTexture(const SpriteType& spriteType, const TextureType& textureType) { 
         m_sprites[spriteType]->setTexture(*m_textureManager->getTexture(textureType)); 
@@ -77,6 +91,7 @@ public:
     void setPlayerTexture(const TextureType* playerTexture) { m_playerTexture = playerTexture; }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
     void setWaterOffset(const sf::Vector2f* waterOffset) { m_waterOffset = waterOffset; }
+    void setPlayerIsInvincible(const bool* playerIsInvincible) { m_playerIsInvincible = playerIsInvincible; }
 
 private:
     // 初始化和更新方法
@@ -96,10 +111,13 @@ private:
     // 动画相关
     sf::Clock m_animClock;
     int m_currentAnimFrame = 0;
+    sf::Clock m_playerAlphaClock;
+    int m_currentPlayerAlphaFrame = 0;
     
     // 外部状态依赖
     const sf::Vector2f* m_playerPosition;
     const TextureType* m_playerTexture;
     const Config::GameState* m_gameState;
     const sf::Vector2f* m_waterOffset;
+    const bool* m_playerIsInvincible;
 };
