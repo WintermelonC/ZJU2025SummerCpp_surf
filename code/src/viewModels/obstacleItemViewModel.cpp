@@ -54,6 +54,8 @@ void ObstacleItemViewModel::initialize() {
 
     createClusterPattern();
     createTunnelPattern();
+    createPowerPattern();
+    createHeartPattern();
     
     // 确保精灵列表是最新的
     updateObstacleItemSprites();
@@ -217,6 +219,8 @@ void ObstacleItemViewModel::createClusterPattern() {
     setPatternPosition(pattern);
     setPatternSize(pattern);
     m_patterns.push_back(pattern);
+    // 4
+
 }
 
 void ObstacleItemViewModel::createTunnelPattern() {
@@ -242,13 +246,59 @@ void ObstacleItemViewModel::createTunnelPattern() {
         SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
         SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone)
     };
-    pattern.width = 0;
-    pattern.height = 0;
-    for (const auto& pos : pattern.positions) {
-        pattern.width = std::max(pattern.width, pos.x);
-        pattern.height = std::max(pattern.height, pos.y);
-    }
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
     // m_patterns.push_back(pattern);
+}
+
+void ObstacleItemViewModel::createPowerPattern() {
+    Pattern pattern;
+    pattern.positions = {
+        {0, 0}, {m_seaweedSize.x, 0}, {m_seaweedSize.x * 2.f, 0},
+        {-m_seaweedSize.x * 2.f, m_seaweedSize.y}, {-m_seaweedSize.x, m_seaweedSize.y}, {0, 0}, 
+        {m_seaweedSize.x, m_seaweedSize.y}, {-m_seaweedSize.x * 0.75f, m_seaweedSize.y * 2.f}, {m_seaweedSize.x * 0.25f, m_seaweedSize.y * 1.75f},
+        {-m_seaweedSize.x * 1.75f, m_seaweedSize.y * 3.f}, {-m_seaweedSize.x * 2.25f, m_seaweedSize.y * 4.f}, {-m_seaweedSize.x * 0.5f, m_seaweedSize.y * 3.5f},
+        {m_seaweedSize.x * 0.5f, m_seaweedSize.y * 5.f}, {0, m_seaweedSize.y * 6.f}, {m_seaweedSize.x, m_seaweedSize.y * 4.f},
+        {m_seaweedSize.x * 2.f, m_seaweedSize.y * 3.f}, {m_seaweedSize.x * 3.f, m_seaweedSize.y * 5.f}, {m_seaweedSize.x * 4.5f, m_seaweedSize.y * 0.5f},
+        {m_seaweedSize.x * 4.5f, m_seaweedSize.y * 1.5f}, {m_seaweedSize.x * 3.5f + m_MMBridgeSize.x, m_seaweedSize.y * 2.f},
+        {m_seaweedSize.x * 5.5f, m_seaweedSize.y * 0.5f}, {m_seaweedSize.x * 3.5f + m_MMBridgeSize.x + m_seaweedSize.x, m_seaweedSize.y * 3.f}, {m_seaweedSize.x * 3.5f + m_MMBridgeSize.x * 0.75f, m_seaweedSize.y * 4.f},
+        {m_seaweedSize.x * 3.5f + m_MMBridgeSize.x + m_seaweedSize.x, m_seaweedSize.y * 4.f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::m_bridge),
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone), 
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone), SpawnItem(ItemType::power),
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::bridge), 
+        SpawnItem(ObstacleType::m_bridge), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::wood), 
+        SpawnItem(ObstacleType::mm_bridge), SpawnItem(ObstacleType::m_bridge), 
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::wood),
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+}
+
+void ObstacleItemViewModel::createHeartPattern() {
+    Pattern pattern;
+    pattern.positions = {
+        {0, 0}, {-m_seaweedSize.x, -m_seaweedSize.y}, {-m_seaweedSize.x * 0.5f, m_seaweedSize.y * 0.5f},
+        {-m_seaweedSize.x * 3.f, m_seaweedSize.y * 0.5f}, {-m_seaweedSize.x - m_MMBeachSize.x, m_seaweedSize.y * 1.5f}, {-m_seaweedSize.x * 1.25f - m_MMBeachSize.x, m_seaweedSize.y * 1.5f + m_MMBeachSize.y * 0.75f},
+        {-m_seaweedSize.x * 3.25f, m_seaweedSize.y * 0.5f + m_MMBeachSize.y}, {-m_seaweedSize.x * 2.5f, m_seaweedSize.y * 1.f + m_MMBeachSize.y}, {-m_seaweedSize.x * 1.5f, m_seaweedSize.y * 1.5f + m_LBeachSize.y},
+        {m_seaweedSize.x * 0.25f, m_seaweedSize.y * 3.f}, {m_seaweedSize.x * 2.f, m_seaweedSize.y * 3.f}, {m_seaweedSize.x * 1.5f, m_seaweedSize.y},
+        {m_seaweedSize.x * 3.75f, m_seaweedSize.y * 1.f}, {m_seaweedSize.x * 3.5f, m_seaweedSize.y * 1.f}, 
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::beach), 
+        SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::mm_beach), SpawnItem(ObstacleType::beach),
+        SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ItemType::heart), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::l_beach), 
+        SpawnItem(ObstacleType::beach), SpawnItem(ObstacleType::m_beach),
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
 }
 
 TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
@@ -461,7 +511,8 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
         case SpawnItem::Type::Item: {
             // TODO: 实现道具的纹理选择逻辑
             // 暂时使用默认纹理
-            sf::Sprite sprite = m_textureManager->getNewSprite(TextureType::heart_1);
+            TextureType textureType = getItemTexture(item.itemType);
+            sf::Sprite sprite = m_textureManager->getNewSprite(textureType);
             Utils::setSprite(
                 sprite,
                 sf::Color::White,
@@ -597,5 +648,14 @@ void ObstacleItemViewModel::setPatternPosition(Pattern& pattern) {
     for (auto& pos : pattern.positions) {
         pos.x *= Config::Player::PLAYER_SCALE.x;
         pos.y *= Config::Player::PLAYER_SCALE.y;
+    }
+}
+
+TextureType ObstacleItemViewModel::getItemTexture(ItemType type) {
+    switch (type) {
+        case ItemType::power:
+            return TextureType::power_item_1;
+        case ItemType::heart:
+            return TextureType::heart_item_1;
     }
 }

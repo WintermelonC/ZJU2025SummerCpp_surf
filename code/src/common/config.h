@@ -65,6 +65,7 @@ namespace Config {
         constexpr sf::Vector2f SIZE_4{64, 128};
         constexpr sf::Vector2f SIZE_5{128, 128};
         constexpr sf::Vector2f SIZE_6{192, 256};
+        constexpr sf::Vector2f SIZE_7{192, 128};
     }
 
     // 玩家配置
