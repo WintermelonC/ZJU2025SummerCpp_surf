@@ -14,20 +14,29 @@ void GameView::run() {
     while (m_window.isOpen()) {
         float deltaTime = m_clock.restart().asSeconds();
         sf::Vector2f mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+        sf::Vector2u windowSize = m_window.getSize();
         
         handleEvents();
         
         // 触发 GameViewModel 的 update
         if (m_GameViewModelUpdateCallback) {
-            m_GameViewModelUpdateCallback(m_window.getSize());
+            m_GameViewModelUpdateCallback(windowSize);
         }
         // 触发 PlayerViewModel 的 update
         if (m_playerUpdateCallback) {
-            m_playerUpdateCallback(deltaTime, mousePos);
+            m_playerUpdateCallback(deltaTime, mousePos, windowSize);
         }
         // 触发 ObstacleItemViewModel 的 update
         if (m_obstacleItemUpdateCallback) {
-            m_obstacleItemUpdateCallback(deltaTime, *m_player->get());
+            m_obstacleItemUpdateCallback(deltaTime);
+        }
+        // 触发 AnimationViewModel 的 update
+        if (m_animationUpdateCallback) {
+            m_animationUpdateCallback(deltaTime);
+        }
+        // 触发 SpriteViewModel 的 update
+        if (m_spriteUpdateCallback) {
+            m_spriteUpdateCallback(windowSize);
         }
         if (m_gameState) {
             switch (*m_gameState) {
@@ -149,22 +158,30 @@ void GameView::renderGameplay() {
         m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -6.f},
         true
     );
-    // 绘制玩家
-    m_window.draw(*m_player->get());
+    for (const auto& ripple : *m_ripples) {
+        // 绘制水波纹
+        m_window.draw(ripple.trail);
+    }
+    for (const auto& tail : *m_tails) {
+        // 绘制尾迹
+        m_window.draw(tail.trail);
+    }
     // 绘制障碍物和道具
     for (const auto& sprite : *m_obstacleItemSprites) {
         m_window.draw(sprite);
     }
+    // 绘制玩家
+    m_window.draw(*m_player->get());
         
-    #ifdef DEBUG
+#ifdef DEBUG
     // 绘制障碍物道具碰撞箱
     for (const auto& sprite : *m_obstacleItemSprites) {
         sf::FloatRect bounds = sprite.getGlobalBounds();
         sf::RectangleShape collisionBox;
         collisionBox.setSize(bounds.size);
         collisionBox.setPosition(bounds.position);
-        collisionBox.setFillColor(sf::Color(255, 0, 0, 100));  // 半透明红色
-        collisionBox.setOutlineColor(sf::Color(255, 0, 0, 255));  // 红色边框
+        collisionBox.setFillColor(sf::Color(175, 22, 11, 50));  // 半透明红色
+        collisionBox.setOutlineColor(sf::Color(175, 22, 11, 100));  // 红色边框
         collisionBox.setOutlineThickness(1.0f);
         m_window.draw(collisionBox);
     }
@@ -188,15 +205,23 @@ void GameView::renderGameplay() {
     sf::RectangleShape playerCollisionBox;
     playerCollisionBox.setSize(playerBounds.size);
     playerCollisionBox.setPosition(playerBounds.position);
-    playerCollisionBox.setFillColor(sf::Color(0, 255, 0, 100));  // 半透明绿色
-    playerCollisionBox.setOutlineColor(sf::Color(0, 255, 0, 255));  // 绿色边框
+    playerCollisionBox.setFillColor(sf::Color(106, 147, 31, 50));  // 半透明绿色
+    playerCollisionBox.setOutlineColor(sf::Color(106, 147, 31, 100));  // 绿色边框
     playerCollisionBox.setOutlineThickness(1.0f);
     m_window.draw(playerCollisionBox);
-    #endif
+#endif
 
     m_window.draw(scoreboardShadow);  // 绘制分数版阴影
     m_window.draw(*m_scoreboard->get());
     m_window.draw(scoreText);  // 绘制分数
+    for (const auto& heart : *m_heartSprites) {
+        // 绘制心形图标
+        m_window.draw(heart);
+    }
+    for (const auto& power : *m_powerSprites) {
+        // 绘制能量图标
+        m_window.draw(power);
+    }
 }
 
 void GameView::renderStartMenu() {
@@ -219,15 +244,22 @@ void GameView::renderStartMenu() {
         Config::Window::START_BUTTON_POS + sf::Vector2f{20.f, -6.f},
         true
     );
+    // 开始按钮
+    Utils::setSpriteColor(
+        *m_startButton->get(),
+        Config::Texture::BUTTON_COLOR
+    );
     // 开始按钮阴影
     sf::Sprite startButtonShadow = *m_startButton->get();
     startButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
     startButtonShadow.move({0.f, 4.f});  // 向下偏移
 
-    // TODO: 添加鼠标悬停按钮变化效果
-    // TODO: 添加角色动画
+    mouseHoverButton(
+        *m_startButton->get(), 
+        startButtonShadow, 
+        m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window))
+    );
     
-
     // 绘制标题
     m_window.draw(title);
     // 绘制开始按钮阴影
@@ -238,6 +270,7 @@ void GameView::renderStartMenu() {
     m_window.draw(*m_startIcon->get());
     // 绘制开始文字
     m_window.draw(startText);
+    m_window.draw(*m_playerStartMenu->get()); // 绘制玩家开始菜单图标
 }   
 
 void GameView::renderPauseMenu() {
@@ -256,7 +289,11 @@ void GameView::renderPauseMenu() {
         static_cast<sf::Vector2f>(Config::Window::RENDER_CENTER) + sf::Vector2f{0.f, -400.f},
         true
     );
-
+    // 继续按钮
+    Utils::setSpriteColor(
+        *m_continueButton->get(),
+        Config::Texture::BUTTON_COLOR
+    );
     // 继续按钮阴影
     sf::Sprite continueButtonShadow = *m_continueButton->get();
     continueButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
@@ -271,7 +308,11 @@ void GameView::renderPauseMenu() {
         Config::Window::CONTINUE_BUTTON_POS + sf::Vector2f{20.f, -6.f},
         true
     );
-
+    // 返回按钮
+    Utils::setSpriteColor(
+        *m_returnButton->get(),
+        Config::Texture::BUTTON_COLOR
+    );
     // 返回按钮阴影
     sf::Sprite returnButtonShadow = *m_returnButton->get();
     returnButtonShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
@@ -287,7 +328,16 @@ void GameView::renderPauseMenu() {
         true
     );
 
-    // TODO: 添加鼠标悬停按钮变化效果
+    mouseHoverButton(
+        *m_continueButton->get(), 
+        continueButtonShadow, 
+        m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window))
+    );
+    mouseHoverButton(
+        *m_returnButton->get(), 
+        returnButtonShadow, 
+        m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window))
+    );
 
     // 绘制暂停菜单
     m_window.draw(filter);
@@ -336,4 +386,17 @@ sf::Text GameView::renderText(
     text.setPosition(position);
 
     return text;
+}
+
+void GameView::mouseHoverButton(
+    sf::Sprite& button, 
+    sf::Sprite& buttonShadow, 
+    const sf::Vector2f& mousePos,
+    const sf::Vector2f offset,
+    const sf::Color color
+) {
+    if (Utils::ifMouseOnButton(mousePos, button.getPosition(), button.getGlobalBounds().size)) {
+        button.setColor(color);  // 改变颜色
+        buttonShadow.move(offset);
+    }
 }

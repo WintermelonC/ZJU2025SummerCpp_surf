@@ -2,16 +2,18 @@ add_executable(surf
     surf.cpp
     app/game.cpp
     models/playerModel.cpp
+    common/textureManager.cpp
     viewModels/gameViewModel.cpp
-    viewModels/commands/gameCommands.cpp
     viewModels/spriteViewModel.cpp
-    viewModels/textureViewModel.cpp
     viewModels/animationViewModel.cpp
-    viewModels/obstacleItemViewModel_1.cpp
+    viewModels/obstacleItemViewModel.cpp
     viewModels/fontViewModel.cpp
     viewModels/playerViewModel.cpp
+    viewModels/commands/gameCommands.cpp
     viewModels/commands/playerCommands.cpp
     viewModels/commands/obstacleCommands.cpp
+    viewModels/commands/spriteCommands.cpp
+    viewModels/commands/animationCommands.cpp
     views/gameView.cpp
 )
 

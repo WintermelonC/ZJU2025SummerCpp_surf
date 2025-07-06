@@ -10,9 +10,15 @@ enum class Fonts {
 
 class FontViewModel {
 public:
+    FontViewModel();
+
+    // 初始化方法
     bool initialize();
 
-    const std::unique_ptr<sf::Font>* getFont(const Fonts& fontType) const { return &m_fonts.at(fontType); }
+    // 获取字体方法
+    const std::unique_ptr<sf::Font>* getFont(const Fonts& fontType) const { 
+        return &m_fonts.at(fontType); 
+    }
 
 private:
     bool loadFont(const Fonts& fontType, const std::string& filePath);

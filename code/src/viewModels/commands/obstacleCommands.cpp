@@ -1,8 +1,7 @@
 #include "../obstacleItemViewModel.h"
 
-std::function<void(const float&, const sf::Sprite&)> ObstacleItemViewModel::getUpdateCommand() {
-    return [this](const float& dt, const sf::Sprite& playerSprite) {
+Config::ObstacleItemUpdateCallback ObstacleItemViewModel::getUpdateCommand() {
+    return [this](const float& dt) {
         update(dt);
-        checkCollisionWithPlayer(playerSprite);
     };
 }

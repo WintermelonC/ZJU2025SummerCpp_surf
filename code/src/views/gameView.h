@@ -3,26 +3,16 @@
 #include <memory>
 #include <string>
 #include <iostream>
-#include <functional>
+#include <deque>
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
-#include "../models/gameModel.h"
-#include "utils.h"
-
-// 回调函数类型定义
-using FocusLostCallback = std::function<void()>;
-using FocusGainedCallback = std::function<void()>;
-using MouseRightClickCallback = std::function<void()>;
-using MouseLeftClickCallback = std::function<void(const bool&, 
-                                                  const bool&,
-                                                  const bool&)>;
-using KeyPressCallback = std::function<void(const sf::Event::KeyPressed&)>;
-using PlayerUpdateCallback = std::function<void(const float&, const sf::Vector2f&)>;
+#include "../common/utils.h"
 
 class GameView {
 public:
     GameView();
 
+    // 初始化和主循环
     void run();
     bool initialize(unsigned int width, unsigned int height, const std::string& title);
     void updateWindowSize(const sf::Vector2u& size);
@@ -30,6 +20,7 @@ public:
     // 事件处理
     void handleEvents();
 
+    // 渲染方法
     void renderGameplay();
     void renderStartMenu();
     void renderPauseMenu();
@@ -39,13 +30,18 @@ public:
     void reset();
 
     // 回调函数设置
-    void setOnFocusLost(FocusLostCallback callback) { m_onFocusLost = callback; }
-    void setOnFocusGained(FocusGainedCallback callback) { m_onFocusGained = callback; }
-    void setOnMouseRightClick(MouseRightClickCallback callback) { m_onMouseRightClick = callback; }
-    void setOnMouseLeftClick(MouseLeftClickCallback callback) { m_onMouseLeftClick = callback; }
-    void setOnKeyPress(KeyPressCallback callback) { m_onKeyPress = callback; }
-    void setPlayerUpdateCallback(PlayerUpdateCallback callback) { m_playerUpdateCallback = callback; }
+    void setOnFocusLost(Config::FocusLostCallback callback) { m_onFocusLost = callback; }
+    void setOnFocusGained(Config::FocusGainedCallback callback) { m_onFocusGained = callback; }
+    void setOnMouseRightClick(Config::MouseRightClickCallback callback) { m_onMouseRightClick = callback; }
+    void setOnMouseLeftClick(Config::MouseLeftClickCallback callback) { m_onMouseLeftClick = callback; }
+    void setOnKeyPress(Config::KeyPressCallback callback) { m_onKeyPress = callback; }
+    void setPlayerUpdateCallback(Config::PlayerUpdateCallback callback) { m_playerUpdateCallback = callback; }
+    void setUpdateCallback(Config::GameUpdateCallback callback) { m_GameViewModelUpdateCallback = std::move(callback); }
+    void setObstacleItemUpdateCallback(Config::ObstacleItemUpdateCallback callback) { m_obstacleItemUpdateCallback = std::move(callback); }
+    void setSpriteUpdateCallback(Config::SpriteUpdateCallback callback) { m_spriteUpdateCallback = std::move(callback); }
+    void setAnimationUpdateCallback(Config::AnimationUpdateCallback callback) { m_animationUpdateCallback = std::move(callback); }
 
+    // 设置渲染对象
     void setWater(const std::unique_ptr<sf::Sprite>* water) { m_water = water; }
     void setPlayer(const std::unique_ptr<sf::Sprite>* player) { m_player = player; }
     void setStartButton(const std::unique_ptr<sf::Sprite>* startButton) { m_startButton = startButton; }
@@ -57,10 +53,14 @@ public:
     void setObstacleItemSprites(const std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
     void setScoreboard(const std::unique_ptr<sf::Sprite>* scoreboard) { m_scoreboard = scoreboard; }
     void setScore(const float* score) { m_score = score; }
-    void setUpdateCallback(std::function<void(const sf::Vector2u&)> callback) { m_GameViewModelUpdateCallback = std::move(callback); }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
-    void setObstacleItemUpdateCallback(std::function<void(const float&, const sf::Sprite&)> callback) { m_obstacleItemUpdateCallback = std::move(callback); }
+    void setRipples(const std::deque<Config::Trail>* ripples) { m_ripples = ripples; }
+    void setTails(const std::deque<Config::Trail>* tails) { m_tails = tails; }
+    void setPlayerStartMenu(const std::unique_ptr<sf::Sprite>* playerStartMenu) { m_playerStartMenu = playerStartMenu; }
+    void setHeartSprites(const std::vector<sf::Sprite>* heartSprites) { m_heartSprites = heartSprites; }
+    void setPowerSprites(const std::vector<sf::Sprite>* powerSprites) { m_powerSprites = powerSprites; }
 
+    // Getter 方法
     sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
     const sf::Vector2f getMousePos() const { return m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)); }
@@ -74,12 +74,21 @@ private:
         const sf::Vector2f position,
         const bool ifCenter = true
     );
+    void mouseHoverButton(
+        sf::Sprite& button, 
+        sf::Sprite& buttonShadow, 
+        const sf::Vector2f& mousePos,
+        const sf::Vector2f offset = {0.f, 3.f},
+        const sf::Color color = {255, 255, 255}
+    );
 
 private:
+    // 核心渲染组件
     sf::RenderWindow m_window;
     sf::View m_view;
     sf::Clock m_clock;
 
+    // 精灵对象指针
     const std::unique_ptr<sf::Sprite>* m_water;
     const std::unique_ptr<sf::Sprite>* m_player;
     const std::unique_ptr<sf::Sprite>* m_startButton;
@@ -93,14 +102,21 @@ private:
     const float* m_score;
     const std::vector<sf::Sprite>* m_startMenuPlayerAnimation;
     const Config::GameState* m_gameState;
+    const std::deque<Config::Trail>* m_ripples;
+    const std::deque<Config::Trail>* m_tails;
+    const std::unique_ptr<sf::Sprite>* m_playerStartMenu;
+    const std::vector<sf::Sprite>* m_heartSprites;
+    const std::vector<sf::Sprite>* m_powerSprites;
     
     // 回调函数
-    FocusLostCallback m_onFocusLost;
-    FocusGainedCallback m_onFocusGained;
-    MouseRightClickCallback m_onMouseRightClick;
-    MouseLeftClickCallback m_onMouseLeftClick;
-    KeyPressCallback m_onKeyPress;
-    std::function<void(const sf::Vector2u&)> m_GameViewModelUpdateCallback;
-    PlayerUpdateCallback m_playerUpdateCallback;
-    std::function<void(const float&, const sf::Sprite&)> m_obstacleItemUpdateCallback;
+    Config::FocusLostCallback m_onFocusLost;
+    Config::FocusGainedCallback m_onFocusGained;
+    Config::MouseRightClickCallback m_onMouseRightClick;
+    Config::MouseLeftClickCallback m_onMouseLeftClick;
+    Config::KeyPressCallback m_onKeyPress;
+    Config::GameUpdateCallback m_GameViewModelUpdateCallback;
+    Config::PlayerUpdateCallback m_playerUpdateCallback;
+    Config::ObstacleItemUpdateCallback m_obstacleItemUpdateCallback;
+    Config::SpriteUpdateCallback m_spriteUpdateCallback;
+    Config::AnimationUpdateCallback m_animationUpdateCallback;
 };
