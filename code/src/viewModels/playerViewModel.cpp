@@ -13,7 +13,7 @@ void PlayerViewModel::subscribeToNotifications() {
     notificationCenter.subscribe(NotificationType::HealthCollision, shared_from_this());
 }
 
-void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos) {
+void PlayerViewModel::update(const float deltaTime, const sf::Vector2f& mousePos, const sf::Vector2u& windowSize) {
     if (m_gameState && *m_gameState != Config::GameState::playing) {
         return; // 如果游戏状态不是正在进行，则不更新玩家
     }

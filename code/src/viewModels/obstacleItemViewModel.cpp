@@ -1,8 +1,8 @@
 #include "obstacleItemViewModel.h"
 
-ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<SpriteViewModel> spriteVM) 
+ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<TextureViewModel> textureVM) 
     : m_gen(m_rd()),
-      m_spriteViewModel(spriteVM) {
+      m_textureViewModel(textureVM) {
     initialize();   
 }
 
@@ -18,7 +18,7 @@ void ObstacleItemViewModel::update(const float& dt) {
     }
     updatePosition();
 
-    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || *m_playerState == PlayerState::stop || m_playerVelocity->y <= 20) {
+    if (m_spawnClock.getElapsedTime().asSeconds() < m_spawnInterval || *m_playerState == Config::PlayerState::stop || m_playerVelocity->y <= 20) {
         return;
     }
     
@@ -374,8 +374,8 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
     switch (item.type) {
         case SpawnItem::Type::Obstacle: {
             TextureType textureType = getRandomObstacleTexture(item.obstacleType);
-            sf::Sprite sprite = m_spriteViewModel->getNewSprite(textureType);
-            m_spriteViewModel->setSprite(
+            sf::Sprite sprite = m_textureViewModel->getNewSprite(textureType);
+            Utils::setSprite(
                 sprite,
                 sf::Color::White,
                 position,
@@ -387,8 +387,8 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
         case SpawnItem::Type::Item: {
             // TODO: 实现道具的纹理选择逻辑
             // 暂时使用默认纹理
-            sf::Sprite sprite = m_spriteViewModel->getNewSprite(TextureType::heart_1);
-            m_spriteViewModel->setSprite(
+            sf::Sprite sprite = m_textureViewModel->getNewSprite(TextureType::heart_1);
+            Utils::setSprite(
                 sprite,
                 sf::Color::White,
                 position,
@@ -400,7 +400,7 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
     }
     
     // 默认情况，不应该到达这里
-    sf::Sprite defaultSprite = m_spriteViewModel->getNewSprite(TextureType::stone_1);
+    sf::Sprite defaultSprite = m_textureViewModel->getNewSprite(TextureType::stone_1);
     entityModel = createEntityModel(ObstacleType::stone);
     return std::make_pair(defaultSprite, entityModel);
 }
