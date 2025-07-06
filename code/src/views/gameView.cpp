@@ -185,27 +185,25 @@ void GameView::renderGameplay() {
         sf::RectangleShape collisionBox;
         collisionBox.setSize(bounds.size);
         collisionBox.setPosition(bounds.position);
-        collisionBox.setFillColor(sf::Color(175, 22, 11, 50));  // 半透明红色
-        collisionBox.setOutlineColor(sf::Color(175, 22, 11, 100));  // 红色边框
-        collisionBox.setOutlineThickness(1.0f);
+        collisionBox.setFillColor(sf::Color(175, 22, 11, 0));  // 透明
+        collisionBox.setOutlineColor(sf::Color(175, 22, 11));  // 红色边框
+        collisionBox.setOutlineThickness(5.0f);
         m_window.draw(collisionBox);
     }
     
     // 绘制玩家碰撞箱
     sf::FloatRect playerBounds = m_player->get()->getGlobalBounds();
 
-    sf::Vector2f center = {
-        playerBounds.position.x + playerBounds.size.x * 0.5f,
-        playerBounds.position.y + playerBounds.size.y * 0.63f
-    };
+    sf::Vector2f center = playerBounds.getCenter();
 
     sf::Vector2f newSize = {
-        playerBounds.size.x * 0.5f,
-        playerBounds.size.y * 0.3f
+        playerBounds.size.x * Config::Game::PLAYER_SIZE_X_COLLISION_SCALE,
+        playerBounds.size.y * Config::Game::PLAYER_SIZE_Y_COLLISION_SCALE
     };
+
     sf::Vector2f newPosition = {
-        center.x - newSize.x * 0.5f,
-        center.y - newSize.y * 0.5f
+        center.x - newSize.x / 2.f + Config::Game::PLAYER_POSITION_X_OFFSET,
+        center.y - newSize.y / 2.f + Config::Game::PLAYER_POSITION_Y_OFFSET
     };
 
     playerBounds = sf::FloatRect(newPosition, newSize);
@@ -213,9 +211,9 @@ void GameView::renderGameplay() {
     sf::RectangleShape playerCollisionBox;
     playerCollisionBox.setSize(playerBounds.size);
     playerCollisionBox.setPosition(playerBounds.position);
-    playerCollisionBox.setFillColor(sf::Color(106, 147, 31, 50));  // 半透明绿色
-    playerCollisionBox.setOutlineColor(sf::Color(106, 147, 31, 100));  // 绿色边框
-    playerCollisionBox.setOutlineThickness(1.0f);
+    playerCollisionBox.setFillColor(sf::Color(106, 147, 31, 0));  // 透明
+    playerCollisionBox.setOutlineColor(sf::Color(106, 147, 31));  // 绿色边框
+    playerCollisionBox.setOutlineThickness(5.0f);
     m_window.draw(playerCollisionBox);
 #endif
 

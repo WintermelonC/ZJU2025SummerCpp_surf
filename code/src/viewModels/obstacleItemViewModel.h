@@ -82,7 +82,6 @@ private:
     void updatePosition();
 
     // 生成相关方法
-    bool spawnSingle();
     bool spawnGroup();
     
     // 创建sprite和对应EntityModel的方法
@@ -105,6 +104,7 @@ private:
     void createTunnelPattern();  // 隧道模式
     void createPowerPattern();  // 能量道具模式
     void createHeartPattern();  // 生命道具模式
+    void createSinglePattern();
 
     // 工具方法
     TextureType getRandomObstacleTexture(ObstacleType type);
@@ -114,6 +114,8 @@ private:
     void setPatternSize(Pattern& pattern);
     void setPatternPosition(Pattern& pattern);
     TextureType getItemTexture(ItemType type);
+    void setRecNewPos(sf::Vector2f& Pos, const sf::Vector2f& center, const sf::Vector2f& size, const sf::Vector2f& offset = {0.f, 0.f});
+    void setRecNewSize(sf::Vector2f& size, const sf::Vector2f& scale = {1.f, 1.f});
 
 private:
     // 生成配置
@@ -138,7 +140,6 @@ private:
     std::vector<int> m_spawnWeights{1, 2, 3};  // 生成模式权重（单个:小组:大组）
     
     // 数据存储
-    std::vector<sf::FloatRect> m_activeBounds;  // 存储已生成的障碍物组边界
     std::vector<Pattern> m_patterns;  // 预定义的障碍物和道具组合模式
     std::vector<sf::Sprite> m_obstacleItemSprites;  // 存储精灵
     std::vector<sf::FloatRect> m_entityBounds;  // 存储实体的边界
