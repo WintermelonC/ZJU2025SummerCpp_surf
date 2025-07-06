@@ -8,7 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
-#include "textureViewModel.h"
+#include "../common/textureManager.h"
 
 // 动画状态
 enum class AnimationState {

@@ -1,10 +1,10 @@
-#include "textureViewModel.h"
+#include "textureManager.h"
 
-TextureViewModel::TextureViewModel() {
+TextureManager::TextureManager() {
     initialize();
 }
 
-bool TextureViewModel::initialize() {
+bool TextureManager::initialize() {
     std::string assetsPath = "../../assets/";
     std::string imagePath = assetsPath + "images/";
     std::string otherPath = imagePath + "other/";
@@ -63,7 +63,7 @@ bool TextureViewModel::initialize() {
     return success;
 }
 
-bool TextureViewModel::loadTexture(const TextureType& type, const std::string& filePath) {
+bool TextureManager::loadTexture(const TextureType& type, const std::string& filePath) {
     auto texture = std::make_unique<sf::Texture>();
     if (!texture->loadFromFile(filePath)) {
         std::cerr << "Failed to load texture from: " << filePath << std::endl;

@@ -41,7 +41,7 @@ public:
         const sf::Vector2f& scale = {1.0f, 1.0f},
         const bool& ifCenter = true
     ) {
-        sprite.setColor(color);
+        setSpriteColor(sprite, color);
         sprite.setPosition(position);
         sprite.setScale(scale);
         if (ifCenter) {
@@ -50,6 +50,12 @@ public:
                 sprite.getTexture().getSize().y / 2.f
             });
         }
+    }
+    static void setSpriteColor(
+        sf::Sprite& sprite,
+        const sf::Color color
+    ) {
+        sprite.setColor(color);
     }
 
 private:

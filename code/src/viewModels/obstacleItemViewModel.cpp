@@ -1,8 +1,8 @@
 #include "obstacleItemViewModel.h"
 
-ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<TextureViewModel> textureVM) 
+ObstacleItemViewModel::ObstacleItemViewModel(std::shared_ptr<TextureManager> textureVM) 
     : m_gen(m_rd()),
-      m_textureViewModel(textureVM) {
+      m_textureManager(textureVM) {
     initialize();   
 }
 
@@ -374,7 +374,7 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
     switch (item.type) {
         case SpawnItem::Type::Obstacle: {
             TextureType textureType = getRandomObstacleTexture(item.obstacleType);
-            sf::Sprite sprite = m_textureViewModel->getNewSprite(textureType);
+            sf::Sprite sprite = m_textureManager->getNewSprite(textureType);
             Utils::setSprite(
                 sprite,
                 sf::Color::White,
@@ -387,7 +387,7 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
         case SpawnItem::Type::Item: {
             // TODO: 实现道具的纹理选择逻辑
             // 暂时使用默认纹理
-            sf::Sprite sprite = m_textureViewModel->getNewSprite(TextureType::heart_1);
+            sf::Sprite sprite = m_textureManager->getNewSprite(TextureType::heart_1);
             Utils::setSprite(
                 sprite,
                 sf::Color::White,
@@ -400,7 +400,7 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
     }
     
     // 默认情况，不应该到达这里
-    sf::Sprite defaultSprite = m_textureViewModel->getNewSprite(TextureType::stone_1);
+    sf::Sprite defaultSprite = m_textureManager->getNewSprite(TextureType::stone_1);
     entityModel = createEntityModel(ObstacleType::stone);
     return std::make_pair(defaultSprite, entityModel);
 }

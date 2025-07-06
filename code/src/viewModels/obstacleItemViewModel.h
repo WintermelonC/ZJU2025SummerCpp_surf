@@ -6,7 +6,7 @@
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
 #include "../common/utils.h"
-#include "textureViewModel.h"
+#include "../common/textureManager.h"
 #include "../models/itemModel.h"
 #include "../models/obstacleModel.h"
 
@@ -31,7 +31,7 @@ struct SpawnItem {
 
 class ObstacleItemViewModel : public INotificationObserver, public std::enable_shared_from_this<ObstacleItemViewModel> {
 public:
-    ObstacleItemViewModel(std::shared_ptr<TextureViewModel> textureVM);
+    ObstacleItemViewModel(std::shared_ptr<TextureManager> textureVM);
 
     // 主要更新方法
     void update(const float& dt);
@@ -121,7 +121,7 @@ private:
     std::mt19937 m_gen;
 
     // 外部依赖
-    std::shared_ptr<TextureViewModel> m_textureViewModel;
+    std::shared_ptr<TextureManager> m_textureManager;
     const sf::Vector2f* m_playerVelocity;
     const Config::PlayerState* m_playerState;
     const Config::GameState* m_gameState;

@@ -1,13 +1,13 @@
 #include "spriteViewModel.h"
 
-SpriteViewModel::SpriteViewModel(std::shared_ptr<TextureViewModel> textureViewModel)
-    : m_textureViewModel(std::move(textureViewModel)) {
+SpriteViewModel::SpriteViewModel(std::shared_ptr<TextureManager> textureManager)
+    : m_textureManager(std::move(textureManager)) {
     initialize();
 }
 
 bool SpriteViewModel::initialize() {
-    m_textureViewModel = std::make_unique<TextureViewModel>();
-    if (!m_textureViewModel->initialize()) {
+    m_textureManager = std::make_unique<TextureManager>();
+    if (!m_textureManager->initialize()) {
         return false;
     }
 
@@ -35,7 +35,7 @@ bool SpriteViewModel::initialize() {
         Config::Player::PLAYER_POS,
         Config::Player::PLAYER_SCALE
     );
-    m_playerStartMenu = std::make_unique<sf::Sprite>(*m_textureViewModel->getTexture(TextureType::player_center_1));
+    m_playerStartMenu = std::make_unique<sf::Sprite>(*m_textureManager->getTexture(TextureType::player_center_1));
 
     initializeButtonIcons();
 
@@ -90,7 +90,7 @@ void SpriteViewModel::updatePlayerStartMenu() {
         m_animClock.restart();  // 重置动画时钟
     }
 
-    m_textureViewModel->setSpriteTexture(
+    m_textureManager->setSpriteTexture(
         *m_playerStartMenu,
         animations[m_currentAnimFrame]
     );
@@ -125,7 +125,7 @@ void SpriteViewModel::setSprite(
 }
 
 bool SpriteViewModel::loadSprite(const SpriteType& spriteType, const TextureType& textureType) {
-    const std::unique_ptr<sf::Texture>& texture = m_textureViewModel->getTexture(textureType);
+    const std::unique_ptr<sf::Texture>& texture = m_textureManager->getTexture(textureType);
     if (!texture) {
         std::cerr << "Failed to load texture for sprite type: " << static_cast<int>(spriteType) << std::endl;
         return false;
@@ -160,6 +160,6 @@ void SpriteViewModel::onNotification(const NotificationData& data) {
 }
 
 void SpriteViewModel::reset() {
-    m_textureViewModel->setSpriteTexture(*m_playerStartMenu, TextureType::player_center_1);
+    m_textureManager->setSpriteTexture(*m_playerStartMenu, TextureType::player_center_1);
     setSpritePosition(SpriteType::water, *m_waterOffset);
 }

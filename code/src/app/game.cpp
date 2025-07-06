@@ -1,13 +1,13 @@
 #include "game.h"
 
 Game::Game() {
-    // 初始化精灵
-    m_textureViewModel = std::make_shared<TextureViewModel>();
-    m_spriteViewModel = std::make_shared<SpriteViewModel>(m_textureViewModel);
+    // 初始化纹理资源
+    m_textureManager = std::make_shared<TextureManager>();
+    m_spriteViewModel = std::make_shared<SpriteViewModel>(m_textureManager);
     m_gameViewModel = std::make_shared<GameViewModel>();
     m_fontViewModel = std::make_shared<FontViewModel>();
-    m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_textureViewModel);
-    m_playerViewModel = std::make_shared<PlayerViewModel>(m_textureViewModel);
+    m_ObstacleItemViewModel = std::make_shared<ObstacleItemViewModel>(m_textureManager);
+    m_playerViewModel = std::make_shared<PlayerViewModel>(m_textureManager);
     m_animationViewModel = std::make_shared<AnimationViewModel>();
 
     // 订阅通知 - 在所有对象创建完成后

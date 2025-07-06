@@ -4,7 +4,7 @@
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
 #include "../common/utils.h"
-#include "textureViewModel.h"
+#include "../common/textureManager.h"
 
 enum class SpriteType {
     water,
@@ -19,7 +19,7 @@ enum class SpriteType {
 
 class SpriteViewModel : public INotificationObserver, public std::enable_shared_from_this<SpriteViewModel> {
 public:
-    SpriteViewModel(std::shared_ptr<TextureViewModel> textureVM);
+    SpriteViewModel(std::shared_ptr<TextureManager> textureVM);
 
     // 初始化和更新方法
     bool initialize();
@@ -37,7 +37,7 @@ public:
     }
     
     const std::unique_ptr<sf::Texture>* getTexture(const TextureType& type) const { 
-        return &m_textureViewModel->getTexture(type); 
+        return &m_textureManager->getTexture(type); 
     }
     
     const sf::Vector2f getSpriteSize(const SpriteType& type) const { 
@@ -45,7 +45,7 @@ public:
     }
     
     sf::Sprite getNewSprite(const TextureType& textureType) const { 
-        return sf::Sprite(*m_textureViewModel->getTexture(textureType)); 
+        return sf::Sprite(*m_textureManager->getTexture(textureType)); 
     }
     
     const std::unique_ptr<sf::Sprite>* getPlayerStartMenu() const { 
@@ -65,7 +65,7 @@ public:
     );
     
     void setSpriteTexture(const SpriteType& spriteType, const TextureType& textureType) { 
-        m_sprites[spriteType]->setTexture(*m_textureViewModel->getTexture(textureType)); 
+        m_sprites[spriteType]->setTexture(*m_textureManager->getTexture(textureType)); 
     }
     
     void setSpritePosition(const SpriteType& spriteType, const sf::Vector2f& position) { 
@@ -86,7 +86,7 @@ private:
 
 private:
     // 核心依赖
-    std::shared_ptr<TextureViewModel> m_textureViewModel;
+    std::shared_ptr<TextureManager> m_textureManager;
 
     // 精灵存储
     std::map<SpriteType, std::unique_ptr<sf::Sprite>> m_sprites;

@@ -5,11 +5,11 @@
 #include "../common/utils.h"
 #include "../models/playerModel.h"
 #include "../models/gameModel.h"
-#include "textureViewModel.h"
+#include "../common/textureManager.h"
 
 class PlayerViewModel : public INotificationObserver, public std::enable_shared_from_this<PlayerViewModel> {
 public:
-    PlayerViewModel(std::shared_ptr<TextureViewModel> textureVM);
+    PlayerViewModel(std::shared_ptr<TextureManager> textureVM);
 
     // 主要更新方法
     void update(const float deltaTime, const sf::Vector2f& mousePos, const sf::Vector2u& windowSize);
@@ -77,7 +77,7 @@ private:
 
     // 核心模型和视图模型
     PlayerModel m_playerModel;
-    std::shared_ptr<TextureViewModel> m_textureViewModel;
+    std::shared_ptr<TextureManager> m_textureManager;
 
     // UI元素
     std::vector<sf::Sprite> m_heartSprites;  // 玩家生命值图标

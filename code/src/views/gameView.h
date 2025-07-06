@@ -74,6 +74,13 @@ private:
         const sf::Vector2f position,
         const bool ifCenter = true
     );
+    void mouseHoverButton(
+        sf::Sprite& button, 
+        sf::Sprite& buttonShadow, 
+        const sf::Vector2f& mousePos,
+        const sf::Vector2f offset = {0.f, 3.f},
+        const sf::Color color = {255, 255, 255}
+    );
 
 private:
     // 核心渲染组件

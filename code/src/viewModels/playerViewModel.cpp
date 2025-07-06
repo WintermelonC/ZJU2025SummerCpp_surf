@@ -1,7 +1,7 @@
 #include "playerViewModel.h"
 
-PlayerViewModel::PlayerViewModel(std::shared_ptr<TextureViewModel> textureVM) 
-    : m_textureViewModel(textureVM) {}
+PlayerViewModel::PlayerViewModel(std::shared_ptr<TextureManager> textureVM) 
+    : m_textureManager(textureVM) {}
 void PlayerViewModel::subscribeToNotifications() {
     auto& notificationCenter = NotificationCenter::getInstance();
     // 订阅游戏重置通知
@@ -108,7 +108,7 @@ void PlayerViewModel::updateHeart(const sf::Vector2u& windowSize) {
     m_heartSprites.clear();
     int HP = m_playerModel.getHp();
     for (int i = 1; i <= Config::Player::PLAYER_HP; i++) {
-        sf::Sprite heart = (i <= HP) ? m_textureViewModel->getNewSprite(TextureType::heart_1) : m_textureViewModel->getNewSprite(TextureType::heart_2);
+        sf::Sprite heart = (i <= HP) ? m_textureManager->getNewSprite(TextureType::heart_1) : m_textureManager->getNewSprite(TextureType::heart_2);
         Utils::setSprite(
             heart,
             sf::Color::White,
@@ -124,7 +124,7 @@ void PlayerViewModel::updatePower(const sf::Vector2u& windowSize) {
     m_powerSprites.clear();
     int powerCount = m_playerModel.getPower();
     for (int i = 1; i <= Config::Player::PLAYER_POWER; i++) {
-        sf::Sprite power = (i <= powerCount) ? m_textureViewModel->getNewSprite(TextureType::power_1) : m_textureViewModel->getNewSprite(TextureType::power_2);
+        sf::Sprite power = (i <= powerCount) ? m_textureManager->getNewSprite(TextureType::power_1) : m_textureManager->getNewSprite(TextureType::power_2);
         Utils::setSprite(
             power,
             sf::Color::White,
@@ -165,7 +165,8 @@ void PlayerViewModel::spawnTail(const sf::Angle& angle, const bool& ifSpawn) {
                                  Utils::randomFloat(50.f, 60.f)});
         line.setRotation(angle + sf::degrees(Utils::randomFloat(-5.f, 5.f)));
         line.setOrigin({line.getSize().x / 2.f, line.getSize().y});
-        line.setPosition({Config::Player::PLAYER_POS.x + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
+        line.setPosition({Config::Player::PLAYER_POS.x + std::tan(angle.asRadians()) * Config::Player::PLAYER_SIZE.y / 3.f
+                          + Utils::randomFloat(-Config::Player::PLAYER_SIZE.x / 3.f, Config::Player::PLAYER_SIZE.x / 3.f), 
                           Config::Player::PLAYER_POS.y});
         line.setFillColor(m_tailColor);
 

@@ -33,9 +33,9 @@ enum class TextureType {
     bridge_1,
 };
 
-class TextureViewModel {
+class TextureManager {
 public:
-    TextureViewModel();
+    TextureManager();
 
     // 初始化方法
     bool initialize();
