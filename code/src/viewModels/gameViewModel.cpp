@@ -1,11 +1,14 @@
 #include "gameViewModel.h"
 
 GameViewModel::GameViewModel() {}
-
 void GameViewModel::subscribeToNotifications() {
-    // 订阅游戏重置通知
     auto& notificationCenter = NotificationCenter::getInstance();
+    // 订阅游戏重置通知
     notificationCenter.subscribe(NotificationType::GameReset, shared_from_this());
+    // 订阅碰撞通知以更新游戏状态
+    notificationCenter.subscribe(NotificationType::DamageCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::PowerCollision, shared_from_this());
+    notificationCenter.subscribe(NotificationType::HealthCollision, shared_from_this());
 }
 
 void GameViewModel::update(const sf::Vector2u& windowSize) {

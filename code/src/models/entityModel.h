@@ -2,6 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
+// 前向声明
+enum class ObstacleType;
+enum class ItemType;
+
 enum class EntityModelType {
     player,
     obstacle,
@@ -23,6 +27,13 @@ public:
     const sf::Vector2f& getPosition() const { return position; }
     const sf::Vector2f& getSize() const { return size; }
     const sf::RectangleShape& getCollisionBox() const { return m_collisionBox; }
+    const bool isObstacle() const { return m_type == EntityModelType::obstacle; }
+    const bool isItem() const { return m_type == EntityModelType::item; }
+    EntityModelType getType() const { return m_type; }
+
+    // 虚函数用于获取具体类型
+    virtual ObstacleType getObstacleType() const { return static_cast<ObstacleType>(0); }
+    virtual ItemType getItemType() const { return static_cast<ItemType>(0); }
 
     void setPosition(const sf::Vector2f& pos) { position = pos; }
     void setSize(const sf::Vector2f& sz) { size = sz; }

@@ -34,6 +34,8 @@ public:
 
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
 
+    void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
+
 private:
     void resetPlayerState(); // 内部重置方法
     void updateRipple(const float& dt, const sf::Vector2f& velocity, const sf::Angle& angle, const bool& ifSpawn = false);

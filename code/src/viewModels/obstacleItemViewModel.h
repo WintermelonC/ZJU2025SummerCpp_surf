@@ -34,7 +34,16 @@ public:
     ObstacleItemViewModel(std::shared_ptr<TextureViewModel> textureVM);
 
     void update(const float& dt);
-    std::vector<sf::Sprite>& getSprites() { return m_sprites; }
+    
+    // 获取精灵和实体模型
+    const std::vector<std::pair<sf::Sprite, std::shared_ptr<EntityModel>>>& getSpriteEntityPairs() const { return m_spriteEntityPairs; }
+
+    // 获取障碍物和道具精灵
+    const std::vector<sf::Sprite>& getObstacleItemSprites() const { return m_obstacleItemSprites; }
+
+    
+    // 碰撞检测相关 - 使用精灵进行碰撞检测
+    bool checkCollisionWithPlayer(const sf::Sprite& playerSprite);
     
     // 实现观察者接口
     void onNotification(const NotificationData& data) override;
@@ -61,8 +70,19 @@ private:
     void resetObstacles(); // 内部重置方法
     void updatePosition();
 
+    // 生成相关方法
     bool spawnSingle();
     bool spawnGroup();
+    
+    // 创建sprite和对应EntityModel的方法
+    std::pair<sf::Sprite, std::shared_ptr<EntityModel>> createSpriteEntityPair(const SpawnItem& item, const sf::Vector2f& position);
+    
+    // 根据障碍物类型创建对应的EntityModel
+    std::shared_ptr<EntityModel> createEntityModel(ObstacleType obstacleType);
+    std::shared_ptr<EntityModel> createEntityModel(ItemType itemType);
+
+    // 更新m_obstacleItemSprites，从m_spriteEntityPairs中提取精灵
+    void updateObstacleItemSprites();
 
     void createClusterPattern();     // 聚集模式
     void createTunnelPattern();      // 隧道模式
@@ -88,12 +108,14 @@ private:
     // 生成模式权重（单个:小组:大组）
     std::vector<int> m_spawnWeights{1, 2, 3};
 
-    std::vector<sf::Sprite> m_sprites;  // 存储生成的障碍物和道具精灵
+    // 存储精灵
+    std::vector<sf::Sprite> m_obstacleItemSprites;
 
-    ObstacleModel m_obstacleModel;
     std::shared_ptr<TextureViewModel> m_textureViewModel;
 
     const sf::Vector2f* m_playerVelocity;
     const Config::PlayerState* m_playerState;
     const Config::GameState* m_gameState;
+    // 存储障碍物和道具精灵以及对应的EntityModel
+    std::vector<std::pair<sf::Sprite, std::shared_ptr<EntityModel>>> m_spriteEntityPairs;
 };
