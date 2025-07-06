@@ -30,7 +30,19 @@ enum class TextureType {
     boat_1, boat_2, 
     beach_1, beach_2, beach_3,
     seaweed_11, seaweed_21, seaweed_31,
-    bridge_1,
+    ripple_11, ripple_21, ripple_31,
+    bridge_1, 
+    sp_bridge_1,
+    buoy_1, buoy_2,
+    coral_1, coral_2, coral_3, coral_4,
+    l_beach_1, l_beach_2, l_beach_3,
+    l_bridge_1, l_bridge_2,
+    m_beach_1, m_beach_2, m_beach_3, m_beach_4, m_beach_5,
+    m_boat_1,
+    m_bridge_1, m_bridge_2,
+    mm_bridge_1,
+    mm_beach_1, mm_beach_2, mm_beach_3,
+    s_buoy_1, s_buoy_2,
 };
 
 class TextureManager {

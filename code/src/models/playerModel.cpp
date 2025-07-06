@@ -2,12 +2,6 @@
 
 PlayerModel::PlayerModel()
     : EntityModel(EntityModelType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SIZE) {
-    setCollisionBox(
-        position,
-        size / 2.f,
-        size,
-        sf::degrees(0.0f)
-    );
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
 #endif
@@ -181,14 +175,6 @@ void PlayerModel::reset() {
     
     // 重置位置到初始位置
     position = Config::Player::PLAYER_POS;
-    
-    // 重置碰撞盒
-    setCollisionBox(
-        position,
-        size / 2.f,
-        size,
-        sf::degrees(0.0f)
-    );
     
     // 🔄 重置状态效果
     m_isSlowed = false;

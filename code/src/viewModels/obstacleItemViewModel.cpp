@@ -154,11 +154,11 @@ bool ObstacleItemViewModel::spawnGroup() {
                     centerY + pattern.positions[i].y
                 };
                 
-                if (isPositionValid(worldPos)) {
+                // if (isPositionValid(worldPos)) {
                     // 创建 sprite 和 EntityModel 配对
                     auto spriteEntityPair = createSpriteEntityPair(pattern.items[i], worldPos);
                     m_spriteEntityPairs.push_back(spriteEntityPair);
-                }
+                // }
             }
             updateObstacleItemSprites(); // 更新独立的精灵列表
             return true;
@@ -171,21 +171,19 @@ bool ObstacleItemViewModel::spawnGroup() {
 
 void ObstacleItemViewModel::createClusterPattern() {
     Pattern pattern;
+    // 1
     pattern.positions = {
-        {0, 0}, {12, 64}, {96, 32}, {196, -12}, {160, 96}
+        {0, 0}, {m_stoneSize.x * 0.5f, -m_stoneSize.y}, {m_stoneSize.x, -m_stoneSize.y * 0.5f}, 
+        {m_stoneSize.x * 2.0f, -m_stoneSize.y * 0.75f}, {m_stoneSize.x * 1.75f, m_stoneSize.y * 0.5f}
     };
     pattern.items = {
         SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::wood), 
         SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone)
     };
-    pattern.width = 0;
-    pattern.height = 0;
-    for (const auto& pos : pattern.positions) {
-        pattern.width = std::max(pattern.width, pos.x);
-        pattern.height = std::max(pattern.height, pos.y);
-    }
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
     m_patterns.push_back(pattern);
-    
+    // 2
     pattern.positions = {
         {0, 0}, {96, -128}, {96, 0}, {192, 0}, {128, -48}
     };
@@ -193,14 +191,10 @@ void ObstacleItemViewModel::createClusterPattern() {
         SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
         SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::bridge)
     };
-    pattern.width = 0;
-    pattern.height = 0;
-    for (const auto& pos : pattern.positions) {
-        pattern.width = std::max(pattern.width, pos.x);
-        pattern.height = std::max(pattern.height, pos.y);
-    }
-    m_patterns.push_back(pattern);
-
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    // m_patterns.push_back(pattern);
+    // 3
     pattern.positions = {
         {0, 0}, {64, 64}, {96, -48}, {128, 128}, {196, 0}
     };
@@ -214,6 +208,38 @@ void ObstacleItemViewModel::createClusterPattern() {
         pattern.width = std::max(pattern.width, pos.x);
         pattern.height = std::max(pattern.height, pos.y);
     }
+    // m_patterns.push_back(pattern);
+    // 4
+    pattern.positions = {
+        {0, 0}, {24, 96}, {120, 48}, {312, 48}, {144, -96}, {240, -96}, {336, -96},
+        {240, 96}, {192, 96}, {336, 96}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::s_buoy), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::mm_bridge),
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::s_buoy), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::stone)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    // m_patterns.push_back(pattern);
+    // 5
+    pattern.positions = {
+        {0, 0}, {m_seaweedSize.x, 0}, {m_seaweedSize.x * 0.5f, m_seaweedSize.y},
+        {m_seaweedSize.x, m_seaweedSize.y * 2.f}, {m_seaweedSize.x * 2.f, m_seaweedSize.y * 2.f}, {m_seaweedSize.x * 3.f, m_seaweedSize.y * 2.f},
+        {m_seaweedSize.x, -m_LBeachSize.y}, {m_seaweedSize.x * 0.5f + m_MMBridgeSize.x, m_seaweedSize.y}, {m_seaweedSize.x * 0.5f + m_MMBridgeSize.x, 0},
+        {m_seaweedSize.x * 0.5f + m_MMBridgeSize.x + m_bridgeSize.x, 0}, {m_seaweedSize.x * 0.5f + m_MMBridgeSize.x + m_bridgeSize.x, m_seaweedSize.y},
+        {m_seaweedSize.x * 0.5f + m_MMBridgeSize.x + m_bridgeSize.x * 1.5f, -m_seaweedSize.y * 1.5f}, {m_seaweedSize.x * 0.5f + m_MMBridgeSize.x + m_bridgeSize.x, -m_seaweedSize.y}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::mm_bridge),
+        SpawnItem(ObstacleType::seaweed),  SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::mm_beach), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge),
+        SpawnItem(ObstacleType::seaweed),  SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::beach),
+        SpawnItem(ObstacleType::beach)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
     m_patterns.push_back(pattern);
 }
 
@@ -246,7 +272,7 @@ void ObstacleItemViewModel::createTunnelPattern() {
         pattern.width = std::max(pattern.width, pos.x);
         pattern.height = std::max(pattern.height, pos.y);
     }
-    m_patterns.push_back(pattern);
+    // m_patterns.push_back(pattern);
 }
 
 TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
@@ -276,10 +302,70 @@ TextureType ObstacleItemViewModel::getRandomObstacleTexture(ObstacleType type) {
             int randomSeaweed = seaweedDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::seaweed_11) + randomSeaweed);
         }
+        case ObstacleType::ripple: {
+            std::uniform_int_distribution<> rippleDist(0, ObstacleModel::getRippleCount() - 1);
+            int randomRipple = rippleDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::ripple_11) + randomRipple);
+        }
         case ObstacleType::bridge: {
             std::uniform_int_distribution<> bridgeDist(0, ObstacleModel::getBridgeCount() - 1);
             int randomBridge = bridgeDist(m_gen);
             return static_cast<TextureType>(static_cast<int>(TextureType::bridge_1) + randomBridge);
+        }
+        case ObstacleType::sp_bridge: {
+            std::uniform_int_distribution<> spBridgeDist(0, ObstacleModel::getSpBridgeCount() - 1);
+            int randomSpBridge = spBridgeDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::sp_bridge_1) + randomSpBridge);
+        }
+        case ObstacleType::buoy: {
+            std::uniform_int_distribution<> buoyDist(0, ObstacleModel::getBuoyCount() - 1);
+            int randomBuoy = buoyDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::buoy_1) + randomBuoy);
+        }
+        case ObstacleType::coral: {
+            std::uniform_int_distribution<> coralDist(0, ObstacleModel::getCoralCount() - 1);
+            int randomCoral = coralDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::coral_1) + randomCoral);
+        }
+        case ObstacleType::l_beach: {
+            std::uniform_int_distribution<> lBeachDist(0, ObstacleModel::getLBeachCount() - 1);
+            int randomLBeach = lBeachDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::l_beach_1) + randomLBeach);
+        }
+        case ObstacleType::l_bridge: {
+            std::uniform_int_distribution<> lBridgeDist(0, ObstacleModel::getLBridgeCount() - 1);
+            int randomLBridge = lBridgeDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::l_bridge_1) + randomLBridge);
+        }
+        case ObstacleType::m_beach: {
+            std::uniform_int_distribution<> mBeachDist(0, ObstacleModel::getMBeachCount() - 1);
+            int randomMBeach = mBeachDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::m_beach_1) + randomMBeach);
+        }
+        case ObstacleType::m_boat: {
+            std::uniform_int_distribution<> mBoatDist(0, ObstacleModel::getMBoatCount() - 1);
+            int randomMBoat = mBoatDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::m_boat_1) + randomMBoat);
+        }
+        case ObstacleType::m_bridge: {
+            std::uniform_int_distribution<> mBridgeDist(0, ObstacleModel::getMBridgeCount() - 1);
+            int randomMBridge = mBridgeDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::m_bridge_1) + randomMBridge);
+        }
+        case ObstacleType::mm_bridge: {
+            std::uniform_int_distribution<> mmBridgeDist(0, ObstacleModel::getMMBridgeCount() - 1);
+            int randomMMBridge = mmBridgeDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::mm_bridge_1) + randomMMBridge);
+        }
+        case ObstacleType::mm_beach: {
+            std::uniform_int_distribution<> mmBeachDist(0, ObstacleModel::getMMBeachCount() - 1);
+            int randomMMBeach = mmBeachDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::mm_beach_1) + randomMMBeach);
+        }
+        case ObstacleType::s_buoy: {
+            std::uniform_int_distribution<> sBuoyDist(0, ObstacleModel::getSBuoyCount() - 1);
+            int randomSBuoy = sBuoyDist(m_gen);
+            return static_cast<TextureType>(static_cast<int>(TextureType::s_buoy_1) + randomSBuoy);
         }
         case ObstacleType::any:
         default: {
@@ -379,7 +465,8 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
                 sprite,
                 sf::Color::White,
                 position,
-                Config::Player::PLAYER_SCALE
+                Config::Player::PLAYER_SCALE,
+                false
             );
             entityModel = createEntityModel(item.obstacleType);
             return std::make_pair(sprite, entityModel);
@@ -392,7 +479,8 @@ std::pair<sf::Sprite, std::shared_ptr<EntityModel>> ObstacleItemViewModel::creat
                 sprite,
                 sf::Color::White,
                 position,
-                Config::Player::PLAYER_SCALE
+                Config::Player::PLAYER_SCALE,
+                false
             );
             entityModel = createEntityModel(item.itemType);
             return std::make_pair(sprite, entityModel);
@@ -490,5 +578,37 @@ void ObstacleItemViewModel::updateObstacleItemSprites() {
     // 从配对中提取所有精灵
     for (const auto& pair : m_spriteEntityPairs) {
         m_obstacleItemSprites.push_back(pair.first);
+    }
+}
+
+void ObstacleItemViewModel::setPatternSize(Pattern& pattern) {
+    if (pattern.positions.empty()) {
+        return;
+    }
+    
+    int maxWidth = 0;
+    int minWidth = 0;
+    int maxHeight = 0;
+    int minHeight = 0;
+    
+    for (const auto& pos : pattern.positions) {
+        maxWidth = std::max(maxWidth, static_cast<int>(pos.x));
+        minWidth = std::min(minWidth, static_cast<int>(pos.x));
+        maxHeight = std::max(maxHeight, static_cast<int>(pos.y));
+        minHeight = std::min(minHeight, static_cast<int>(pos.y));
+    }
+    
+    pattern.width = maxWidth - minWidth;
+    pattern.height = maxHeight - minHeight;
+}
+
+void ObstacleItemViewModel::setPatternPosition(Pattern& pattern) {
+    if (pattern.positions.empty()) {
+        return;
+    }
+    
+    for (auto& pos : pattern.positions) {
+        pos.x *= Config::Player::PLAYER_SCALE.x;
+        pos.y *= Config::Player::PLAYER_SCALE.y;
     }
 }

@@ -59,6 +59,12 @@ namespace Config {
     namespace Texture {
         constexpr sf::Vector2i WATER_SIZE{256, 256};
         constexpr sf::Color BUTTON_COLOR = sf::Color(195, 240, 247);
+        constexpr sf::Vector2f SIZE_1{32, 32};
+        constexpr sf::Vector2f SIZE_2{64, 64};
+        constexpr sf::Vector2f SIZE_3{128, 64};
+        constexpr sf::Vector2f SIZE_4{64, 128};
+        constexpr sf::Vector2f SIZE_5{128, 128};
+        constexpr sf::Vector2f SIZE_6{192, 256};
     }
 
     // 玩家配置
