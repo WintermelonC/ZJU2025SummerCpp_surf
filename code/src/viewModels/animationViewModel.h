@@ -86,6 +86,7 @@ class AnimationViewModel : public INotificationObserver, public std::enable_shar
 public:
     AnimationViewModel();
 
+    // 初始化和重置
     void initialize();
     void reset();
     void update(const float deltaTime);
@@ -159,6 +160,7 @@ private:
     std::function<void(const std::string&, const std::string&)> m_globalOnAnimationComplete;
     std::function<void(const std::string&, int, TextureType)> m_globalOnFrameChanged;
 
+    // 玩家动画相关
     TextureType m_playerTexture;
     const Config::PlayerState* m_playerState; // 用于获取玩家状态的配置
 };

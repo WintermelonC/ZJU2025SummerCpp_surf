@@ -10,7 +10,7 @@ Game::Game() {
     m_playerViewModel = std::make_shared<PlayerViewModel>(m_textureViewModel);
     m_animationViewModel = std::make_shared<AnimationViewModel>();
 
-     // 订阅通知 - 在所有对象创建完成后
+    // 订阅通知 - 在所有对象创建完成后
     m_gameViewModel->subscribeToNotifications();
     m_playerViewModel->subscribeToNotifications();
     m_ObstacleItemViewModel->subscribeToNotifications();

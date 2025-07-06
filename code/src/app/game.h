@@ -15,10 +15,12 @@ class Game {
 public:
     Game();
 
+    // 主要方法
     bool initialize();
     void run();
 
 private:
+    // 视图和视图模型
     GameView m_gameView;
     std::shared_ptr<FontViewModel> m_fontViewModel;
     std::shared_ptr<SpriteViewModel> m_spriteViewModel;

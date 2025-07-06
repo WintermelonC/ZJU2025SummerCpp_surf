@@ -10,10 +10,13 @@ enum class ItemType {
 
 class ItemModel : public EntityModel {
 public:
-    ItemModel(ItemType itemType = ItemType::none) : EntityModel(EntityModelType::item), m_itemType(itemType) {}
+    ItemModel(ItemType itemType = ItemType::none) 
+        : EntityModel(EntityModelType::item), m_itemType(itemType) {}
 
+    // Setter 方法
     void setItemType(const ItemType& type) { m_itemType = type; }
 
+    // Getter 方法
     ItemType getItemType() const override { return m_itemType; }
 
 private:

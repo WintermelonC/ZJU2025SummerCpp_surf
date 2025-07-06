@@ -11,12 +11,12 @@ public:
     PlayerModel();
     ~PlayerModel() = default;
 
+    // 主要更新方法
     void update(const float deltaTime, const sf::Vector2f& mousePos);
     void usePower();
-    
-    // 重置功能
     void reset();
 
+    // Getter 方法
     const sf::Vector2f& getVelocity() const { return m_velocity; }
     const sf::Angle& getAngle() const { return m_angle; }
     const Config::PlayerState& getState() const { return m_state; }
@@ -25,6 +25,7 @@ public:
     const bool& isPower() const { return m_isPower; }
     const bool& isTurn() const { return m_isTurn; }
 
+    // Setter 方法
     void setVelocity(const sf::Vector2f& velocity) { m_velocity = velocity; }
     void setAngle(const sf::Angle& angle) { m_angle = angle; }
 
@@ -34,22 +35,24 @@ public:
     void restoreHealth(int healthAmount);
     void restorePower(int powerAmount);
     
-    // 无敌与减速
+    // 状态查询方法
     bool isInvincible() const { return m_isInvincible; }
     void setInvincible();
     bool isSlowed() const { return m_isSlowed; }
 
 private:
+    // 内部更新方法
     void updateState(const sf::Vector2f& mousePos);
     void updateTurn();
     void updateAngle();
     void updateYSpeed(const float deltaTime);
     void updateXSpeed(const float deltaTime);
-    void updatePower(const float& dt);  // 更新能量状态
-    void updateSlow(const float& dt);  // 更新减速状态
-    void updateInvincible(const float& dt);  // 更新无敌状态
+    void updatePower(const float& dt);
+    void updateSlow(const float& dt);
+    void updateInvincible(const float& dt);
 
 private:
+    // 物理常量
     const float m_acceleration1 = 10.f;
     const float m_acceleration2 = 50.f;
     const float m_maxSpeed = 50.f;
@@ -60,6 +63,7 @@ private:
     const float m_angle2 = 40.f;
     const float m_powerTime = 5.f;
 
+    // 状态变量
     sf::Vector2f m_velocity = {0, 0};
     sf::Angle m_angle = sf::degrees(0.0f);
     Config::PlayerState m_state = Config::PlayerState::center;

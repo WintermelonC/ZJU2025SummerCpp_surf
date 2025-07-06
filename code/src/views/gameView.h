@@ -12,6 +12,7 @@ class GameView {
 public:
     GameView();
 
+    // 初始化和主循环
     void run();
     bool initialize(unsigned int width, unsigned int height, const std::string& title);
     void updateWindowSize(const sf::Vector2u& size);
@@ -19,6 +20,7 @@ public:
     // 事件处理
     void handleEvents();
 
+    // 渲染方法
     void renderGameplay();
     void renderStartMenu();
     void renderPauseMenu();
@@ -39,6 +41,7 @@ public:
     void setSpriteUpdateCallback(Config::SpriteUpdateCallback callback) { m_spriteUpdateCallback = std::move(callback); }
     void setAnimationUpdateCallback(Config::AnimationUpdateCallback callback) { m_animationUpdateCallback = std::move(callback); }
 
+    // 设置渲染对象
     void setWater(const std::unique_ptr<sf::Sprite>* water) { m_water = water; }
     void setPlayer(const std::unique_ptr<sf::Sprite>* player) { m_player = player; }
     void setStartButton(const std::unique_ptr<sf::Sprite>* startButton) { m_startButton = startButton; }
@@ -57,6 +60,7 @@ public:
     void setHeartSprites(const std::vector<sf::Sprite>* heartSprites) { m_heartSprites = heartSprites; }
     void setPowerSprites(const std::vector<sf::Sprite>* powerSprites) { m_powerSprites = powerSprites; }
 
+    // Getter 方法
     sf::RenderWindow& getWindow() { return m_window; }
     const sf::Vector2u getWindowSize() const { return m_window.getSize(); }
     const sf::Vector2f getMousePos() const { return m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)); }
@@ -72,10 +76,12 @@ private:
     );
 
 private:
+    // 核心渲染组件
     sf::RenderWindow m_window;
     sf::View m_view;
     sf::Clock m_clock;
 
+    // 精灵对象指针
     const std::unique_ptr<sf::Sprite>* m_water;
     const std::unique_ptr<sf::Sprite>* m_player;
     const std::unique_ptr<sf::Sprite>* m_startButton;
