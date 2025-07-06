@@ -95,8 +95,10 @@ private:
     void updateObstacleItemSprites();
 
     // 模式创建方法
-    void createClusterPattern();     // 聚集模式
-    void createTunnelPattern();      // 隧道模式
+    void createClusterPattern();  // 聚集模式
+    void createTunnelPattern();  // 隧道模式
+    void createPowerPattern();  // 能量道具模式
+    void createHeartPattern();  // 生命道具模式
 
     // 工具方法
     TextureType getRandomObstacleTexture(ObstacleType type);
@@ -105,6 +107,7 @@ private:
     sf::FloatRect getPatternBounds(const Pattern& pattern, const sf::Vector2f& centerPos);
     void setPatternSize(Pattern& pattern);
     void setPatternPosition(Pattern& pattern);
+    TextureType getItemTexture(ItemType type);
 
 private:
     // 生成配置
@@ -119,12 +122,12 @@ private:
     const sf::Vector2f m_beachSize = m_buoySize;
     const sf::Vector2f m_seaweedSize = m_beachSize;
     const sf::Vector2f m_MMBridgeSize = Config::Texture::SIZE_3;
-    const sf::Vector2f m_MMBeachSize = m_MMBridgeSize;
     const sf::Vector2f m_MBeachSize = Config::Texture::SIZE_4;
     const sf::Vector2f m_MBoatSize = m_MBeachSize;
     const sf::Vector2f m_MBridgeSize = m_MBeachSize;
     const sf::Vector2f m_LBeachSize = Config::Texture::SIZE_5;
-    const sf::Vector2f m_LBridgeSize = m_LBeachSize;
+    const sf::Vector2f m_LBridgeSize = Config::Texture::SIZE_6;
+    const sf::Vector2f m_MMBeachSize = Config::Texture::SIZE_7;
 
     std::vector<int> m_spawnWeights{1, 2, 3};  // 生成模式权重（单个:小组:大组）
     

@@ -10,6 +10,7 @@ bool TextureManager::initialize() {
     std::string otherPath = imagePath + "other/";
     std::string playerPath = imagePath + "player/";
     std::string obstaclePath = imagePath + "obstacle/";
+    std::string itemPath = imagePath + "item/";
     bool success = true;
 
     success &= loadTexture(TextureType::water, otherPath + "water.png");
@@ -90,6 +91,15 @@ bool TextureManager::initialize() {
     success &= loadTexture(TextureType::mm_beach_3, obstaclePath + "mm_beach_3.png");
     success &= loadTexture(TextureType::s_buoy_1, obstaclePath + "s_buoy_1.png");
     success &= loadTexture(TextureType::s_buoy_2, obstaclePath + "s_buoy_2.png");
+
+    success &= loadTexture(TextureType::power_item_1, itemPath + "power_item_1.png");
+    success &= loadTexture(TextureType::power_item_2, itemPath + "power_item_2.png");
+    success &= loadTexture(TextureType::power_item_3, itemPath + "power_item_3.png");
+    success &= loadTexture(TextureType::power_item_4, itemPath + "power_item_4.png");
+    success &= loadTexture(TextureType::heart_item_1, itemPath + "heart_item_1.png");
+    success &= loadTexture(TextureType::heart_item_2, itemPath + "heart_item_2.png");
+    success &= loadTexture(TextureType::heart_item_3, itemPath + "heart_item_3.png");
+    success &= loadTexture(TextureType::heart_item_4, itemPath + "heart_item_4.png");
 
     return success;
 }
