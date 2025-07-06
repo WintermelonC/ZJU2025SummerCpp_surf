@@ -50,6 +50,7 @@ bool Game::initialize() {
     m_gameView.setPowerSprites(&m_playerViewModel->getPowerSprites());
     m_gameViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
     m_gameViewModel->setPlayerHP(m_playerViewModel->getPlayerHP());
+    m_gameViewModel->setIsWaiting(m_playerViewModel->isPlayerWaiting());
     m_playerViewModel->setGameState(&m_gameViewModel->getGameState());
     m_ObstacleItemViewModel->setPlayerVelocity(&m_playerViewModel->getPlayerVelocity());
     m_ObstacleItemViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
@@ -60,6 +61,7 @@ bool Game::initialize() {
     m_spriteViewModel->setWaterOffset(&m_gameViewModel->getWaterOffset());
     m_spriteViewModel->setPlayerIsInvincible(&m_playerViewModel->isPlayerInvincible());
     m_animationViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
+    m_animationViewModel->setIsPlayerWaiting(&m_playerViewModel->isPlayerWaiting());
 
     // 设置事件回调
     // 设置焦点丢失回调
@@ -77,6 +79,7 @@ bool Game::initialize() {
     m_gameView.setObstacleItemUpdateCallback(m_ObstacleItemViewModel->getUpdateCommand());
     m_gameView.setSpriteUpdateCallback(m_spriteViewModel->getUpdateCommand());
     m_gameView.setAnimationUpdateCallback(m_animationViewModel->getAnimationCommands());
+    m_gameViewModel->setMouseLeftClickPlayerWaitingCallback(m_playerViewModel->getMouseLeftClickPlayerWaitingCommand());
 
     return success;
 }

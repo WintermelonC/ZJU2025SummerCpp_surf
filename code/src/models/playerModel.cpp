@@ -93,7 +93,7 @@ void PlayerModel::updateSlow(const float& dt) {
 }
 
 void PlayerModel::updateInvincible(const float& dt) {
-    if (m_isInvincible) {
+    if (m_isInvincible && !m_isWaiting) {
         m_invincibleTimer += dt;
         if (m_invincibleTimer >= m_invincibleDuration) {
             m_isInvincible = false;  // 无敌时间结束
@@ -105,6 +105,10 @@ void PlayerModel::updateInvincible(const float& dt) {
 }
 
 void PlayerModel::updateYSpeed(const float deltaTime) {
+    if (m_isWaiting) {
+        m_velocity.y = 0.f;
+        return;
+    }
     if (m_state == Config::PlayerState::stop) {
         // 减速
         m_velocity.y = std::max(0.0f, m_velocity.y - m_acceleration2 * deltaTime);
@@ -131,6 +135,10 @@ void PlayerModel::updateYSpeed(const float deltaTime) {
 }
 
 void PlayerModel::updateXSpeed(const float deltaTime) {
+    if (m_isWaiting) {
+        m_velocity.x = 0.f;
+        return;
+    }
     float speedModifier = 1.0f;
     
     // 应用状态效果
@@ -176,12 +184,12 @@ void PlayerModel::reset() {
     // 重置位置到初始位置
     position = Config::Player::PLAYER_POS;
     
-    // 🔄 重置状态效果
+    // 重置状态效果
     m_isSlowed = false;
     m_slowFactor = 1.0f;
     m_slowTimer = 0.0f;
     
-    // 🔄 重置无敌状态
+    // 重置无敌状态
     m_isInvincible = false;
     m_invincibleTimer = 0.0f;
 }
@@ -192,8 +200,9 @@ void PlayerModel::takeDamage(int damage) {
         m_hp = std::max(0, m_hp - damage);
         // 受到伤害后停下来
         m_velocity = {0, 0};  // 停止移动
-        // 受到伤害后进入无敌状态
-        setInvincible();
+        // 受到伤害后等待
+        m_isWaiting = true;
+        m_isInvincible = true;
     }
 }
 

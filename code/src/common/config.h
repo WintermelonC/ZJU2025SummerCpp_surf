@@ -15,6 +15,7 @@ namespace Config {
     using GameUpdateCallback = std::function<void(const sf::Vector2u&)>;
     using ObstacleItemUpdateCallback = std::function<void(const float&, const sf::Sprite&)>;
     using SpriteUpdateCallback = std::function<void(const sf::Vector2u&)>;
+    using MouseLeftClickPlayerWaitingCallback = std::function<void()>;
 
     // 枚举类型定义
     enum class GameState {

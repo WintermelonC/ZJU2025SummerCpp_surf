@@ -544,6 +544,9 @@ std::shared_ptr<EntityModel> ObstacleItemViewModel::createEntityModel(ItemType i
 }
 
 bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSprite) {
+    if (m_gameState && *m_gameState != Config::GameState::playing) {
+        return false;
+    }
     sf::FloatRect playerBounds = playerSprite.getGlobalBounds();
 
     sf::Vector2f center = {
@@ -573,7 +576,7 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
         // 使用findIntersection进行精确碰撞检测
         if (playerBounds.findIntersection(spriteBounds)) {
             if (it->second->isObstacle()) {
-                std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
+                // std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
                 // 障碍物碰撞处理
                 ObstacleType obstacleType = it->second->getObstacleType();
                 
