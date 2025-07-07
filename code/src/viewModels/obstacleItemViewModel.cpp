@@ -24,8 +24,7 @@ void ObstacleItemViewModel::update(const float& dt) {
     
     m_spawnClock.restart();
     
-    spawnGroup();
-    spawnGroup();
+    spawnTwoGroups();
 }
 
 void ObstacleItemViewModel::initialize() {
@@ -119,6 +118,102 @@ bool ObstacleItemViewModel::spawnGroup() {
     
     // 所有尝试都失败，无法找到无碰撞的位置
     return false;
+}
+
+bool ObstacleItemViewModel::spawnTwoGroups() {
+    if (m_patterns.empty()) {
+        return false;
+    }
+    
+    const float MIN_GROUP_DISTANCE = Config::Window::RENDER_SIZE.x / 3.f;  // 两个组之间的最小距离
+    
+    // 随机选择两个障碍物组模式（可以相同）
+    std::uniform_int_distribution<> patternDist(0, m_patterns.size() - 1);
+    const auto& pattern1 = m_patterns[patternDist(m_gen)];
+    const auto& pattern2 = m_patterns[patternDist(m_gen)];
+    
+    // 尝试找到两个不碰撞且间距足够的位置
+    const int MAX_ATTEMPTS = 10;
+    for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+        // 为第一个组计算生成位置
+        std::uniform_real_distribution<float> xDist1(
+            pattern1.width / 2.f, 
+            Config::Window::RENDER_SIZE.x - pattern1.width / 2.f
+        );
+        std::uniform_real_distribution<float> yDist(
+            -Config::Window::RENDER_SIZE.y / 4.f,
+            Config::Window::RENDER_SIZE.y / 4.f
+        );
+        
+        float centerX1 = xDist1(m_gen);
+        float centerY = Config::Window::RENDER_SIZE.y * 1.5f + yDist(m_gen);
+        sf::Vector2f centerPos1(centerX1, centerY);
+        
+        // 检查第一个组的碰撞
+        sf::FloatRect patternBounds1 = getPatternBounds(pattern1, centerPos1);
+        if (checkCollision(patternBounds1)) {
+            continue; // 第一个组位置有碰撞，重新尝试
+        }
+        
+        // 为第二个组计算生成位置，确保与第一个组有足够距离
+        std::uniform_real_distribution<float> xDist2(
+            pattern2.width / 2.f, 
+            Config::Window::RENDER_SIZE.x - pattern2.width / 2.f
+        );
+        
+        float centerX2;
+        int subAttempts = 0;
+        do {
+            centerX2 = xDist2(m_gen);
+            subAttempts++;
+        } while (std::abs(centerX2 - centerX1) < MIN_GROUP_DISTANCE && subAttempts < 20);
+        
+        if (subAttempts >= 20) {
+            continue; // 无法找到足够间距的第二个位置
+        }
+        
+        sf::Vector2f centerPos2(centerX2, centerY);
+        
+        // 检查第二个组的碰撞
+        sf::FloatRect patternBounds2 = getPatternBounds(pattern2, centerPos2);
+        if (checkCollision(patternBounds2)) {
+            continue; // 第二个组位置有碰撞，重新尝试
+        }
+        
+        // 检查两个组之间是否有重叠
+        if (patternBounds1.findIntersection(patternBounds2)) {
+            continue; // 两个组重叠，重新尝试
+        }
+        
+        // 生成第一个障碍物组
+        for (size_t i = 0; i < pattern1.positions.size(); i++) {
+            sf::Vector2f worldPos = {
+                centerX1 + pattern1.positions[i].x,
+                centerY + pattern1.positions[i].y
+            };
+            
+            auto spriteEntityPair = createSpriteEntityPair(pattern1.items[i], worldPos);
+            m_spriteEntityPairs.push_back(spriteEntityPair);
+        }
+        
+        // 生成第二个障碍物组
+        for (size_t i = 0; i < pattern2.positions.size(); i++) {
+            sf::Vector2f worldPos = {
+                centerX2 + pattern2.positions[i].x,
+                centerY + pattern2.positions[i].y
+            };
+            
+            auto spriteEntityPair = createSpriteEntityPair(pattern2.items[i], worldPos);
+            m_spriteEntityPairs.push_back(spriteEntityPair);
+        }
+        
+        updateObstacleItemSprites(); // 更新独立的精灵列表
+        updateEntityBounds();
+        return true;
+    }
+    
+    // 所有尝试都失败，回退到生成单个组
+    return spawnGroup();
 }
 
 void ObstacleItemViewModel::createClusterPattern() {
