@@ -191,7 +191,9 @@ void PlayerModel::reset() {
 
 void PlayerModel::takeDamage(int damage) {
     if (!m_isInvincible) {  // 只有在非无敌状态下才能受到伤害
+    #ifdef DEBUG
         std::cout << "Player takes damage: " << std::endl;
+    #endif
         m_hp = std::max(0, m_hp - damage);
         // 受到伤害后停下来
         m_velocity = {0, 0};  // 停止移动
@@ -202,7 +204,9 @@ void PlayerModel::takeDamage(int damage) {
 }
 
 void PlayerModel::applySlowEffect() {
+#ifdef DEBUG
     std::cout << "Player is slowed down!" << std::endl;
+#endif
     m_isSlowed = true;  // 应用减速效果
     m_slowTimer = 0.0f;  // 重置减速计时器
 }

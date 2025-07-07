@@ -717,7 +717,9 @@ bool ObstacleItemViewModel::checkCollisionWithPlayer(const sf::Sprite& playerSpr
         // 使用findIntersection进行精确碰撞检测
         if (playerBounds.findIntersection(spriteBounds)) {
             if (it->second->isObstacle()) {
-                // std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
+            #ifdef DEBUG
+                std::cout << "Obstacle collision detected with type: " << static_cast<int>(it->second->getObstacleType()) << std::endl;
+            #endif
                 // 障碍物碰撞处理
                 ObstacleType obstacleType = it->second->getObstacleType();
                 
