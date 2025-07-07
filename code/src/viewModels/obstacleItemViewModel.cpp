@@ -25,6 +25,7 @@ void ObstacleItemViewModel::update(const float& dt) {
     m_spawnClock.restart();
     
     spawnGroup();
+    spawnGroup();
 }
 
 void ObstacleItemViewModel::initialize() {
@@ -160,7 +161,35 @@ void ObstacleItemViewModel::createClusterPattern() {
     setPatternSize(pattern);
     m_patterns.push_back(pattern);
     // 4
-
+    pattern.positions = {
+        {0, 0}, {m_seaweedSize.x, 0}, {m_seaweedSize.x * 2.f, 0},
+        {m_seaweedSize.x * 3.f, -m_seaweedSize.y * 0.75f}, {m_seaweedSize.x * 3.75f, m_seaweedSize.y * 0.75f}, {m_seaweedSize.x * 3.f, m_seaweedSize.y * 1.75f},
+        {0, m_seaweedSize.y}, {m_seaweedSize.x, m_seaweedSize.y * 1.75f}, {m_seaweedSize.x * 2.f, m_seaweedSize.y * 1.75f},
+        {m_seaweedSize.x, m_seaweedSize.y}, {m_seaweedSize.x * 3.f, m_seaweedSize.y * 0.25f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::seaweed),  SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::seaweed),  SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::wood),  SpawnItem(ObstacleType::stone)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 5
+    pattern.positions = {
+        {0, 0}, {-m_seaweedSize.x * 0.5f, m_seaweedSize.y}, {-m_seaweedSize.x, m_seaweedSize.y * 0.5f},
+        {m_seaweedSize.x * 2.f, m_seaweedSize.y * 1.75f}, {m_seaweedSize.x * 0.75f, m_seaweedSize.y * 0.25f}, {m_seaweedSize.x * 0.5f, m_seaweedSize.y * 2.f},
+        {m_seaweedSize.x * 2.75f, m_seaweedSize.y * 1.25f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::m_boat),
+        SpawnItem(ObstacleType::seaweed),  SpawnItem(ObstacleType::l_beach), SpawnItem(ObstacleType::boat),
+        SpawnItem(ObstacleType::wood)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
 }
 
 void ObstacleItemViewModel::createTunnelPattern() {
@@ -252,6 +281,30 @@ void ObstacleItemViewModel::createSinglePattern() {
     // 2
     pattern.positions = {{0, 0}};
     pattern.items = {SpawnItem(ObstacleType::boat)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 3
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::seaweed)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 4
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::coral)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 5
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::buoy)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 6
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::s_buoy)};
     setPatternPosition(pattern);
     setPatternSize(pattern);
     m_patterns.push_back(pattern);
@@ -624,35 +677,68 @@ void ObstacleItemViewModel::updateEntityBounds() {
                     setRecNewPos(newPosition, center, newSize, {0.f, 20.f});
                     break;
                 }
-                case ObstacleType::ripple: break;
+                case ObstacleType::ripple: {
+                    newSize = bounds.size;
+                    setRecNewSize(newSize, {0.8f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize);
+                    break;
+                }
                 case ObstacleType::bridge: {
                     setRecNewSize(newSize, {2.5f, 2.f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 0.f});
+                    break;
+                }
+                case ObstacleType::sp_bridge: {
+                    setRecNewSize(newSize, {2.5f, 2.f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 0.f});
+                    break;
+                }
+                case ObstacleType::buoy: {
+                    setRecNewSize(newSize, {1.f, 1.f});
                     setRecNewPos(newPosition, center, newSize, {0.f, 20.f});
                     break;
                 }
-                case ObstacleType::sp_bridge: break;
-                case ObstacleType::buoy: break;
-                case ObstacleType::coral: break;
-                case ObstacleType::l_beach: break;
+                case ObstacleType::coral: {
+                    setRecNewSize(newSize, {0.9f, 1.f});
+                    setRecNewPos(newPosition, center, newSize, {0, 20.f});
+                    break;
+                }
+                case ObstacleType::l_beach: {
+                    setRecNewSize(newSize, {1.75f, 1.2f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 30.f});
+                    break;
+                }
                 case ObstacleType::l_bridge: break;
                 case ObstacleType::m_beach: {
-                    setRecNewSize(newSize, {1.5f, 0.8f});
-                    setRecNewPos(newPosition, center, newSize, {0.f, 40.f});
+                    setRecNewSize(newSize, {1.25f, 0.6f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 50.f});
                     break;
                 }
-                case ObstacleType::m_boat: break;
+                case ObstacleType::m_boat: {
+                    setRecNewSize(newSize, {1.5f, 0.75f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 50.f});
+                    break;
+                }
                 case ObstacleType::m_bridge: {
-                    setRecNewSize(newSize, {1.5f, 1.f});
+                    setRecNewSize(newSize, {2.0f, 1.f});
                     setRecNewPos(newPosition, center, newSize, {0.f, 40.f});
                     break;
                 }
-                case ObstacleType::mm_bridge: break;
+                case ObstacleType::mm_bridge: {
+                    setRecNewSize(newSize, {2.5f, 1.4f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 0.f});
+                    break;
+                }
                 case ObstacleType::mm_beach: {
                     setRecNewSize(newSize, {3.f, 1.5f});
                     setRecNewPos(newPosition, center, newSize, {0.f, 40.f});
                     break;
                 }
-                case ObstacleType::s_buoy: break;
+                case ObstacleType::s_buoy: {
+                    setRecNewSize(newSize, {0.8f, 0.8f});
+                    setRecNewPos(newPosition, center, newSize, {0.f, 5.f});
+                    break;
+                }
             }
         } else if (entityModel->isItem()) {
             ItemType itemType = entityModel->getItemType();

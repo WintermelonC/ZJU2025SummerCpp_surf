@@ -140,28 +140,22 @@ void PlayerModel::updateXSpeed(const float deltaTime) {
         m_velocity.x = 0.f;
         return;
     }
-    float speedModifier = 1.0f;
-    
-    // 应用状态效果
-    if (m_isSlowed) {
-        speedModifier *= m_slowFactor;
-    }
     
     switch (m_state) {
         case Config::PlayerState::center:
             m_velocity.x = 0.0f;
             break;
         case Config::PlayerState::left1:
-            m_velocity.x = -m_velocity.y * m_XYScale1 * speedModifier;
+            m_velocity.x = -m_velocity.y * m_XYScale1;
             break;
         case Config::PlayerState::left2:
-            m_velocity.x = -m_velocity.y * m_XYScale2 * speedModifier;
+            m_velocity.x = -m_velocity.y * m_XYScale2;
             break;
         case Config::PlayerState::right1:
-            m_velocity.x = m_velocity.y * m_XYScale1 * speedModifier;
+            m_velocity.x = m_velocity.y * m_XYScale1;
             break;
         case Config::PlayerState::right2:
-            m_velocity.x = m_velocity.y * m_XYScale2 * speedModifier;
+            m_velocity.x = m_velocity.y * m_XYScale2;
             break;
         case Config::PlayerState::stop:
             m_velocity.x = 0.0f;
