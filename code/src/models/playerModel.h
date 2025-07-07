@@ -80,7 +80,7 @@ private:
     bool m_isSlowed = false;
     float m_slowFactor = 0.5f;
     float m_slowTimer = 0.0f;
-    const float m_slowDuration = 2.0f;  // 默认减速时间2秒
+    const float m_slowDuration = 0.1f;
     
     // 无敌时间相关
     bool m_isInvincible = false;
