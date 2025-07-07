@@ -56,6 +56,7 @@ public:
     void setEntityBounds(const std::vector<sf::FloatRect>& entityBounds) { m_entityBounds = &entityBounds; }
     void setScoreboard(const std::unique_ptr<sf::Sprite>* scoreboard) { m_scoreboard = scoreboard; }
     void setScore(const float* score) { m_score = score; }
+    void setHighScore(const float* highScore) { m_highScore = highScore; }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
     void setRipples(const std::deque<Config::Trail>* ripples) { m_ripples = ripples; }
     void setTails(const std::deque<Config::Trail>* tails) { m_tails = tails; }
@@ -106,6 +107,7 @@ private:
     const std::vector<sf::Sprite>* m_obstacleItemSprites;
     const std::vector<sf::FloatRect>* m_entityBounds;  // 存储已生成的障碍物组边界
     const float* m_score;
+    const float* m_highScore;
     const std::vector<sf::Sprite>* m_startMenuPlayerAnimation;
     const Config::GameState* m_gameState;
     const std::deque<Config::Trail>* m_ripples;

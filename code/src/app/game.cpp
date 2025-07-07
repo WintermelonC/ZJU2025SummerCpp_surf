@@ -43,6 +43,7 @@ bool Game::initialize() {
     m_gameView.setEntityBounds(m_ObstacleItemViewModel->getEntityBounds());
     m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
     m_gameView.setScore(m_gameViewModel->getScore());
+    m_gameView.setHighScore(m_gameViewModel->getHighScore());
     m_gameView.setGameState(&m_gameViewModel->getGameModel().getGameState());
     m_gameView.setRipples(&m_playerViewModel->getRipples());
     m_gameView.setTails(&m_playerViewModel->getTails());

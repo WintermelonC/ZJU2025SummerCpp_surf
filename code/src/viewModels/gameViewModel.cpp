@@ -1,6 +1,9 @@
 #include "gameViewModel.h"
 
-GameViewModel::GameViewModel() {}
+GameViewModel::GameViewModel() {
+    // 在启动时加载最高分
+    m_highScore = ScoreManager::getInstance().loadHighScore();
+}
 void GameViewModel::subscribeToNotifications() {
     auto& notificationCenter = NotificationCenter::getInstance();
     // 订阅游戏重置通知
@@ -16,6 +19,11 @@ void GameViewModel::update(const sf::Vector2u& windowSize) {
         return;
     }
     if (*m_playerHP <= 0 && m_playerHP != nullptr) {
+        // 游戏结束，检查并更新最高分
+        bool isNewHighScore = m_gameModel.gameOver();
+        if (isNewHighScore) {
+            m_highScore = ScoreManager::getInstance().getHighScore();
+        }
         m_gameModel.setGameState(Config::GameState::gameOver);
         return;
     }

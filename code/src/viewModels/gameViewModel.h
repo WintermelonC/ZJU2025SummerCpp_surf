@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
+#include "../common/scoreManager.h"
 #include "../models/gameModel.h"
 
 class GameViewModel : public INotificationObserver, public std::enable_shared_from_this<GameViewModel> {
@@ -14,6 +15,7 @@ public:
 
     // Getter 方法
     const float* getScore() const { return &m_gameModel.getScore(); }
+    const float* getHighScore() const { return &m_highScore; }
     const GameModel& getGameModel() const { return m_gameModel; }
     const Config::GameState& getGameState() const { return m_gameModel.getGameState(); }
     const sf::Vector2f& getWaterOffset() const { return m_waterOffset; }
@@ -55,6 +57,7 @@ private:
     // 游戏状态
     sf::Vector2f m_waterOffset = {0, 0};
     GameModel m_gameModel;
+    float m_highScore = 0.0f;  // 缓存最高分
     const int* m_playerHP;  // 玩家当前生命值
     const bool* m_isPlayerWaiting;
     

@@ -37,6 +37,12 @@ bool SpriteViewModel::initialize() {
         Config::Player::PLAYER_POS,
         Config::Player::PLAYER_SCALE
     );
+    setSprite(
+        SpriteType::scoreboard,
+        Config::Texture::BUTTON_COLOR,
+        {Config::Window::RENDER_CENTER.x,
+        Config::Window::RENDER_CENTER.y - Config::Window::WINDOW_SIZE.y / 2 + 50}
+    );
     m_playerStartMenu = std::make_unique<sf::Sprite>(*m_textureManager->getTexture(TextureType::player_center_1));
 
     initializeButtonIcons();
