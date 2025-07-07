@@ -50,6 +50,7 @@ public:
     void setContinueIcon(const std::unique_ptr<sf::Sprite>* continueIcon) { m_continueIcon = continueIcon; }
     void setReturnButton(const std::unique_ptr<sf::Sprite>* returnButton) { m_returnButton = returnButton; }
     void setNewGameButton(const std::unique_ptr<sf::Sprite>* newGameButton) { m_newGameButton = newGameButton; }
+    void setNewGameIcon(const std::unique_ptr<sf::Sprite>* newGameIcon) { m_newGameIcon = newGameIcon; }
     void setFont(const std::unique_ptr<sf::Font>* font) { MSYHBD_font = font; }
     void setObstacleItemSprites(const std::vector<sf::Sprite>& obstacleItemSprites) { m_obstacleItemSprites = &obstacleItemSprites; }
     void setEntityBounds(const std::vector<sf::FloatRect>& entityBounds) { m_entityBounds = &entityBounds; }
@@ -100,6 +101,7 @@ private:
     const std::unique_ptr<sf::Sprite>* m_returnButton;
     const std::unique_ptr<sf::Sprite>* m_newGameButton;
     const std::unique_ptr<sf::Sprite>* m_scoreboard;
+    const std::unique_ptr<sf::Sprite>* m_newGameIcon;
     const std::unique_ptr<sf::Font>* MSYHBD_font;
     const std::vector<sf::Sprite>* m_obstacleItemSprites;
     const std::vector<sf::FloatRect>* m_entityBounds;  // 存储已生成的障碍物组边界

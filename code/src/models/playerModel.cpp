@@ -4,6 +4,7 @@ PlayerModel::PlayerModel()
     : EntityModel(EntityModelType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SIZE) {
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
+    m_hp = 2;
 #endif
 }
 
@@ -179,6 +180,7 @@ void PlayerModel::reset() {
     m_power = 0;
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
+    m_hp = 2;
 #endif
     
     // 重置位置到初始位置
@@ -188,6 +190,7 @@ void PlayerModel::reset() {
     m_isSlowed = false;
     m_slowFactor = 1.0f;
     m_slowTimer = 0.0f;
+    m_isWaiting = false;
     
     // 重置无敌状态
     m_isInvincible = false;

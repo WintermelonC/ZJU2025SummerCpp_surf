@@ -438,9 +438,9 @@ void GameView::renderGameOver() {
     sf::Text newGameText = renderText(
         *MSYHBD_font->get(),
         "新游戏",
-        26,
+        35,
         sf::Color::Black,
-        Config::Window::NEWGAME_BUTTON_POS - sf::Vector2f{0.f, 5.f},
+        Config::Window::NEWGAME_BUTTON_POS + sf::Vector2f{20.f, -5.f},
         true
     );    
 
@@ -460,6 +460,7 @@ void GameView::renderGameOver() {
     m_window.draw(newGameButtonShadow);  // 绘制新游戏按钮阴影
     m_window.draw(*m_newGameButton->get()); // 绘制新游戏按钮
     m_window.draw(newGameText);  // 绘制新游戏文字
+    m_window.draw(*m_newGameIcon->get());
     m_window.draw(returnButtonShadow);  // 绘制返回按钮阴影
     m_window.draw(*m_returnButton->get());   // 绘制返回按钮
     m_window.draw(returnText);  // 绘制返回文字

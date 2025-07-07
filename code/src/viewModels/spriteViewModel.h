@@ -16,6 +16,7 @@ enum class SpriteType {
     return_button,
     newGame_button,
     scoreboard,
+    newGame_icon
 };
 
 class SpriteViewModel : public INotificationObserver, public std::enable_shared_from_this<SpriteViewModel> {

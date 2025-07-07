@@ -37,6 +37,7 @@ bool Game::initialize() {
     m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setNewGameButton(m_spriteViewModel->getSprite(SpriteType::newGame_button));
+    m_gameView.setNewGameIcon(m_spriteViewModel->getSprite(SpriteType::newGame_icon));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
     m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getObstacleItemSprites());
     m_gameView.setEntityBounds(m_ObstacleItemViewModel->getEntityBounds());
