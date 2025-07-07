@@ -37,11 +37,13 @@ bool Game::initialize() {
     m_gameView.setContinueIcon(m_spriteViewModel->getSprite(SpriteType::continue_icon));
     m_gameView.setReturnButton(m_spriteViewModel->getSprite(SpriteType::return_button));
     m_gameView.setNewGameButton(m_spriteViewModel->getSprite(SpriteType::newGame_button));
+    m_gameView.setNewGameIcon(m_spriteViewModel->getSprite(SpriteType::newGame_icon));
     m_gameView.setFont(m_fontViewModel->getFont(Fonts::MSYHBD));
     m_gameView.setObstacleItemSprites(m_ObstacleItemViewModel->getObstacleItemSprites());
     m_gameView.setEntityBounds(m_ObstacleItemViewModel->getEntityBounds());
     m_gameView.setScoreboard(m_spriteViewModel->getSprite(SpriteType::scoreboard));
     m_gameView.setScore(m_gameViewModel->getScore());
+    m_gameView.setHighScore(m_gameViewModel->getHighScore());
     m_gameView.setGameState(&m_gameViewModel->getGameModel().getGameState());
     m_gameView.setRipples(&m_playerViewModel->getRipples());
     m_gameView.setTails(&m_playerViewModel->getTails());
@@ -60,6 +62,8 @@ bool Game::initialize() {
     m_spriteViewModel->setPlayerTexture(&m_animationViewModel->getPlayerTexture());
     m_spriteViewModel->setWaterOffset(&m_gameViewModel->getWaterOffset());
     m_spriteViewModel->setPlayerIsInvincible(&m_playerViewModel->isPlayerInvincible());
+    m_spriteViewModel->setScore(m_gameViewModel->getScore());
+    m_spriteViewModel->setHighScore(m_gameViewModel->getHighScore());
     m_animationViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
     m_animationViewModel->setIsPlayerWaiting(&m_playerViewModel->isPlayerWaiting());
 

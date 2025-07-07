@@ -4,6 +4,7 @@ PlayerModel::PlayerModel()
     : EntityModel(EntityModelType::player, Config::Player::PLAYER_POS, Config::Player::PLAYER_SIZE) {
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
+    m_hp = 2;
 #endif
 }
 
@@ -138,23 +139,22 @@ void PlayerModel::updateXSpeed(const float deltaTime) {
         m_velocity.x = 0.f;
         return;
     }
-    float speedModifier = 1.0f;
     
     switch (m_state) {
         case Config::PlayerState::center:
             m_velocity.x = 0.0f;
             break;
         case Config::PlayerState::left1:
-            m_velocity.x = -m_velocity.y * m_XYScale1 * speedModifier;
+            m_velocity.x = -m_velocity.y * m_XYScale1;
             break;
         case Config::PlayerState::left2:
-            m_velocity.x = -m_velocity.y * m_XYScale2 * speedModifier;
+            m_velocity.x = -m_velocity.y * m_XYScale2;
             break;
         case Config::PlayerState::right1:
-            m_velocity.x = m_velocity.y * m_XYScale1 * speedModifier;
+            m_velocity.x = m_velocity.y * m_XYScale1;
             break;
         case Config::PlayerState::right2:
-            m_velocity.x = m_velocity.y * m_XYScale2 * speedModifier;
+            m_velocity.x = m_velocity.y * m_XYScale2;
             break;
         case Config::PlayerState::stop:
             m_velocity.x = 0.0f;
@@ -173,6 +173,7 @@ void PlayerModel::reset() {
     m_power = 0;
 #ifdef DEBUG
     m_power = Config::Player::PLAYER_POWER;  // 调试时设置玩家能量值
+    m_hp = 2;
 #endif
     
     // 重置位置到初始位置
@@ -190,7 +191,9 @@ void PlayerModel::reset() {
 
 void PlayerModel::takeDamage(int damage) {
     if (!m_isInvincible) {  // 只有在非无敌状态下才能受到伤害
+    #ifdef DEBUG
         std::cout << "Player takes damage: " << std::endl;
+    #endif
         m_hp = std::max(0, m_hp - damage);
         // 受到伤害后停下来
         m_velocity = {0, 0};  // 停止移动
@@ -201,7 +204,9 @@ void PlayerModel::takeDamage(int damage) {
 }
 
 void PlayerModel::applySlowEffect() {
+#ifdef DEBUG
     std::cout << "Player is slowed down!" << std::endl;
+#endif
     m_isSlowed = true;  // 应用减速效果
     m_slowTimer = 0.0f;  // 重置减速计时器
 }

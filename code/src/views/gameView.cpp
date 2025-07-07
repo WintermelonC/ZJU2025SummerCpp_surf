@@ -8,6 +8,8 @@ GameView::GameView()
       m_continueButton(nullptr),
       m_continueIcon(nullptr),
       m_returnButton(nullptr),
+      m_score(nullptr),
+      m_highScore(nullptr),
       MSYHBD_font(nullptr) {}
 
 void GameView::run() {
@@ -241,6 +243,18 @@ void GameView::renderStartMenu() {
         sf::Color::Black,
         static_cast<sf::Vector2f>(Config::Window::RENDER_CENTER) - sf::Vector2f{0.f, 200.f}
     );
+    // 最高分显示
+    sf::Text highScoreText = renderText(
+        *MSYHBD_font->get(),
+        std::to_string(static_cast<int>(*m_highScore)),
+        30,
+        sf::Color::Black,
+        m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -6.f}
+    );
+    // 分数版阴影
+    sf::Sprite scoreboardShadow = *m_scoreboard->get();
+    scoreboardShadow.setColor(sf::Color(0, 0, 0, 150));  // 设置阴影颜色
+    scoreboardShadow.move({0.f, 4.f});  // 向下偏移
     // 开始文字
     sf::Text startText = renderText(
         *MSYHBD_font->get(),
@@ -277,6 +291,9 @@ void GameView::renderStartMenu() {
     // 绘制开始文字
     m_window.draw(startText);
     m_window.draw(*m_playerStartMenu->get()); // 绘制玩家开始菜单图标
+    m_window.draw(scoreboardShadow);  // 绘制分数版阴影
+    m_window.draw(*m_scoreboard->get());
+    m_window.draw(highScoreText);
 }   
 
 void GameView::renderPauseMenu() {
@@ -438,9 +455,9 @@ void GameView::renderGameOver() {
     sf::Text newGameText = renderText(
         *MSYHBD_font->get(),
         "新游戏",
-        26,
+        35,
         sf::Color::Black,
-        Config::Window::NEWGAME_BUTTON_POS - sf::Vector2f{0.f, 5.f},
+        Config::Window::NEWGAME_BUTTON_POS + sf::Vector2f{20.f, -5.f},
         true
     );    
 
@@ -460,6 +477,7 @@ void GameView::renderGameOver() {
     m_window.draw(newGameButtonShadow);  // 绘制新游戏按钮阴影
     m_window.draw(*m_newGameButton->get()); // 绘制新游戏按钮
     m_window.draw(newGameText);  // 绘制新游戏文字
+    m_window.draw(*m_newGameIcon->get());
     m_window.draw(returnButtonShadow);  // 绘制返回按钮阴影
     m_window.draw(*m_returnButton->get());   // 绘制返回按钮
     m_window.draw(returnText);  // 绘制返回文字

@@ -83,6 +83,7 @@ private:
 
     // 生成相关方法
     bool spawnGroup();
+    bool spawnTwoGroups();  // 生成两个障碍物组的方法
     
     // 创建sprite和对应EntityModel的方法
     std::pair<sf::Sprite, std::shared_ptr<EntityModel>> createSpriteEntityPair(
@@ -136,8 +137,6 @@ private:
     const sf::Vector2f m_LBeachSize = Config::Texture::SIZE_5;
     const sf::Vector2f m_LBridgeSize = Config::Texture::SIZE_6;
     const sf::Vector2f m_MMBeachSize = Config::Texture::SIZE_7;
-
-    std::vector<int> m_spawnWeights{1, 2, 3};  // 生成模式权重（单个:小组:大组）
     
     // 数据存储
     std::vector<Pattern> m_patterns;  // 预定义的障碍物和道具组合模式

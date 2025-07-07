@@ -16,6 +16,7 @@ enum class SpriteType {
     return_button,
     newGame_button,
     scoreboard,
+    newGame_icon
 };
 
 class SpriteViewModel : public INotificationObserver, public std::enable_shared_from_this<SpriteViewModel> {
@@ -86,12 +87,18 @@ public:
     void setSpritePosition(const SpriteType& spriteType, const sf::Vector2f& position) { 
         m_sprites[spriteType]->setPosition(position); 
     }
+
+    void setSpriteColor(const SpriteType& spriteType, const sf::Color& color) {
+        m_sprites[spriteType]->setColor(color);
+    }
     
     void setPlayerPosition(const sf::Vector2f* playerPosition) { m_playerPosition = playerPosition; }
     void setPlayerTexture(const TextureType* playerTexture) { m_playerTexture = playerTexture; }
     void setGameState(const Config::GameState* gameState) { m_gameState = gameState; }
     void setWaterOffset(const sf::Vector2f* waterOffset) { m_waterOffset = waterOffset; }
     void setPlayerIsInvincible(const bool* playerIsInvincible) { m_playerIsInvincible = playerIsInvincible; }
+    void setScore(const float* score) { m_score = score; }
+    void setHighScore(const float* highScore) { m_highScore = highScore; }
 
 private:
     // 初始化和更新方法
@@ -120,4 +127,6 @@ private:
     const Config::GameState* m_gameState;
     const sf::Vector2f* m_waterOffset;
     const bool* m_playerIsInvincible;
+    const float* m_score;
+    const float* m_highScore;
 };

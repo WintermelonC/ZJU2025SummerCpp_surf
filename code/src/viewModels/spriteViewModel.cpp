@@ -22,6 +22,7 @@ bool SpriteViewModel::initialize() {
     success &= loadSprite(SpriteType::return_button, TextureType::button);
     success &= loadSprite(SpriteType::newGame_button, TextureType::button);
     success &= loadSprite(SpriteType::scoreboard, TextureType::scoreboard);
+    success &= loadSprite(SpriteType::newGame_icon, TextureType::start_icon);
 
     setSprite(
         SpriteType::water,
@@ -36,6 +37,12 @@ bool SpriteViewModel::initialize() {
         Config::Player::PLAYER_POS,
         Config::Player::PLAYER_SCALE
     );
+    setSprite(
+        SpriteType::scoreboard,
+        sf::Color(249, 213, 46),
+        {Config::Window::RENDER_CENTER.x,
+        Config::Window::RENDER_CENTER.y - Config::Window::WINDOW_SIZE.y / 2 + 50}
+    );
     m_playerStartMenu = std::make_unique<sf::Sprite>(*m_textureManager->getTexture(TextureType::player_center_1));
 
     initializeButtonIcons();
@@ -49,6 +56,12 @@ void SpriteViewModel::update(const sf::Vector2u& windowSize) {
     }
     if (*m_gameState == Config::GameState::startMenu) {
         updatePlayerStartMenu();
+        setSprite(
+            SpriteType::scoreboard,
+            sf::Color(249, 213, 46),
+            {Config::Window::RENDER_CENTER.x,
+            Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
+        );
         return;
     }
     if (*m_gameState == Config::GameState::playing) {
@@ -60,6 +73,9 @@ void SpriteViewModel::update(const sf::Vector2u& windowSize) {
             {Config::Window::RENDER_CENTER.x,
             Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
         );
+        if (*m_score > *m_highScore) {
+            setSpriteColor(SpriteType::scoreboard, sf::Color(249, 213, 46));
+        }
         setSpritePosition(SpriteType::water, *m_waterOffset);
         if (m_playerAlphaClock.getElapsedTime().asSeconds() >= 0.24f) {
             m_currentPlayerAlphaFrame = (m_currentPlayerAlphaFrame + 1) % 2;  // 循环动画帧
@@ -153,6 +169,7 @@ void SpriteViewModel::initializeButtonIcons() {
     setSprite(SpriteType::continue_icon, sf::Color::White, Config::Window::CONTINUE_BUTTON_POS - sf::Vector2f{75.f, 0.f}, {0.9f, 0.9f});
     setSprite(SpriteType::return_button, Config::Texture::BUTTON_COLOR, Config::Window::RETURN_BUTTON_POS, Config::Window::RETURN_BUTTON_SCALE);
     setSprite(SpriteType::newGame_button, Config::Texture::BUTTON_COLOR, Config::Window::NEWGAME_BUTTON_POS, Config::Window::NEWGAME_BUTTON_SCALE);
+    setSprite(SpriteType::newGame_icon, sf::Color::White, Config::Window::NEWGAME_BUTTON_POS - sf::Vector2f{65.f, 0.f}, {0.9f, 0.9f});
 }
 
 void SpriteViewModel::onNotification(const NotificationData& data) {
