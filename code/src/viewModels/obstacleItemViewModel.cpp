@@ -84,12 +84,17 @@ bool ObstacleItemViewModel::spawnGroup() {
         pattern.width / 2.f, 
         Config::Window::RENDER_SIZE.x - pattern.width / 2.f
     );
+
+    std::uniform_real_distribution<float> yDist(
+        -30,
+        0
+    );
     
     // 尝试找到不碰撞的位置
     const int MAX_ATTEMPTS = 5;
     for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
         float centerX = xDist(m_gen);
-        float centerY = Config::Window::RENDER_SIZE.y * 1.5f;
+        float centerY = Config::Window::RENDER_SIZE.y * 1.5f + yDist(m_gen);
         sf::Vector2f centerPos(centerX, centerY);
         
         // 检查碰撞
@@ -277,6 +282,7 @@ void ObstacleItemViewModel::createPowerPattern() {
 
 void ObstacleItemViewModel::createHeartPattern() {
     Pattern pattern;
+    // 1
     pattern.positions = {
         {0, 0}, {-m_seaweedSize.x, -m_seaweedSize.y}, {-m_seaweedSize.x * 0.5f, m_seaweedSize.y * 0.5f},
         {-m_seaweedSize.x * 3.f, m_seaweedSize.y * 0.5f}, {-m_seaweedSize.x - m_MMBeachSize.x, m_seaweedSize.y * 1.5f}, {-m_seaweedSize.x * 1.25f - m_MMBeachSize.x, m_seaweedSize.y * 1.5f + m_MMBeachSize.y * 0.75f},
@@ -290,6 +296,24 @@ void ObstacleItemViewModel::createHeartPattern() {
         SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::seaweed), 
         SpawnItem(ItemType::heart), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::l_beach), 
         SpawnItem(ObstacleType::beach), SpawnItem(ObstacleType::m_beach),
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 2
+    pattern.positions = {
+        {0, 0}, {m_seaweedSize.x * 0.8f, 0}, {m_seaweedSize.x, -m_seaweedSize.y},
+        {m_seaweedSize.x * 0.3f, m_seaweedSize.y * 1.5f}, {m_seaweedSize.x * 2, m_seaweedSize.y}, {m_seaweedSize.x * 2.f, m_seaweedSize.y * 2.f},
+        {m_seaweedSize.x * 2.5f, m_seaweedSize.y * 3.5f}, {m_seaweedSize.x * 5.5f, m_seaweedSize.y * 2.f}, {m_seaweedSize.x * 5.f, m_seaweedSize.y * 2.f},
+        {m_seaweedSize.x * 5.5f, 0}, {m_seaweedSize.x * 6.5f, m_seaweedSize.y * 1.f}, {m_seaweedSize.x * 6.5f, -m_seaweedSize.y},
+        {m_seaweedSize.x * 3.25f, m_seaweedSize.y * 2.f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone), 
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::bridge), 
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ItemType::heart),
     };
     setPatternPosition(pattern);
     setPatternSize(pattern);
@@ -446,6 +470,12 @@ bool ObstacleItemViewModel::checkCollision(const sf::FloatRect& newRect) {
     for (const auto& existingBounds : m_entityBounds) {
         if (newRect.findIntersection(existingBounds)) {
             return true; // 检测到碰撞
+        }
+        sf::FloatRect newExpandedRect = newRect;
+        // 扩大边界以避免组太近
+        newExpandedRect.size.x += 50.0f;
+        if (newExpandedRect.findIntersection(existingBounds)) {
+            return true; // 扩大边界后仍然检测到碰撞
         }
     }
     return false; // 没有碰撞

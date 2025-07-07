@@ -42,9 +42,9 @@ void PlayerViewModel::onNotification(const NotificationData& data) {
             break;
         }
         case NotificationType::SlowCollision: {
-            std::cout << "PlayerViewModel: Received SlowCollision notification." << std::endl;
             // 处理减速效果 - 应用减速状态
-            if(!m_playerModel.isInvincible() && !m_playerModel.isSlowed()) {
+            if(!m_playerModel.isInvincible()) {
+                std::cout << "PlayerViewModel: Received SlowCollision notification." << std::endl;
                 m_playerModel.applySlowEffect();
             }
             break;
