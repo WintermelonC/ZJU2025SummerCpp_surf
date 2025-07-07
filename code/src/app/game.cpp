@@ -62,6 +62,8 @@ bool Game::initialize() {
     m_spriteViewModel->setPlayerTexture(&m_animationViewModel->getPlayerTexture());
     m_spriteViewModel->setWaterOffset(&m_gameViewModel->getWaterOffset());
     m_spriteViewModel->setPlayerIsInvincible(&m_playerViewModel->isPlayerInvincible());
+    m_spriteViewModel->setScore(m_gameViewModel->getScore());
+    m_spriteViewModel->setHighScore(m_gameViewModel->getHighScore());
     m_animationViewModel->setPlayerState(&m_playerViewModel->getPlayerState());
     m_animationViewModel->setIsPlayerWaiting(&m_playerViewModel->isPlayerWaiting());
 

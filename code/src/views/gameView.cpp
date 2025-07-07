@@ -246,10 +246,10 @@ void GameView::renderStartMenu() {
     // 最高分显示
     sf::Text highScoreText = renderText(
         *MSYHBD_font->get(),
-        "最高分: " + std::to_string(static_cast<int>(*m_highScore)),
-        25,
+        std::to_string(static_cast<int>(*m_highScore)),
+        30,
         sf::Color::Black,
-        m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -2.f}
+        m_scoreboard->get()->getPosition() + sf::Vector2f{0.f, -6.f}
     );
     // 分数版阴影
     sf::Sprite scoreboardShadow = *m_scoreboard->get();

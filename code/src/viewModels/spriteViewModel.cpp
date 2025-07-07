@@ -39,7 +39,7 @@ bool SpriteViewModel::initialize() {
     );
     setSprite(
         SpriteType::scoreboard,
-        Config::Texture::BUTTON_COLOR,
+        sf::Color(249, 213, 46),
         {Config::Window::RENDER_CENTER.x,
         Config::Window::RENDER_CENTER.y - Config::Window::WINDOW_SIZE.y / 2 + 50}
     );
@@ -56,6 +56,12 @@ void SpriteViewModel::update(const sf::Vector2u& windowSize) {
     }
     if (*m_gameState == Config::GameState::startMenu) {
         updatePlayerStartMenu();
+        setSprite(
+            SpriteType::scoreboard,
+            sf::Color(249, 213, 46),
+            {Config::Window::RENDER_CENTER.x,
+            Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
+        );
         return;
     }
     if (*m_gameState == Config::GameState::playing) {
@@ -67,6 +73,9 @@ void SpriteViewModel::update(const sf::Vector2u& windowSize) {
             {Config::Window::RENDER_CENTER.x,
             Config::Window::RENDER_CENTER.y - windowSize.y / 2 + 50}
         );
+        if (*m_score > *m_highScore) {
+            setSpriteColor(SpriteType::scoreboard, sf::Color(249, 213, 46));
+        }
         setSpritePosition(SpriteType::water, *m_waterOffset);
         if (m_playerAlphaClock.getElapsedTime().asSeconds() >= 0.24f) {
             m_currentPlayerAlphaFrame = (m_currentPlayerAlphaFrame + 1) % 2;  // 循环动画帧
