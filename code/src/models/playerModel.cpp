@@ -85,7 +85,6 @@ void PlayerModel::updateSlow(const float& dt) {
         if (m_slowTimer >= m_slowDuration) {
             m_isSlowed = false;  // 减速时间结束
             m_slowTimer = 0.0f;  // 重置计时器
-            m_slowFactor = 1.0f;  // 恢复正常速度
         }
     } else {
         m_slowTimer = 0.0f;  // 重置减速计时器
@@ -141,11 +140,6 @@ void PlayerModel::updateXSpeed(const float deltaTime) {
     }
     float speedModifier = 1.0f;
     
-    // 应用状态效果
-    if (m_isSlowed) {
-        speedModifier *= m_slowFactor;
-    }
-    
     switch (m_state) {
         case Config::PlayerState::center:
             m_velocity.x = 0.0f;
@@ -186,8 +180,8 @@ void PlayerModel::reset() {
     
     // 重置状态效果
     m_isSlowed = false;
-    m_slowFactor = 1.0f;
     m_slowTimer = 0.0f;
+    m_isWaiting = false;
     
     // 重置无敌状态
     m_isInvincible = false;
@@ -207,10 +201,6 @@ void PlayerModel::takeDamage(int damage) {
 }
 
 void PlayerModel::applySlowEffect() {
-    if(m_isSlowed) {
-        // 如果已经处于减速状态，则不重复应用
-        return;
-    }
     std::cout << "Player is slowed down!" << std::endl;
     m_isSlowed = true;  // 应用减速效果
     m_slowTimer = 0.0f;  // 重置减速计时器
