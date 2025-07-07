@@ -146,8 +146,8 @@ bool ObstacleItemViewModel::spawnTwoGroups() {
         );
         
         float centerX1 = xDist1(m_gen);
-        float centerY = Config::Window::RENDER_SIZE.y * 1.5f + yDist(m_gen);
-        sf::Vector2f centerPos1(centerX1, centerY);
+        float centerY1 = Config::Window::RENDER_SIZE.y * 1.5f + yDist(m_gen);
+        sf::Vector2f centerPos1(centerX1, centerY1);
         
         // 检查第一个组的碰撞
         sf::FloatRect patternBounds1 = getPatternBounds(pattern1, centerPos1);
@@ -162,6 +162,7 @@ bool ObstacleItemViewModel::spawnTwoGroups() {
         );
         
         float centerX2;
+        float centerY2 = Config::Window::RENDER_SIZE.y * 1.5f + yDist(m_gen);
         int subAttempts = 0;
         do {
             centerX2 = xDist2(m_gen);
@@ -172,7 +173,7 @@ bool ObstacleItemViewModel::spawnTwoGroups() {
             continue; // 无法找到足够间距的第二个位置
         }
         
-        sf::Vector2f centerPos2(centerX2, centerY);
+        sf::Vector2f centerPos2(centerX2, centerY2);
         
         // 检查第二个组的碰撞
         sf::FloatRect patternBounds2 = getPatternBounds(pattern2, centerPos2);
@@ -189,7 +190,7 @@ bool ObstacleItemViewModel::spawnTwoGroups() {
         for (size_t i = 0; i < pattern1.positions.size(); i++) {
             sf::Vector2f worldPos = {
                 centerX1 + pattern1.positions[i].x,
-                centerY + pattern1.positions[i].y
+                centerY1 + pattern1.positions[i].y
             };
             
             auto spriteEntityPair = createSpriteEntityPair(pattern1.items[i], worldPos);
@@ -200,7 +201,7 @@ bool ObstacleItemViewModel::spawnTwoGroups() {
         for (size_t i = 0; i < pattern2.positions.size(); i++) {
             sf::Vector2f worldPos = {
                 centerX2 + pattern2.positions[i].x,
-                centerY + pattern2.positions[i].y
+                centerY2 + pattern2.positions[i].y
             };
             
             auto spriteEntityPair = createSpriteEntityPair(pattern2.items[i], worldPos);
@@ -290,6 +291,112 @@ void ObstacleItemViewModel::createClusterPattern() {
     setPatternPosition(pattern);
     setPatternSize(pattern);
     m_patterns.push_back(pattern);
+    // 6 - 钻石形态
+    pattern.positions = {
+        {m_stoneSize.x, 0}, 
+        {0, m_stoneSize.y}, {m_stoneSize.x * 2.f, m_stoneSize.y},
+        {m_stoneSize.x, m_stoneSize.y * 2.f},
+        {m_stoneSize.x * 0.5f, m_stoneSize.y * 1.5f}, {m_stoneSize.x * 1.5f, m_stoneSize.y * 1.5f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::wood),
+        SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 7 - 螺旋形态
+    pattern.positions = {
+        {0, 0}, {m_buoySize.x * 2.f, 0}, {m_buoySize.x * 4.f, 0},
+        {m_buoySize.x, m_buoySize.y * 1.5f}, {m_buoySize.x * 3.f, m_buoySize.y * 1.5f},
+        {m_buoySize.x * 2.f, m_buoySize.y * 3.f}, {m_buoySize.x * 0.5f, m_buoySize.y * 2.5f}, {m_buoySize.x * 3.5f, m_buoySize.y * 2.5f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::buoy), SpawnItem(ObstacleType::buoy), SpawnItem(ObstacleType::buoy),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::boat), SpawnItem(ObstacleType::s_buoy), SpawnItem(ObstacleType::s_buoy)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 8 - 波浪形态
+    pattern.positions = {
+        {0, 0}, {m_beachSize.x * 1.5f, -m_beachSize.y * 0.5f}, {m_beachSize.x * 3.f, 0},
+        {m_beachSize.x * 0.75f, m_beachSize.y * 1.5f}, {m_beachSize.x * 2.25f, m_beachSize.y * 1.5f},
+        {m_beachSize.x * 1.5f, m_beachSize.y * 3.f}, {m_beachSize.x * 4.5f, m_beachSize.y * 2.f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::beach), SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::beach),
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::wood),
+        SpawnItem(ObstacleType::mm_beach), SpawnItem(ObstacleType::coral)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 9
+    pattern.positions = {
+        {0, 0}, {m_seaweedSize.x * 2.f, 0}, {m_seaweedSize.x * 4.f, 0},
+        {m_seaweedSize.x, m_seaweedSize.y * 1.5f}, {m_seaweedSize.x * 3.f, m_seaweedSize.y * 1.5f},
+        {m_seaweedSize.x * 2.f, m_seaweedSize.y * 0.75f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge),
+        SpawnItem(ObstacleType::wood)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 10 - 迷宫模式
+    pattern.positions = {
+        {0, 0}, {m_bridgeSize.x, 0}, {m_bridgeSize.x * 2.f, 0}, {m_bridgeSize.x * 3.f, 0},
+        {0, m_bridgeSize.y * 2.f}, {m_bridgeSize.x * 3.f, m_bridgeSize.y * 2.f},
+        {m_bridgeSize.x, m_bridgeSize.y * 4.f}, {m_bridgeSize.x * 2.f, m_bridgeSize.y * 4.f},
+        {m_bridgeSize.x * 1.5f, m_bridgeSize.y * 1.f}, {m_bridgeSize.x * 1.5f, m_bridgeSize.y * 3.f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge),
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge),
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 11 - 防守型模式
+    pattern.positions = {
+        {0, 0}, {m_beachSize.x * 2.f, 0}, {m_beachSize.x * 4.f, 0},
+        {m_beachSize.x, m_beachSize.y * 1.5f}, {m_beachSize.x * 3.f, m_beachSize.y * 1.5f},
+        {m_beachSize.x * 0.5f, m_beachSize.y * 2.5f}, 
+        {m_beachSize.x * 3.5f, m_beachSize.y * 2.5f}, {m_beachSize.x * 2.f, m_beachSize.y * 0.75f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::beach), SpawnItem(ObstacleType::beach), SpawnItem(ObstacleType::beach),
+        SpawnItem(ObstacleType::m_beach), SpawnItem(ObstacleType::m_beach),
+        SpawnItem(ObstacleType::wood), 
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 12 - 陷阱式模式
+    pattern.positions = {
+        {0, 0}, {m_coralSize.x * 1.5f, 0}, {m_coralSize.x * 3.f, 0},
+        {m_coralSize.x * 0.75f, m_coralSize.y * 2.f}, {m_coralSize.x * 2.25f, m_coralSize.y * 2.f},
+        {m_coralSize.x * 1.5f, m_coralSize.y * 1.f},
+        {m_coralSize.x * 4.5f, m_coralSize.y * 1.f}, {-m_coralSize.x * 0.5f, m_coralSize.y * 1.f}
+    };
+    pattern.items = {
+        SpawnItem(ObstacleType::coral), SpawnItem(ObstacleType::coral), SpawnItem(ObstacleType::coral),
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::buoy), SpawnItem(ObstacleType::buoy)
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
 }
 
 void ObstacleItemViewModel::createTunnelPattern() {
@@ -318,7 +425,7 @@ void ObstacleItemViewModel::createTunnelPattern() {
     };
     setPatternPosition(pattern);
     setPatternSize(pattern);
-    // m_patterns.push_back(pattern);
+    m_patterns.push_back(pattern);
 }
 
 void ObstacleItemViewModel::createPowerPattern() {
@@ -450,6 +557,30 @@ void ObstacleItemViewModel::createSinglePattern() {
     // 6
     pattern.positions = {{0, 0}};
     pattern.items = {SpawnItem(ObstacleType::s_buoy)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 7
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::l_beach)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 8
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::m_boat)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 9
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::wood)};
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 10
+    pattern.positions = {{0, 0}};
+    pattern.items = {SpawnItem(ObstacleType::stone)};
     setPatternPosition(pattern);
     setPatternSize(pattern);
     m_patterns.push_back(pattern);
