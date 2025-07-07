@@ -194,6 +194,7 @@ void ObstacleItemViewModel::createClusterPattern() {
 
 void ObstacleItemViewModel::createTunnelPattern() {
     Pattern pattern;
+    // 1
     pattern.positions = {
         {0, 0}, {96, 0}, {192, 0}, {192, -96}, {288, -96}, {384, -96},
         {192, -96}, {192, 48}, {-24, 96}, {64, 128}, {320, 0}, {352, 48},
@@ -222,6 +223,7 @@ void ObstacleItemViewModel::createTunnelPattern() {
 
 void ObstacleItemViewModel::createPowerPattern() {
     Pattern pattern;
+    // 1
     pattern.positions = {
         {0, 0}, {m_seaweedSize.x, 0}, {m_seaweedSize.x * 2.f, 0},
         {-m_seaweedSize.x * 2.f, m_seaweedSize.y}, {-m_seaweedSize.x, m_seaweedSize.y}, {0, 0}, 
@@ -243,6 +245,30 @@ void ObstacleItemViewModel::createPowerPattern() {
         SpawnItem(ObstacleType::mm_bridge), SpawnItem(ObstacleType::m_bridge), 
         SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
         SpawnItem(ObstacleType::wood),
+    };
+    setPatternPosition(pattern);
+    setPatternSize(pattern);
+    m_patterns.push_back(pattern);
+    // 2
+    pattern.positions = {
+        {0, 0}, {m_seaweedSize.x * 2.f, m_seaweedSize.y * 0.75f}, {m_seaweedSize.x * 3.f, -m_seaweedSize.y * 0.25f},
+        {m_seaweedSize.x, -m_seaweedSize.y}, {m_seaweedSize.x * 2.f, -m_seaweedSize.y}, {m_seaweedSize.x * 3.f, -m_seaweedSize.y},
+        {m_seaweedSize.x * 2.f, -m_seaweedSize.y * 0.25f}, {m_seaweedSize.x * 0.5f, m_seaweedSize.y * 0.25f}, {-m_seaweedSize.x * 0.5f, m_seaweedSize.y * 1.5f},
+        {m_seaweedSize.x * 0.5f, m_seaweedSize.y * 1.5f}, {m_seaweedSize.x * 0.5f, m_seaweedSize.y * 2.f}, {-m_seaweedSize.x * 0.5f, m_seaweedSize.y * 4.f},
+        {m_seaweedSize.x * 2.f, m_seaweedSize.y * 3.f}, {m_seaweedSize.x * 1.5f, m_seaweedSize.y * 4.5f}, {m_seaweedSize.x * 3.5f, m_seaweedSize.y * 2.f},
+        {m_seaweedSize.x * 1.5f, m_seaweedSize.y * 4.f}, {m_seaweedSize.x * 2.5f, m_seaweedSize.y * 4.f}, {m_seaweedSize.x * 3.f, m_seaweedSize.y * 5.f},
+        {m_seaweedSize.x * 5.5f, m_seaweedSize.y * 1.5f}, {m_seaweedSize.x * 6.5f, m_seaweedSize.y * 1.f}, {m_seaweedSize.x * 7.f, m_seaweedSize.y * 3.f},
+        {m_seaweedSize.x * 6.5f, m_seaweedSize.y * 2.f}, {m_seaweedSize.x * 7.5f, m_seaweedSize.y * 2.f}, {m_seaweedSize.x * 8.5f, m_seaweedSize.y * 1.f},
+    }; 
+    pattern.items = {
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), 
+        SpawnItem(ObstacleType::m_bridge), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::bridge),
+        SpawnItem(ObstacleType::wood), SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::stone), 
+        SpawnItem(ObstacleType::mm_bridge), SpawnItem(ObstacleType::m_bridge), SpawnItem(ObstacleType::mm_bridge),
+        SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed), SpawnItem(ItemType::power),
+        SpawnItem(ObstacleType::sp_bridge), SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::stone),
+        SpawnItem(ObstacleType::stone), SpawnItem(ObstacleType::seaweed), SpawnItem(ObstacleType::seaweed),
+        SpawnItem(ObstacleType::bridge), SpawnItem(ObstacleType::sp_bridge), SpawnItem(ObstacleType::m_bridge),
     };
     setPatternPosition(pattern);
     setPatternSize(pattern);
