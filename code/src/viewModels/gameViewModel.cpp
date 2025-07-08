@@ -1,8 +1,7 @@
 #include "gameViewModel.h"
 
 GameViewModel::GameViewModel() {
-    // 在启动时加载最高分
-    m_highScore = ScoreManager::getInstance().loadHighScore();
+    loadHighScoreFromFile();
 }
 void GameViewModel::subscribeToNotifications() {
     auto& notificationCenter = NotificationCenter::getInstance();
@@ -19,10 +18,10 @@ void GameViewModel::update(const sf::Vector2u& windowSize) {
         return;
     }
     if (*m_playerHP <= 0 && m_playerHP != nullptr) {
-        // 游戏结束，检查并更新最高分
-        bool isNewHighScore = m_gameModel.gameOver();
-        if (isNewHighScore) {
-            m_highScore = ScoreManager::getInstance().getHighScore();
+        // 游戏结束时，检查并更新最高分
+        if (m_gameModel.getScore() > m_highScore) {
+            m_highScore = m_gameModel.getScore();
+            saveHighScoreToFile();
         }
         m_gameModel.setGameState(Config::GameState::gameOver);
         return;
@@ -68,4 +67,102 @@ void GameViewModel::onNotification(const NotificationData& data) {
         default:
             break;
     }
+}
+
+void GameViewModel::loadHighScoreFromFile() {
+    // 确保目录存在
+    ensureDirectoryExists(SCORE_FILE_PATH);
+    
+    std::ifstream file(SCORE_FILE_PATH);
+    if (!file.is_open()) {
+        // 文件不存在，创建默认分数
+        m_highScore = 0.0f;
+        saveHighScoreToFile();
+        return;
+    }
+    
+    std::string content;
+    std::string line;
+    while (std::getline(file, line)) {
+        content += line;
+    }
+    file.close();
+    
+    if (content.empty()) {
+        m_highScore = 0.0f;
+        saveHighScoreToFile();
+        return;
+    }
+    
+    m_highScore = parseJsonString(content);
+}
+
+void GameViewModel::ensureDirectoryExists(const std::string& filePath) {
+    std::filesystem::path path(filePath);
+    std::filesystem::path directory = path.parent_path();
+    
+    if (!directory.empty() && !std::filesystem::exists(directory)) {
+        try {
+            std::filesystem::create_directories(directory);
+            std::cout << "Created directory: " << directory << std::endl;
+        } catch (const std::filesystem::filesystem_error& e) {
+            std::cerr << "Error creating directory " << directory << ": " << e.what() << std::endl;
+        }
+    }
+}
+
+void GameViewModel::saveHighScoreToFile() {
+    std::ofstream file(SCORE_FILE_PATH);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to save high score to file: " << SCORE_FILE_PATH << std::endl;
+        return;
+    }
+    
+    std::string jsonContent = createJsonString(m_highScore);
+    file << jsonContent;
+    file.close();
+}
+
+float GameViewModel::parseJsonString(const std::string& jsonContent) {
+    // 简单的JSON解析，查找 "highScore": 后面的数字
+    size_t pos = jsonContent.find("\"highScore\":");
+    if (pos == std::string::npos) {
+        return 0.0f;
+    }
+    
+    // 找到冒号后的数字
+    pos = jsonContent.find(':', pos);
+    if (pos == std::string::npos) {
+        return 0.0f;
+    }
+    
+    // 跳过冒号和空格
+    pos++;
+    while (pos < jsonContent.length() && (jsonContent[pos] == ' ' || jsonContent[pos] == '\t')) {
+        pos++;
+    }
+    
+    // 提取数字
+    std::string numberStr;
+    while (pos < jsonContent.length() && 
+           (std::isdigit(jsonContent[pos]) || jsonContent[pos] == '.' || jsonContent[pos] == '-')) {
+        numberStr += jsonContent[pos];
+        pos++;
+    }
+    
+    try {
+        return std::stof(numberStr);
+    } catch (const std::exception& e) {
+        std::cerr << "Error parsing high score: " << e.what() << std::endl;
+        return 0.0f;
+    }
+}
+
+std::string GameViewModel::createJsonString(float score) {
+    std::ostringstream oss;
+    oss << "{\n";
+    oss << "  \"highScore\": " << score << ",\n";
+    oss << "  \"lastUpdated\": \"" << __DATE__ << " " << __TIME__ << "\"\n";
+    oss << "}";
+    return oss.str();
 }

@@ -1,9 +1,10 @@
 #pragma once
 
+#include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
-#include "../common/scoreManager.h"
 #include "../models/gameModel.h"
 
 class GameViewModel : public INotificationObserver, public std::enable_shared_from_this<GameViewModel> {
@@ -36,7 +37,7 @@ public:
     void setPlayerHP(const int& playerHP) { m_playerHP = &playerHP; }
     void setIsWaiting(const bool& isWaiting) { m_isPlayerWaiting = &isWaiting; }
 
-     // 设置回调函数
+    // 设置回调函数
     void setMouseLeftClickPlayerWaitingCallback(Config::MouseLeftClickPlayerWaitingCallback callback) { m_mouseLeftClickPlayerWaitingCallback = callback; }
 
     // 获取回调方法
@@ -48,11 +49,17 @@ public:
 
 private:
     void updateWater(const sf::Vector2f& playerVelocity);
+    void loadHighScoreFromFile();
+    void ensureDirectoryExists(const std::string& filePath);
+    void saveHighScoreToFile();
+    float parseJsonString(const std::string& jsonContent);
+    std::string createJsonString(float score);
 
 private:
     // 游戏配置常量
     const float m_waterSize = 256.f;
     const sf::Color m_buttonColor = sf::Color(195, 240, 247);
+    const std::string SCORE_FILE_PATH{"../../surf_data/highscore.json"};
     
     // 游戏状态
     sf::Vector2f m_waterOffset = {0, 0};

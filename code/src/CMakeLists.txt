@@ -3,7 +3,6 @@ add_executable(surf
     app/game.cpp
     models/playerModel.cpp
     common/textureManager.cpp
-    common/scoreManager.cpp
     viewModels/gameViewModel.cpp
     viewModels/spriteViewModel.cpp
     viewModels/animationViewModel.cpp
