@@ -39,7 +39,7 @@ Config::MouseLeftClickCallback GameViewModel::getMouseLeftClickCommand() {
                 resetGame();
                 m_gameModel.setGameState(Config::GameState::startMenu);
             }
-        } else if (currentState == Config::GameState::playing && m_isPlayerWaiting) {
+        } else if (currentState == Config::GameState::playing && *m_isPlayerWaiting) {
             if (m_mouseLeftClickPlayerWaitingCallback) {
                 m_mouseLeftClickPlayerWaitingCallback();
             }

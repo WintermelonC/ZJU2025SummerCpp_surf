@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include "../common/config.h"
 #include "../common/notificationCenter.h"
@@ -47,11 +49,17 @@ public:
 
 private:
     void updateWater(const sf::Vector2f& playerVelocity);
+    void loadHighScoreFromFile();
+    void ensureDirectoryExists(const std::string& filePath);
+    void saveHighScoreToFile();
+    float parseJsonString(const std::string& jsonContent);
+    std::string createJsonString(float score);
 
 private:
     // 游戏配置常量
     const float m_waterSize = 256.f;
     const sf::Color m_buttonColor = sf::Color(195, 240, 247);
+    const std::string SCORE_FILE_PATH{"../../surf_data/highscore.json"};
     
     // 游戏状态
     sf::Vector2f m_waterOffset = {0, 0};
