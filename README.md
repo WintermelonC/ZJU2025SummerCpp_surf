@@ -12,6 +12,10 @@
 
 复制 `CMakePresets_example.json` 为 `CMakePresets.json`，并根据文件中的注释进行修改
 
+# Deliverables
+
+项目成果见 `deliverables.pdf`
+
 # Contributors
 
 - [@WintermelonC](https://github.com/WintermelonC)
